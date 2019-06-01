@@ -1,4 +1,4 @@
-# Prerequisites
+﻿# Prerequisites
 *.d
 
 # Compiled Object files
@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+*.pro.user
+*.pro.user.*
+*.list
+.directory
+Makefile
+harbour-powietrze
+moc_*
+
+RPMS

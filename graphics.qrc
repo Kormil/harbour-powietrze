@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Graphics/weatherIcons/256/0.png</file>
+        <file>Graphics/weatherIcons/256/1.png</file>
+        <file>Graphics/weatherIcons/256/2.png</file>
+        <file>Graphics/weatherIcons/256/3.png</file>
+        <file>Graphics/weatherIcons/256/4.png</file>
+        <file>Graphics/weatherIcons/256/5.png</file>
+        <file>icons/172x172/harbour-powietrze.png</file>
+        <file>Graphics/weatherIcons/256/-1.png</file>
+    </qresource>
+</RCC>
