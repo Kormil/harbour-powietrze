@@ -45,41 +45,6 @@ Page {
             }
         }
 
-//        PageHeader {
-//            id: lastViewSection
-//            title: qsTr("Last view")
-//        }
-
-//        BackgroundItem {
-//            id: lastViewItem
-//            height: lastViewNameLabel.height + lastViewValueLabel.height
-//            anchors.top: lastViewSection.bottom
-//            visible: false
-
-//            Label {
-//                id: lastViewNameLabel
-//                x: Theme.horizontalPageMargin
-//                text: stationListModel.selectedStation.name
-//                color: lastViewItem.highlighted ? Theme.highlightColor : Theme.primaryColor
-//                width: lastViewItem.width
-//                truncationMode: TruncationMode.Fade
-//            }
-
-//            Label {
-//                id: lastViewValueLabel
-//                x: Theme.horizontalPageMargin
-//                anchors.top: lastViewNameLabel.bottom
-//                text: "Dobry"
-//                font.pixelSize: Theme.fontSizeExtraSmall
-//                color: lastViewItem.highlighted ? Theme.highlightColor : Theme.secondaryColor
-//            }
-
-//            onClicked: {
-//                pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
-//                stationListProxyModel.onItemClicked(index)
-//            }
-//        }
-
         PageHeader {
             id: favouriteSection
             title: qsTr("Favourite")
@@ -178,7 +143,7 @@ Page {
         visible: false
         anchors.bottom: parent.bottom
         Behavior on opacity { FadeAnimation {} }
-        text: qsTr("Pull down to select sations")
+        text: qsTr("Pull down to select stations")
         anchors.fill: parent
     }
 

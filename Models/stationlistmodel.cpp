@@ -320,7 +320,7 @@ bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
             return false;
     }
 
-    if (!provinceName.contains(m_provinceNameFilter))
+    if (!m_provinceNameFilter.isEmpty() && provinceName != m_provinceNameFilter)
     {
         return false;
     }

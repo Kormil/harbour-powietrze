@@ -36,7 +36,7 @@
     </message>
     <message>
         <source>Wait for GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>Poczekaj na GPS</translation>
     </message>
 </context>
 <context>
@@ -50,16 +50,16 @@
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <source>Pull down to select sations</source>
-        <translation>Przeciągnij w dół aby wybrać stację</translation>
-    </message>
-    <message>
         <source>Favourite</source>
         <translation>Ulubione</translation>
     </message>
     <message>
         <source>About Powietrze</source>
         <translation>O Powietrze</translation>
+    </message>
+    <message>
+        <source>Pull down to select stations</source>
+        <translation>Przeciągnij w dół aby wybrać stację</translation>
     </message>
 </context>
 <context>

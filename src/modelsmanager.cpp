@@ -63,18 +63,8 @@ void ModelsManager::loadSettings()
 
     StationListPtr stationList = settings->favouriteStations();
 
-//    StationData lastViewData = settings->lastViewStation();
-//    Station* lastViewStation = stationList->find(lastViewData.id);
-//    if (lastViewStation == nullptr)
-//    {
-//        lastViewStation = new Station();
-//        lastViewStation->setStationData(lastViewData);
-//        stationList->append(lastViewStation);
-//    }
-
     m_stationListModel->setStationList(std::move(stationList));
     m_stationListModel->getIndexForFavourites();
-    //m_stationListModel->setSelectedStation(lastViewData.id);
 
     m_timer.start(60 * 60 * 1000);
 }

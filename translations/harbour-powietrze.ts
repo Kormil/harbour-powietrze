@@ -50,15 +50,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Pull down to select sations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Favourite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>About Powietrze</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pull down to select stations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

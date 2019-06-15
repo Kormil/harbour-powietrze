@@ -24,7 +24,9 @@ CoverBackground {
 
              Label {
                  id: nameLabel
-                 x: Theme.horizontalPageMargin
+                 anchors.left: parent.left
+                 anchors.right: parent.right
+                 anchors.leftMargin: Theme.horizontalPageMargin
                  text: model.description
                  color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
                  width: delegate.width
@@ -33,7 +35,8 @@ CoverBackground {
 
              Label {
                  id: valueLabel
-                 x: Theme.horizontalPageMargin
+                 anchors.left: parent.left
+                 anchors.leftMargin: Theme.horizontalPageMargin
                  anchors.top: nameLabel.bottom
                  text: model.indexName
                  font.pixelSize: Theme.fontSizeExtraSmall
