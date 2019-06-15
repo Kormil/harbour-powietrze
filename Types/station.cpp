@@ -37,6 +37,11 @@ QString Station::province() const
     return m_stationData.province;
 }
 
+QGeoCoordinate Station::coordinate() const
+{
+    return m_stationData.coordinate;
+}
+
 bool Station::favourite() const
 {
     return m_favourite;
@@ -58,6 +63,16 @@ void Station::setStationData(const StationData &stationData)
     m_stationData = stationData;
     emit stationDataChanged();
     emit nameChanged();
+}
+
+double Station::distance() const
+{
+    return m_distance;
+}
+
+void Station::setDistance(double distance)
+{
+    m_distance = distance;
 }
 
 StationIndex *Station::stationIndex() const

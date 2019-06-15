@@ -122,7 +122,7 @@ Page {
             color: Theme.secondaryColor
             anchors.bottomMargin: Theme.paddingSmall
             horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Data by powietrze.gov.pl")
+            text: qsTr("Data by powietrze.gios.gov.pl")
         }
 
         Connections {

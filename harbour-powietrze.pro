@@ -12,8 +12,8 @@
 # The name of your application
 TARGET = harbour-powietrze
 
-QT += dbus
-CONFIG += sailfishapp providers
+QT += dbus positioning
+CONFIG += sailfishapp
 
 PKGCONFIG += \
     nemonotifications-qt5
@@ -47,7 +47,8 @@ DISTFILES += \
     harbour-powietrze.desktop \
     qml/cover/StationCoverPage.qml \
     qml/pages/AboutPage.qml \
-    qml/pages/LicensePage.qml
+    qml/pages/LicensePage.qml \
+    qml/pages/FindNearestPage.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 

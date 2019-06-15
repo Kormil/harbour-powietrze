@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QString>
 #include <QDataStream>
+#include <QtPositioning/QGeoCoordinate>
 
 struct StationData
 {
@@ -11,6 +12,7 @@ struct StationData
     QString province;
     QString cityName;
     QString street;
+    QGeoCoordinate coordinate;
 };
 
 QDataStream& operator<<(QDataStream& out, const StationData& v);

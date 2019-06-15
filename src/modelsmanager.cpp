@@ -48,9 +48,8 @@ void ModelsManager::deleteModels()
 void ModelsManager::bindToQml(QQuickView * view)
 {
     qmlRegisterType<ProvinceListModel>("ProvinceListModel", 1, 0, "ProvinceListModel");
-    qmlRegisterType<StationListProxyModel>("StationListModel", 1, 0, "StationListProxyModel");
-    qmlRegisterType<SensorListModel>("SensorListModel", 1, 0, "sensorListModel");
 
+    StationListProxyModel::bindToQml();
     StationListModel::bindToQml(view);
 
     view->rootContext()->setContextProperty(QStringLiteral("stationListModel"), m_stationListModel);

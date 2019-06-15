@@ -38,6 +38,7 @@ public:
     void appendList(StationListPtr &stationList);
 
     Station* find(int stationId);
+    void findDistances(QGeoCoordinate coordinate);
     int row(int stationId) const;
 
     std::vector<int> favouriteIds() const;

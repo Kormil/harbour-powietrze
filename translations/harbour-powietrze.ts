@@ -25,6 +25,21 @@
     </message>
 </context>
 <context>
+    <name>FindNearestPage</name>
+    <message>
+        <source>Find more</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest station</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wait for GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FirstPage</name>
     <message>
         <source>Select station</source>
@@ -62,6 +77,10 @@
     </message>
     <message>
         <source>Show all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find nearest</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -102,7 +121,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Data by powietrze.gov.pl</source>
+        <source>Data by powietrze.gios.gov.pl</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

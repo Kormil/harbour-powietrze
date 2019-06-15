@@ -34,7 +34,6 @@ int Request::serial() const
 Connection::Connection()
 {
     m_host = "api.gios.gov.pl/pjp-api/rest";
-    m_port = "";
     m_frequency = 30;
 }
 

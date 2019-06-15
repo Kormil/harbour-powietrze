@@ -11,7 +11,7 @@ class QQuickView;
 class Station;
 class StationIndex;
 
-using StationPtr = std::unique_ptr<Station>;
+using StationPtr = std::shared_ptr<Station>;
 using StationIndexPtr = std::unique_ptr<StationIndex>;
 
 struct StationIndex : public QObject
@@ -71,12 +71,16 @@ public:
     QString cityName() const;
     QString streetName() const;
     QString province() const;
+    QGeoCoordinate coordinate() const;
 
     bool favourite() const;
     void setFavourite(bool value);
 
     StationData stationData() const;
     void setStationData(const StationData &stationData);
+
+    double distance() const;
+    void setDistance(double distance);
 
 signals:
     void stationIndexChanged();
@@ -91,6 +95,7 @@ private:
     StationData m_stationData;
 
     bool m_favourite;
+    double m_distance = 0.f;
 };
 
 #endif // STATION_H

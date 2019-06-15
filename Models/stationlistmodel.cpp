@@ -11,7 +11,6 @@ StationListModel::StationListModel(QObject *parent)
     : QAbstractListModel(parent),
       m_stationList(nullptr)
 {
-    //m_provider = std::move(Provider::getFromJson("local.json"));
 }
 
 int StationListModel::rowCount(const QModelIndex &parent) const
@@ -42,6 +41,8 @@ QVariant StationListModel::data(const QModelIndex &index, int role) const
         return QVariant(station->province());
     case FavouriteRole:
         return QVariant(station->favourite());
+    case DistanceRole:
+        return QVariant(QString::number(station->distance() / 1000, 'f', 2));
     case IndexRole:
     {
         if (station->stationIndex())
@@ -157,6 +158,7 @@ QHash<int, QByteArray> StationListModel::roleNames() const
     names[Qt::UserRole] = "favourite";
     names[Qt::DisplayRole] = "description";
     names[IndexRole] = "indexName";
+    names[DistanceRole] = "distance";
     return names;
 }
 
@@ -199,6 +201,7 @@ void StationListModel::onItemClicked(int index)
 
 void StationListModel::bindToQml(QQuickView * view)
 {
+    qmlRegisterType<SensorListModel>("SensorListModel", 1, 0, "sensorListModel");
     Station::bindToQml(view);
 }
 
@@ -210,6 +213,17 @@ Station *StationListModel::selectedStation() const
 void StationListModel::setConnection(Connection *connection)
 {
     m_connection = connection;
+}
+
+bool StationListModel::findDistances(QGeoCoordinate coordinate)
+{
+    if (coordinate.isValid())
+    {
+        m_stationList->findDistances(coordinate);
+        return true;
+    }
+
+    return false;
 }
 
 void StationListModel::getIndexForFavourites()
@@ -285,14 +299,19 @@ void StationListProxyModel::setProvinceNameFilter(const QString &provinceNameFil
     invalidateFilter();
 }
 
-void StationListProxyModel::registerToQml()
+void StationListProxyModel::bindToQml()
 {
     qmlRegisterType<StationListProxyModel>("StationListModel", 1, 0, "StationListProxyModel");
+    qmlRegisterUncreatableType<SortStation>("StationListModel", 1, 0, "SortStation", "Cannot create SortStation in QML");
 }
 
 bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     Q_UNUSED(source_parent);
+
+    if (m_sortedBy == SortStation::ByDistance && sourceModel()->index(source_row, 0).data(StationListModel::DistanceRole).toDouble() == 0)
+        return false;
+
     QString provinceName = sourceModel()->index(source_row, 0).data(StationListModel::ProvinceNameRole).toString();
 
     if (m_favourites)
@@ -301,17 +320,25 @@ bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
             return false;
     }
 
-    if (provinceName.contains(m_provinceNameFilter))
+    if (!provinceName.contains(m_provinceNameFilter))
     {
-        return true;
+        return false;
     }
 
-    return false;
+    if (!m_stationNameFilter.isEmpty())
+    {
+        QString stationName = sourceModel()->index(source_row, 0).data(StationListModel::NameRole).toString();
+
+        if (!m_stationNameFilter.contains(stationName))
+            return false;
+    }
+
+    return true;
 }
 
 bool StationListProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
-    if (source_right.isValid() && source_left.isValid())
+    if (m_sortedBy == SortStation::ByName && source_right.isValid() && source_left.isValid())
     {
         QVariant leftData = sourceModel()->data(source_left);
         QVariant rightData = sourceModel()->data(source_right);
@@ -319,7 +346,55 @@ bool StationListProxyModel::lessThan(const QModelIndex &source_left, const QMode
         return QString::localeAwareCompare(leftData.toString(), rightData.toString()) < 0;
     }
 
+    if (m_sortedBy == SortStation::ByDistance && source_right.isValid() && source_left.isValid())
+    {
+        QVariant leftData = sourceModel()->data(source_left, StationListModel::DistanceRole);
+        QVariant rightData = sourceModel()->data(source_right, StationListModel::DistanceRole);
+
+        return leftData.toDouble() < rightData.toDouble();
+    }
+
     return false;
+}
+
+int StationListProxyModel::rowCount(const QModelIndex &parent) const
+{
+    if (m_limit)
+        return std::min(m_limit, QSortFilterProxyModel::rowCount(parent));
+
+    return QSortFilterProxyModel::rowCount(parent);
+}
+
+SortStation::EnSortStation StationListProxyModel::sortedBy() const
+{
+    return m_sortedBy;
+}
+
+void StationListProxyModel::setSortedBy(const SortStation::EnSortStation &sortedBy)
+{
+    m_sortedBy = sortedBy;
+}
+
+int StationListProxyModel::limit() const
+{
+    return m_limit;
+}
+
+void StationListProxyModel::setLimit(int value)
+{
+    m_limit = value;
+    invalidateFilter();
+}
+
+QStringList StationListProxyModel::stationNameFilter() const
+{
+    return m_stationNameFilter;
+}
+
+void StationListProxyModel::setStationNameFilter(const QStringList &stationNameFilter)
+{
+    m_stationNameFilter = stationNameFilter;
+    invalidateFilter();
 }
 
 QString StationListProxyModel::provinceNameFilter() const

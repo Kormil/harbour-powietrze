@@ -1,4 +1,5 @@
 #include "stationlist.h"
+#include <list>
 
 StationList::StationList(QObject *parent) : QObject(parent)
 {
@@ -48,6 +49,10 @@ StationListPtr StationList::getFromJson(const QJsonDocument &jsonDocument)
         stationData.id = station.toObject()["id"].toInt();
         stationData.cityName = station.toObject()["city"].toObject()["name"].toString();
         stationData.street = station.toObject()["addressStreet"].toString();
+
+        double lat = station.toObject()["gegrLat"].toString().toDouble();
+        double lon = station.toObject()["gegrLon"].toString().toDouble();
+        stationData.coordinate = QGeoCoordinate(lat, lon);
 
         stationData.province = station.toObject()["city"].toObject()["commune"].toObject()["provinceName"].toString();
 
@@ -111,6 +116,15 @@ Station* StationList::find(int stationId)
         return nullptr;
 
     return m_stations[index].get();
+}
+
+void StationList::findDistances(QGeoCoordinate coordinate)
+{
+    for (const auto& station: m_stations)
+    {
+        double distance = station->coordinate().distanceTo(coordinate);
+        station->setDistance(distance);
+    }
 }
 
 int StationList::row(int stationId) const

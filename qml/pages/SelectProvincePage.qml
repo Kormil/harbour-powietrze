@@ -21,6 +21,13 @@ Page {
                     pageStack.push(Qt.resolvedUrl("SelectStationPage.qml"))
                 }
             }
+
+            MenuItem {
+                text: qsTr("Find nearest")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("FindNearestPage.qml"))
+                }
+            }
         }
 
         SilicaListView {
