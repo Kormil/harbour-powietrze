@@ -1,6 +1,7 @@
 #include "connection.h"
 #include <iostream>
 #include <notification.h>
+#include "modelsmanager.h"
 
 Request::Request(const QUrl &url, Connection *connection)
 {
@@ -31,9 +32,12 @@ int Request::serial() const
     return m_serial;
 }
 
-Connection::Connection()
+Connection::Connection(ModelsManager* modelsManager) :
+    m_modelsManager(modelsManager)
 {
     m_host = "api.gios.gov.pl/pjp-api/rest";
+    m_port = "";
+
     m_frequency = 30;
 }
 
@@ -60,6 +64,14 @@ int Connection::nextSerial()
 
 void Connection::stationListRequest(std::function<void(StationListPtr)> handler)
 {
+    if (!m_modelsManager->stationListModel() || !m_modelsManager->stationListModel()->shouldGetNewData())
+    {
+        handler(StationListPtr{});
+        return ;
+    }
+
+    m_modelsManager->stationListModel()->setDateToCurrent();
+
     QString url = "http://" + m_host + m_port + "/station/findAll";
     QUrl stationListURL(url);
 
@@ -81,18 +93,33 @@ void Connection::stationListRequest(std::function<void(StationListPtr)> handler)
 
 void Connection::sensorListRequest(const int& stationId, std::function<void (SensorListPtr)> handler)
 {
+    Station* station = m_modelsManager->stationListModel()->station(stationId);
+
+    if (station == nullptr)
+    {
+        handler(SensorListPtr{});
+        return;
+    }
+
+    if (station->sensorList() != nullptr && !station->sensorList()->shouldGetNewData(frequency()))
+    {
+        handler(SensorListPtr{});
+        return;
+    }
+
     QString url = "http://" + m_host + m_port + "/station/sensors/" + QString::number(stationId);
     QUrl provinceListURL(url);
 
     Request* request = new Request(provinceListURL, this);
     m_networkRequests[m_serial] = RequestPtr(request);
 
-    QObject::connect(request, &Request::finished, [this, request, handler](Request::Status status, const QByteArray& responseArray) {
+    QObject::connect(request, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler( SensorListPtr() );
         else
         {
             SensorListPtr sensorList = SensorList::getSensorsFromJson(QJsonDocument::fromJson(responseArray));
+            sensorList->setDateToCurent();
             handler(std::move(sensorList));
         }
 
@@ -123,21 +150,42 @@ void Connection::sensorDataRequest(const int& sensorId, std::function<void (floa
 
 void Connection::stationIndexRequest(const int& stationId, std::function<void (StationIndexPtr)> handler)
 {
+    const Station* station = m_modelsManager->stationListModel()->station(stationId);
+
+    if (station == nullptr)
+    {
+        handler(StationIndexPtr(nullptr));
+        return;
+    }
+
+    if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(frequency()))
+    {
+        handler(StationIndexPtr(nullptr));
+        return;
+    }
+
     QString url = "http://" + m_host + m_port + "/aqindex/getIndex/" + QString::number(stationId);
     QUrl stationIndexURL(url);
 
     Request* request = new Request(stationIndexURL, this);
     m_networkRequests[m_serial] = RequestPtr(request);
 
-    QObject::connect(request, &Request::finished, [this, request, handler](Request::Status status, const QByteArray& responseArray) {
+    QObject::connect(request, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler( StationIndexPtr(nullptr) );
         else
         {
             StationIndexPtr stationIndex = StationIndex::getFromJson(QJsonDocument::fromJson(responseArray));
+            stationIndex->setDateToCurent();
             handler(std::move(stationIndex));
         }
 
         deleteRequest(request->serial());
     });
+}
+
+void Connection::findNearestStationRequest(QGeoCoordinate coordinate, std::function<void (StationListPtr)> handler)
+{
+    m_modelsManager->stationListModel()->calculateDistances(coordinate);
+    handler(StationListPtr());
 }

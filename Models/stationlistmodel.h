@@ -4,6 +4,7 @@
 #include <atomic>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include <QDateTime>
 #include <QtPositioning/QGeoCoordinate>
 #include "Types/stationlist.h"
 
@@ -71,6 +72,7 @@ private:
 class StationListModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(Station* nearestStation READ nearestStation WRITE setNearestStation NOTIFY nearestStationFounded)
     Q_PROPERTY(Station* selectedStation READ selectedStation WRITE setSelectedStation NOTIFY selectedStationChanged)
 
 public:
@@ -102,33 +104,48 @@ public:
     Q_INVOKABLE void requestStationListData();
     void requestStationIndexData(Station* station);
 
+    Q_INVOKABLE void onStationClicked(Station* station);
     Q_INVOKABLE void onItemClicked(int index);
     static void bindToQml(QQuickView *view);
 
+    Station *station(int id) const;
+    Station *nearestStation() const;
     Station *selectedStation() const;
     void setSelectedStation(int id);
     void setSelectedStation(Station *selected);
+    void setNearestStation(Station *nearestStation);
 
     void setConnection(Connection *connection);
 
-    Q_INVOKABLE bool findDistances(QGeoCoordinate coordinate);
+    bool shouldGetNewData();
+    void setDateToCurrent();
+
+    void calculateDistances(QGeoCoordinate coordinate);
+
 public slots:
+    void findNearestStation();
     void getIndexForFavourites();
 
 signals:
+    void stationListRequested();
     void stationListLoaded();
     void stationDataLoaded();
     void selectedStationChanged();
     void favourtiesUpdated();
     void favourtiesUpdatingStarted();
+    void nearestStationRequested();
+    void nearestStationFounded();
 
 private:
     Connection *m_connection;
     Station* m_selectedItem;
+    Station* m_nearestStation;
     StationListPtr m_stationList;
 
     SensorListModel* m_sensorListModel;
     std::atomic_int m_indexesToDownload;
+
+    QDateTime m_lastRequestDate;
 };
 
 #endif // STATIONLISTMODEL_H

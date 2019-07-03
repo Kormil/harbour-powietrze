@@ -4,13 +4,10 @@
 #include <QObject>
 #include <QQuickView>
 #include <QtQml>
-
-#include "Models/stationlistmodel.h"
-#include "Models/provincelistmodel.h"
-#include "Models/sensorlistmodel.h"
 #include "src/settings.h"
 
 ModelsManager::ModelsManager() :
+    m_connection(this),
     m_stationListModel(nullptr),
     m_sensorListModel(nullptr),
     m_provinceListModel(nullptr)

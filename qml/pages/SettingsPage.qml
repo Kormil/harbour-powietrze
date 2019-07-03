@@ -8,14 +8,16 @@ Page {
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
-    SilicaListView {
+    SilicaFlickable{
         anchors.fill: parent
 
-        header: PageHeader {
+        Column
+        {
+
+        PageHeader {
             title: qsTr("Settings")
         }
 
-        model: VisualItemModel {
             ComboBox {
                 width: page.width
                 label: qsTr("Units type")
@@ -30,6 +32,30 @@ Page {
                     Settings.unitType = currentIndex
                 }
             }
+
+
+        SectionHeader {
+            id: favouriteSection
+            text: qsTr("GPS")
         }
+
+            ComboBox {
+                width: page.width
+                label: qsTr("Update frequency")
+                currentIndex: Settings.gpsUpdateFrequency
+
+                menu: ContextMenu {
+                    MenuItem { text: qsTr("Never") }
+                    MenuItem { text: qsTr("30 minutes") }
+                    MenuItem { text: qsTr("1 hour") }
+                    MenuItem { text: qsTr("2 hours") }
+                    MenuItem { text: qsTr("4 hours") }
+                }
+
+                onCurrentIndexChanged: {
+                    Settings.gpsUpdateFrequency = currentIndex
+                }
+            }
+}
     }
 }

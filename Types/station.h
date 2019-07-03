@@ -51,6 +51,7 @@ class Station : public QObject
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QString cityName READ cityName NOTIFY stationDataChanged)
     Q_PROPERTY(QString streetName READ streetName NOTIFY stationDataChanged)
+    Q_PROPERTY(QString distance READ distanceString NOTIFY distanceChanged)
     Q_PROPERTY(int id READ id)
     Q_PROPERTY(bool favourite READ favourite WRITE setFavourite)
     Q_PROPERTY(StationIndex* stationIndex READ stationIndex NOTIFY stationIndexChanged)
@@ -81,12 +82,14 @@ public:
 
     double distance() const;
     void setDistance(double distance);
+    QString distanceString() const;
 
 signals:
     void stationIndexChanged();
     void stationDataChanged();
     void nameChanged();
     void dataChanged(int);
+    void distanceChanged();
 
 private:
     SensorListPtr m_sensorList;

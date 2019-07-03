@@ -42,7 +42,7 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Select station</source>
+        <source>About Powietrze</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -50,15 +50,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Favourite</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>About Powietrze</source>
+        <source>Select station</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Pull down to select stations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest station</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Favourite</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -107,6 +111,34 @@
     </message>
     <message>
         <source>Milligram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Never</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>30 minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update frequency</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

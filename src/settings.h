@@ -14,7 +14,7 @@ class Settings : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(unsigned short unitType READ unitType WRITE setUnitType NOTIFY unitTypeChanged)
-    Q_PROPERTY(StationData lastViewStation READ lastViewStation WRITE setLastViewStation NOTIFY lastViewStationChanged)
+    Q_PROPERTY(unsigned short gpsUpdateFrequency READ gpsUpdateFrequency WRITE setGpsUpdateFrequency NOTIFY gpsUpdateFrequencyChanged)
 public:
     static QObject *instance(QQmlEngine *engine, QJSEngine *scriptEngine);
 
@@ -23,9 +23,6 @@ public:
     Q_INVOKABLE QString unitName();
     Q_INVOKABLE QString unitName(unsigned short unitType);
 
-    StationData lastViewStation() const;
-    void setLastViewStation(const StationData& stationData);
-
     StationListPtr favouriteStations() const;
     Q_INVOKABLE void addFavouriteStation(Station *station);
     Q_INVOKABLE void removeFavouriteStation(int value);
@@ -33,9 +30,11 @@ public:
     Q_INVOKABLE int updateFavouriteStations();
     Q_INVOKABLE void updateFavouriteStations(int time);
 
-
     Q_INVOKABLE QString license();
     Q_INVOKABLE QString version();
+
+    Q_INVOKABLE unsigned short gpsUpdateFrequency();
+    Q_INVOKABLE void setGpsUpdateFrequency(unsigned short unitType);
 
     static void bindToQml();
 signals:
@@ -43,6 +42,7 @@ signals:
     void lastViewStationChanged();
     void favouriteStationsChanged();
     void updateFavouriteStationsChanged();
+    void gpsUpdateFrequencyChanged();
 
 private:
     QVariantList favouriteStationsData() const;

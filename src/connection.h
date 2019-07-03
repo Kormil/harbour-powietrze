@@ -16,6 +16,7 @@
 #include "Types/sensorlist.h"
 
 class Connection;
+class ModelsManager;
 
 class Request : public QObject
 {
@@ -50,12 +51,13 @@ using RequestPtr = std::unique_ptr<Request>;
 class Connection
 {
 public:
-    Connection();
+    Connection(ModelsManager* modelsManager);
 
     void stationListRequest(std::function<void(StationListPtr)> handler);
     void sensorListRequest( const int& stationId, std::function<void(SensorListPtr)> handler);
     void sensorDataRequest(const int& sensorId, std::function<void (float)> handler);
     void stationIndexRequest(const int& stationId, std::function<void(StationIndexPtr)> handler);
+    void findNearestStationRequest(QGeoCoordinate coordinate, std::function<void(StationListPtr)> handler);
 
     QNetworkAccessManager &networkAccessManager();
 
@@ -71,6 +73,8 @@ private:
     QNetworkAccessManager m_networkAccessManager;
     std::map<int, RequestPtr> m_networkRequests;
     int m_serial;
+
+    ModelsManager* m_modelsManager;
 };
 
 #endif // CONNECTION_H

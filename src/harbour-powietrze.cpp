@@ -9,6 +9,7 @@
 
 #include "settings.h"
 #include "modelsmanager.h"
+#include "gpsmodule.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +30,7 @@ int main(int argc, char *argv[])
     modelsManager.createModels();
     modelsManager.bindToQml(view);
 
+    GPSModule::bindToQml(view);
     Settings::bindToQml();
 
     modelsManager.loadSettings();

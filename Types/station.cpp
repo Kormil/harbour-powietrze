@@ -70,9 +70,16 @@ double Station::distance() const
     return m_distance;
 }
 
+QString Station::distanceString() const
+{
+    return QString::number(distance() / 1000, 'f', 2);
+}
+
 void Station::setDistance(double distance)
 {
     m_distance = distance;
+    emit distanceChanged();
+    emit dataChanged(id());
 }
 
 StationIndex *Station::stationIndex() const

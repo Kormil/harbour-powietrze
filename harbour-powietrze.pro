@@ -29,7 +29,8 @@ SOURCES += src/harbour-powietrze.cpp \
     Types/sensorlist.cpp \
     Models/sensorlistmodel.cpp \
     src/settings.cpp \
-    Types/stationdata.cpp
+    Types/stationdata.cpp \
+    src/gpsmodule.cpp
 
 DISTFILES += \
     qml/cover/CoverPage.qml \
@@ -48,7 +49,10 @@ DISTFILES += \
     qml/cover/StationCoverPage.qml \
     qml/pages/AboutPage.qml \
     qml/pages/LicensePage.qml \
-    qml/pages/FindNearestPage.qml
+    qml/pages/FindNearestPage.qml \
+    qml/items/StationItem.qml \
+    qml/items/StationFavouriteItem.qml \
+    qml/items/StationNearestItem.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 
@@ -73,7 +77,8 @@ HEADERS += \
     Types/sensorlist.h \
     Models/sensorlistmodel.h \
     src/settings.h \
-    Types/stationdata.h
+    Types/stationdata.h \
+    src/gpsmodule.h
 
 RESOURCES += \
     graphics.qrc
@@ -82,3 +87,8 @@ RESOURCES += \
 license.files = LICENSE
 license.path = /usr/share/$${TARGET}
 INSTALLS += license
+
+OTHER_FILES += nmea/*
+nmea.files = nmea/*.nmea
+nmea.path = /usr/share/$$TARGET/nmea
+INSTALLS += nmea

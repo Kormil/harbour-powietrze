@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import ProvinceListModel 1.0
-import "."
+import StationListModel 1.0
 
 Page {
     id: page
@@ -61,6 +61,15 @@ Page {
             running: true
             size: BusyIndicatorSize.Large
             anchors.verticalCenter: parent.verticalCenter
+            visible: false
+        }
+
+        Connections {
+            target: stationListModel
+            onStationListRequested: {
+                loading.enabled = true
+                loading.visible = true
+            }
         }
 
         Connections {

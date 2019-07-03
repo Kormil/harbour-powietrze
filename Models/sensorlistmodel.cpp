@@ -46,17 +46,14 @@ QHash<int, QByteArray> SensorListModel::roleNames() const
 
 void SensorListModel::requestData(Connection *connection)
 {
-    if (!m_station && !m_station->sensorList())
-    {
+    if (!m_station)
         return;
-    }
-
-    if (m_station->sensorList() != nullptr && !m_station->sensorList()->shouldGetNewData(connection->frequency()))
-    {
-        return;
-    }
 
     connection->sensorListRequest(m_station->stationData().id, [=](SensorListPtr sensorList) {
+        if (!sensorList) {
+            return;
+        }
+
         m_station->setSensorList(std::move(sensorList));
 
         beginResetModel();

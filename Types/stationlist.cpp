@@ -118,7 +118,24 @@ Station* StationList::find(int stationId)
     return m_stations[index].get();
 }
 
-void StationList::findDistances(QGeoCoordinate coordinate)
+Station *StationList::findNearest()
+{
+    if (m_stations.size() == 0) {
+        return nullptr;
+    }
+
+    Station *nearest = m_stations.front().get();
+    for (auto& station: m_stations)
+    {
+        if (station->distance() && station->distance() < nearest->distance()) {
+            nearest = station.get();
+        }
+    }
+
+    return nearest;
+}
+
+void StationList::calculateDistances(QGeoCoordinate coordinate)
 {
     for (const auto& station: m_stations)
     {

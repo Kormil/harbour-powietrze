@@ -4,6 +4,8 @@ import Sailfish.Silica 1.0
 import StationListModel 1.0
 import ProvinceListModel 1.0
 
+import "../items"
+
 Page {
     id: selectStationPage
 
@@ -23,15 +25,8 @@ Page {
         header: PageHeader {
             title: qsTr("Select station")
         }
-        delegate: BackgroundItem {
-            id: delegate
 
-            Label {
-                x: Theme.horizontalPageMargin
-                text: model.description
-                anchors.verticalCenter: parent.verticalCenter
-                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-            }
+        delegate: StationItem {
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
                 stationListProxyModel.onItemClicked(index)

@@ -8,6 +8,7 @@
 #define FAVOURITE_STATIONS QStringLiteral("stations/favourite")
 #define LAST_VIEW_STATIONS QStringLiteral("stations/lastView")
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
+#define GPS_FREQUENCY QStringLiteral("gps/frequency")
 
 
 Settings::Settings(QObject *parent) :
@@ -37,17 +38,6 @@ void Settings::setUnitType(const unsigned short &value)
         m_settings->setValue(UNITS_TYPE, value);
         emit unitTypeChanged();
     }
-}
-
-StationData Settings::lastViewStation() const
-{
-    return m_settings->value(LAST_VIEW_STATIONS).value<StationData>();
-}
-
-void Settings::setLastViewStation(const StationData& stationData)
-{
-    m_settings->setValue(LAST_VIEW_STATIONS, QVariant::fromValue(stationData));
-    emit lastViewStationChanged();
 }
 
 QVariantList Settings::favouriteStationsData() const
@@ -126,6 +116,20 @@ QString Settings::license()
 QString Settings::version()
 {
     return "1.0";
+}
+
+void Settings::setGpsUpdateFrequency(unsigned short gpsFrequency)
+{
+    if (gpsUpdateFrequency() != gpsFrequency)
+    {
+        m_settings->setValue(GPS_FREQUENCY, gpsFrequency);
+        emit gpsUpdateFrequencyChanged();
+    }
+}
+
+unsigned short Settings::gpsUpdateFrequency()
+{
+    return m_settings->value(GPS_FREQUENCY, 3).toInt();
 }
 
 void Settings::bindToQml()

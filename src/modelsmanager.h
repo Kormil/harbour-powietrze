@@ -3,12 +3,11 @@
 
 #include <QTimer>
 #include "connection.h"
+#include "Models/stationlistmodel.h"
+#include "Models/provincelistmodel.h"
+#include "Models/sensorlistmodel.h"
 
 class QQuickView;
-
-class StationListModel;
-class SensorListModel;
-class ProvinceListModel;
 
 class ModelsManager
 {

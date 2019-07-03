@@ -42,24 +42,28 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Select station</source>
-        <translation>Wybierz stację</translation>
+        <source>About Powietrze</source>
+        <translation>O Powietrze</translation>
     </message>
     <message>
         <source>Settings</source>
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <source>Favourite</source>
-        <translation>Ulubione</translation>
-    </message>
-    <message>
-        <source>About Powietrze</source>
-        <translation>O Powietrze</translation>
+        <source>Select station</source>
+        <translation>Wybierz stację</translation>
     </message>
     <message>
         <source>Pull down to select stations</source>
         <translation>Przeciągnij w dół aby wybrać stację</translation>
+    </message>
+    <message>
+        <source>Nearest station</source>
+        <translation>Najbliższe stacje</translation>
+    </message>
+    <message>
+        <source>Favourite</source>
+        <translation>Ulubione</translation>
     </message>
 </context>
 <context>
@@ -108,6 +112,34 @@
     <message>
         <source>Milligram</source>
         <translation>Miligram</translation>
+    </message>
+    <message>
+        <source>GPS</source>
+        <translation>GPS</translation>
+    </message>
+    <message>
+        <source>Never</source>
+        <translation>Nigdy</translation>
+    </message>
+    <message>
+        <source>30 minutes</source>
+        <translation>30 minut</translation>
+    </message>
+    <message>
+        <source>1 hour</source>
+        <translation>1 godzina</translation>
+    </message>
+    <message>
+        <source>2 hours</source>
+        <translation>2 godziny</translation>
+    </message>
+    <message>
+        <source>4 hours</source>
+        <translation>4 godziny</translation>
+    </message>
+    <message>
+        <source>Update frequency</source>
+        <translation>Częstotliwość aktualizacji</translation>
     </message>
 </context>
 <context>

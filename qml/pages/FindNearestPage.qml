@@ -3,38 +3,18 @@ import Sailfish.Silica 1.0
 
 import StationListModel 1.0
 import QtPositioning 5.2
+import GPSModule 1.0
+
+import "../items"
 
 Page {
     property int count: 5
-    property int verticalAccuracy: 100
-    property int horizontalAccuracy: 100
 
     id: page
     allowedOrientations: Orientation.All
 
-    PositionSource {
-        id: positionSource
-        updateInterval: 1000
-        active: true
-    }
-
-    function findNearestStation() {
-        loading.visible = true
-
-        console.log("GPS: verticalAccuracy: " + positionSource.position.verticalAccuracy)
-        console.log("GPS: horizontalAccuracy: " + positionSource.position.horizontalAccuracy)
-
-        if (!positionSource.position.verticalAccuracyValid || positionSource.position.verticalAccuracy > verticalAccuracy)
-            return;
-
-        if (!positionSource.position.horizontalAccuracyValid || positionSource.position.horizontalAccuracy > horizontalAccuracy)
-            return;
-
-        if (stationListModel.findDistances(positionSource.position.coordinate)) {
-            stationListProxyModel.invalidate()
-            loading.visible = false
-            positionSource.stop()
-        }
+    Component.onCompleted: {
+        gps.requestPosition()
     }
 
     SilicaListView {
@@ -49,7 +29,7 @@ Page {
                 text: qsTr("Find more")
                 onClicked: {
                     count = count + 5
-                    findNearestStation()
+                    gps.requestPosition()
                 }
             }
         }
@@ -63,36 +43,14 @@ Page {
 
         model: StationListProxyModel {
             id: stationListProxyModel
-            favourites: false
             stationModel: stationListModel
             sort: SortStation.ByDistance
             limit: count
         }
 
-        delegate: BackgroundItem {
-            id: delegate
-            contentHeight: Theme.itemSizeSmall
-
-            Label {
-                id: nameLabel
-                text: model.description
-                anchors.left: parent.left
-                anchors.leftMargin: Theme.horizontalPageMargin
-                anchors.right: distanceLabel.left
-                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-                truncationMode: TruncationMode.Fade
-            }
-
-            Label {
-                id: distanceLabel
-                anchors.right: parent.right
-                anchors.rightMargin: Theme.horizontalPageMargin
-                anchors.leftMargin: Theme.horizontalPageMargin
-                text: model.distance + " km"
-                font.pixelSize: Theme.fontSizeExtraSmall
-                color: delegate.highlighted ? Theme.highlightColor : Theme.highlightColor
-            }
-
+        delegate: StationNearestItem {
+            name: model.description
+            distance: model.distance + " km"
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
                 stationListProxyModel.onItemClicked(index)
@@ -107,14 +65,22 @@ Page {
         indeterminate: true
         anchors.bottom: parent.bottom
         width: parent.width
+        visible: false
         label: qsTr("Wait for GPS")
     }
 
     Connections {
-        target: positionSource
-        onPositionChanged: {
-            findNearestStation()
+        target: gps
+        onPositionRequested: {
+            loading.visible = true
         }
-
     }
+
+    Connections {
+        target: stationListModel
+        onNearestStationFounded: {
+            loading.visible = false
+        }
+    }
+
 }
