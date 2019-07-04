@@ -77,8 +77,8 @@ Page {
     }
 
     Connections {
-        target: stationListModel
-        onNearestStationFounded: {
+        target: gps
+        onPositionFounded: {
             loading.visible = false
         }
     }

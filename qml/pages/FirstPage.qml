@@ -18,7 +18,7 @@ Page {
         }
 
         if (nearestStationEnabled)
-            gps.requestPosition();
+            stationListModel.findNearestStation()
     }
 
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
@@ -179,6 +179,7 @@ Page {
             {
                 nearestStationBusy.visible = true
                 nearestHeader.width = page.width - nearestStationBusy.widthWithMargins
+                nearestStation.visible = false
                 favouriteSection.anchors.top = nearestHeader.bottom
             }
         }
@@ -192,11 +193,15 @@ Page {
 
             if (nearestStationEnabled)
             {
+                nearestStation.visible = true
                 nearestStation.name = stationListModel.nearestStation.name
                 nearestStation.distance = stationListModel.nearestStation.distance + " km"
                 nearestIndexChangedConnetion.target = stationListModel.nearestStation
 
                 favouriteSection.anchors.top = nearestStation.bottom
+
+                if (stationListModel.nearestStation.stationIndex)
+                    nearestStation.index = stationListModel.nearestStation.stationIndex.name
             }
         }
     }

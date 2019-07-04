@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Nearest station</source>
-        <translation>Najbliższe stacje</translation>
+        <translation>Najbliższa stacja</translation>
     </message>
     <message>
         <source>Favourite</source>

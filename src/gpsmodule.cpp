@@ -34,8 +34,9 @@ void GPSModule::requestPosition()
         m_positionSource->startUpdates();
     else
     {
-        emit positionUpdated(m_positionSource->lastKnownPosition().coordinate());
-        emit positionFounded(m_positionSource->lastKnownPosition().coordinate());
+        m_lastKnowPosition = m_positionSource->lastKnownPosition().coordinate();
+        emit positionUpdated(m_lastKnowPosition);
+        emit positionFounded(m_lastKnowPosition);
     }
 }
 
@@ -53,7 +54,8 @@ void GPSModule::onPositionUpdate(const QGeoPositionInfo &positionInfo)
     {
         bool isPositionFounded = false;
 
-        if (positionInfo.coordinate().distanceTo(m_lastKnowPosition) < validPositionThreshold)
+        if (m_lastKnowPosition.isValid() &&
+                positionInfo.coordinate().distanceTo(m_lastKnowPosition) < validPositionThreshold)
         {
             isPositionFounded = true;
         }
@@ -71,6 +73,8 @@ void GPSModule::onPositionUpdate(const QGeoPositionInfo &positionInfo)
 
             emit positionUpdated(m_lastKnowPosition);
             emit positionFounded(m_lastKnowPosition);
+
+            std::cout << "GPS FOUNDED" << std::endl;
         } else {
             emit positionUpdated(positionInfo.coordinate());
         }
@@ -81,7 +85,13 @@ void GPSModule::onGpsUpdateFrequencyChanged()
 {
     int timerFrequency = frequencyFromSettings();
     if (timerFrequency) {
-        emit shouldRequest();
+
+        QDateTime currentTime = QDateTime::currentDateTime();
+        if (!m_timeLastKnowPosition.isValid() &&
+                currentTime >= m_timeLastKnowPosition.addSecs(timerFrequency * 60)) {
+            emit shouldRequest();
+        }
+
         m_timer.start(timerFrequency * 60 * 1000);
     } else {
         m_positionSource->stopUpdates();
