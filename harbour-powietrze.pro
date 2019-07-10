@@ -30,7 +30,8 @@ SOURCES += src/harbour-powietrze.cpp \
     Models/sensorlistmodel.cpp \
     src/settings.cpp \
     Types/stationdata.cpp \
-    src/gpsmodule.cpp
+    src/gpsmodule.cpp \
+    src/utils.cpp
 
 DISTFILES += \
     qml/cover/CoverPage.qml \
@@ -78,7 +79,8 @@ HEADERS += \
     Models/sensorlistmodel.h \
     src/settings.h \
     Types/stationdata.h \
-    src/gpsmodule.h
+    src/gpsmodule.h \
+    src/utils.h
 
 RESOURCES += \
     graphics.qrc

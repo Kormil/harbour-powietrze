@@ -160,7 +160,7 @@ void Connection::stationIndexRequest(const int& stationId, std::function<void (S
 
     if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(frequency()))
     {
-        handler(StationIndexPtr(nullptr));
+        handler(station->stationIndexPtr());
         return;
     }
 

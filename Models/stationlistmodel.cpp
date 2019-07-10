@@ -7,10 +7,12 @@
 #include "src/modelsmanager.h"
 #include "src/settings.h"
 #include "src/gpsmodule.h"
+#include "src/utils.h"
 
 StationListModel::StationListModel(QObject *parent)
     : QAbstractListModel(parent),
       m_nearestStation(nullptr),
+      m_beforeNearestStation(nullptr),
       m_stationList(nullptr)
 {
     QObject::connect(GPSModule::instance(), &GPSModule::shouldRequest, this, &StationListModel::findNearestStation);
@@ -142,11 +144,37 @@ void StationListModel::requestStationIndexData(Station *station)
     m_connection->stationIndexRequest(station->id(), [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
         {
-            int row = m_stationList->row(station->id());
-            station->setStationIndex(std::move(stationIndex));
-            station->stationIndex()->setDateToCurent();
+            if (m_nearestStation && station->id() == m_nearestStation->id())
+            {
+                Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
 
-            emit dataChanged(index(row), index(row), {IndexRole});
+                if (settings->notifications() && m_beforeNearestStation && m_beforeNearestStation->stationIndex())
+                {
+                    if (m_beforeNearestStation->stationIndex()->id() == -1 || stationIndex->id() == -1)
+                        return;
+
+                    if (m_beforeNearestStation->stationIndex()->id() < stationIndex->id())
+                    {
+                        Utils::SimpleNotification(tr("Nearest station"),
+                                                  tr("Air pollution in your neighbour is getting worse: ").append(stationIndex->name()));
+                    }
+                    else if (m_beforeNearestStation->stationIndex()->id() > stationIndex->id())
+                    {
+                        Utils::SimpleNotification(tr("Nearest station"),
+                                                  tr("Air pollution in your neighbour is getting better: ").append(stationIndex->name()));
+                    }
+                }
+            }
+
+            if (stationIndex != station->stationIndexPtr())
+            {
+                int row = m_stationList->row(station->id());
+                station->setStationIndex(std::move(stationIndex));
+                station->stationIndex()->setDateToCurent();
+
+                emit dataChanged(index(row), index(row), {IndexRole});
+            }
+
         } else {
             emit station->stationIndexChanged();
         }
@@ -291,6 +319,7 @@ void StationListModel::findNearestStation()
 
 void StationListModel::getIndexForFavourites()
 {
+    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
     std::vector<int> favourites = m_stationList->favouriteIds();
 
     m_indexesToDownload = favourites.size();
@@ -313,6 +342,24 @@ void StationListModel::getIndexForFavourites()
                 return;
             }
 
+            if (settings->notifications())
+            {
+                if (station->stationIndex()) {
+
+                    if (m_beforeNearestStation->stationIndex()->id() == -1 || stationIndex->id() == -1)
+                        return;
+
+                    if (station->stationIndex()->id() < stationIndex->id()) {
+                        Utils::SimpleNotification(station->name(),
+                                                  tr("Air pollution is getting worse: ").append(stationIndex->name()));
+                    }
+                    else if (station->stationIndex()->id() > stationIndex->id()) {
+                        Utils::SimpleNotification(station->name(),
+                                                  tr("Air pollution is getting better: ").append(stationIndex->name()));
+                    }
+                }
+            }
+
             int row = m_stationList->row(station->id());
             station->setStationIndex(std::move(stationIndex));
             station->stationIndex()->setDateToCurent();
@@ -328,6 +375,7 @@ void StationListModel::setNearestStation(Station *nearestStation)
         return;
     }
 
+    m_beforeNearestStation = m_nearestStation;
     m_nearestStation = nearestStation;
     requestStationIndexData(m_nearestStation);
     emit nearestStationFounded();

@@ -87,6 +87,11 @@ StationIndex *Station::stationIndex() const
     return m_stationIndex.get();
 }
 
+StationIndexPtr Station::stationIndexPtr() const
+{
+    return m_stationIndex;
+}
+
 void Station::setStationIndex(StationIndexPtr stationIndex)
 {
     m_stationIndex = std::move(stationIndex);

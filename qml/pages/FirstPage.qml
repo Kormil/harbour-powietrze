@@ -210,7 +210,8 @@ Page {
         id: nearestIndexChangedConnetion
         target: stationListModel.nearestStation
         onStationIndexChanged: {
-            nearestStation.index = stationListModel.nearestStation.stationIndex.name
+            if (stationListModel.nearestStation.stationIndex)
+                nearestStation.index = stationListModel.nearestStation.stationIndex.name
         }
     }
 

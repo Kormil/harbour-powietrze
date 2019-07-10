@@ -141,6 +141,10 @@
         <source>Update frequency</source>
         <translation>Częstotliwość aktualizacji</translation>
     </message>
+    <message>
+        <source>Notifications</source>
+        <translation>Powiadomienia</translation>
+    </message>
 </context>
 <context>
     <name>StationInfoPage</name>

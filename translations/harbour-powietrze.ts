@@ -141,6 +141,10 @@
         <source>Update frequency</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>StationInfoPage</name>

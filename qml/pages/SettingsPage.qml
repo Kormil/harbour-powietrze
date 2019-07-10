@@ -18,21 +18,26 @@ Page {
             title: qsTr("Settings")
         }
 
-            ComboBox {
-                width: page.width
-                label: qsTr("Units type")
-                currentIndex: Settings.unitType
+        TextSwitch {
+            text: qsTr("Notifications")
+            checked: Settings.notifications
+        }
 
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("Microgram") }
-                    MenuItem { text: qsTr("Milligram") }
-                }
 
-                onCurrentIndexChanged: {
-                    Settings.unitType = currentIndex
-                }
+        ComboBox {
+            width: page.width
+            label: qsTr("Units type")
+            currentIndex: Settings.unitType
+
+            menu: ContextMenu {
+                MenuItem { text: qsTr("Microgram") }
+                MenuItem { text: qsTr("Milligram") }
             }
 
+            onCurrentIndexChanged: {
+                Settings.unitType = currentIndex
+            }
+        }
 
         SectionHeader {
             id: favouriteSection

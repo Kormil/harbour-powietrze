@@ -6,7 +6,7 @@
 
 #define UNITS_TYPE QStringLiteral("units/type")
 #define FAVOURITE_STATIONS QStringLiteral("stations/favourite")
-#define LAST_VIEW_STATIONS QStringLiteral("stations/lastView")
+#define NOTIFICATIONS_STATIONS QStringLiteral("stations/notifications")
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
 #define GPS_FREQUENCY QStringLiteral("gps/frequency")
 
@@ -124,6 +124,20 @@ void Settings::setGpsUpdateFrequency(unsigned short gpsFrequency)
     {
         m_settings->setValue(GPS_FREQUENCY, gpsFrequency);
         emit gpsUpdateFrequencyChanged();
+    }
+}
+
+bool Settings::notifications() const
+{
+    return m_settings->value(NOTIFICATIONS_STATIONS, true).toBool();
+}
+
+void Settings::setNotifications(const bool &value)
+{
+    if (notifications() != value)
+    {
+        m_settings->setValue(NOTIFICATIONS_STATIONS, value);
+        emit notificationsChanged();
     }
 }
 

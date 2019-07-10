@@ -140,6 +140,7 @@ private:
     Connection *m_connection;
     Station* m_selectedItem;
     Station* m_nearestStation;
+    Station* m_beforeNearestStation;
     StationListPtr m_stationList;
 
     SensorListModel* m_sensorListModel;

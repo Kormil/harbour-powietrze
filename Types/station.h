@@ -12,7 +12,7 @@ class Station;
 class StationIndex;
 
 using StationPtr = std::shared_ptr<Station>;
-using StationIndexPtr = std::unique_ptr<StationIndex>;
+using StationIndexPtr = std::shared_ptr<StationIndex>;
 
 struct StationIndex : public QObject
 {
@@ -61,6 +61,7 @@ public:
     virtual ~Station() = default;
 
     StationIndex* stationIndex() const;
+    StationIndexPtr stationIndexPtr() const;
     void setStationIndex(StationIndexPtr stationIndex);
     static void bindToQml(QQuickView *view);
 
