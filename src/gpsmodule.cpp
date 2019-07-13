@@ -5,9 +5,9 @@
 #include "settings.h"
 
 namespace {
-    const int firstAccuracyThreshold = 200; //in meters
-    const int secondAccuracyThreshold = 75; //in meters
-    const int validPositionThreshold = 50; //in meters
+    const int firstAccuracyThreshold = 256; //in meters
+    const int secondAccuracyThreshold = 80; //in meters
+    const int validPositionThreshold = 64; //in meters
 }
 
 GPSModule *GPSModule::instance()
@@ -24,6 +24,7 @@ void GPSModule::bindToQml(QQuickView *view)
 
 void GPSModule::requestPosition()
 {
+    std::cout << "GPS REQUEST" << std::endl;
     if (!m_positionSource)
         return;
 
@@ -121,7 +122,10 @@ GPSModule::GPSModule(QObject *parent) :
 {
     init();
 
-    QObject::connect(&m_timer, &QTimer::timeout, this, &GPSModule::shouldRequest);
+    QObject::connect(&m_timer, &QTimer::timeout, [this]() {
+        std::cout << "GPS TIMER:" << QTime::currentTime().toString().toStdString() << std::endl;
+        emit shouldRequest();
+    });
 }
 
 int GPSModule::frequencyFromSettings()

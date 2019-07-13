@@ -18,12 +18,6 @@ Page {
             title: qsTr("Settings")
         }
 
-        TextSwitch {
-            text: qsTr("Notifications")
-            checked: Settings.notifications
-        }
-
-
         ComboBox {
             width: page.width
             label: qsTr("Units type")
@@ -37,6 +31,11 @@ Page {
             onCurrentIndexChanged: {
                 Settings.unitType = currentIndex
             }
+        }
+
+        TextSwitch {
+            text: qsTr("Notifications")
+            checked: Settings.notifications
         }
 
         SectionHeader {
@@ -56,6 +55,8 @@ Page {
                     MenuItem { text: qsTr("2 hours") }
                     MenuItem { text: qsTr("4 hours") }
                 }
+
+                description: qsTr("Works only with the screen on. If the screen is off, the program will automatically look for the nearest station after turning the screen on.")
 
                 onCurrentIndexChanged: {
                     Settings.gpsUpdateFrequency = currentIndex

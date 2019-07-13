@@ -96,6 +96,13 @@
     </message>
 </context>
 <context>
+    <name>SensorListModel</name>
+    <message>
+        <source>brak danych</source>
+        <translation>brak danych</translation>
+    </message>
+</context>
+<context>
     <name>SettingsPage</name>
     <message>
         <source>Settings</source>
@@ -145,6 +152,10 @@
         <source>Notifications</source>
         <translation>Powiadomienia</translation>
     </message>
+    <message>
+        <source>Works only with the screen on. If the screen is off, the program will automatically look for the nearest station after turning the screen on.</source>
+        <translation>Działa tylko przy włączonym ekranie. Jeżeli ekran będzie zgaszony, program wyszuka najbliższą stację po ponownym włączeniu ekranu.</translation>
+    </message>
 </context>
 <context>
     <name>StationInfoPage</name>
@@ -159,6 +170,36 @@
     <message>
         <source>Data by powietrze.gios.gov.pl</source>
         <translation>Dane od powietrze.gios.gov.pl</translation>
+    </message>
+</context>
+<context>
+    <name>StationList</name>
+    <message>
+        <source>OTHER</source>
+        <translation>INNE</translation>
+    </message>
+</context>
+<context>
+    <name>StationListModel</name>
+    <message>
+        <source>Nearest station</source>
+        <translation>Najbliższa stacja</translation>
+    </message>
+    <message>
+        <source>Air pollution in your neighbour is getting worse: </source>
+        <translation>Jakość powietrza w okolicy pogarsza się: </translation>
+    </message>
+    <message>
+        <source>Air pollution in your neighbour is getting better: </source>
+        <translation>Jakość powietrza w okolicy poprawia się: </translation>
+    </message>
+    <message>
+        <source>Air pollution is getting worse: </source>
+        <translation>Jakość powietrza pogarsza się: </translation>
+    </message>
+    <message>
+        <source>Air pollution is getting better: </source>
+        <translation>Jakość powietrza poprawia się: </translation>
     </message>
 </context>
 </TS>
