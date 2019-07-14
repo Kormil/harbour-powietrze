@@ -8,10 +8,6 @@
         <translation>O</translation>
     </message>
     <message>
-        <source>version 1.0</source>
-        <translation>Wersja 1.0</translation>
-    </message>
-    <message>
         <source>Application for checking the current state of air quality.</source>
         <translation>Aplikacja do sprawdzania aktualnego stanu powietrza.</translation>
     </message>
@@ -22,6 +18,10 @@
     <message>
         <source>Source code</source>
         <translation>Kod źródłowy</translation>
+    </message>
+    <message>
+        <source>version</source>
+        <translation>Wersja</translation>
     </message>
 </context>
 <context>

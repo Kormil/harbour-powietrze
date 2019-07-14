@@ -59,13 +59,43 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 
 # to disable building translations every time, comment out the
 # following CONFIG line
-CONFIG += sailfishapp_i18n
+#CONFIG += sailfishapp_i18n \
+#    sailfishapp_i18n_idbased \
+#    sailfishapp_i18n_unfinished
 
 # German translation is enabled as an example. If you aren't
 # planning to localize your app, remember to comment out the
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
-TRANSLATIONS += translations/harbour-powietrze-pl.ts
+TRANSLATIONS += translations/harbour-powietrze.ts \
+                translations/harbour-powietrze-pl.ts
+
+# translations
+TS_FILE = $$OUT_PWD/translations/$${TARGET}*.ts
+EE_QM = $$OUT_PWD/translations/
+
+ts.commands += lupdate $$PWD -ts $$TS_FILE
+ts.CONFIG += no_check_exist
+ts.output = $$TS_FILE
+ts.input = .
+
+ts_install.files = $$TS_FILE
+ts_install.path = /usr/share/translations/source
+ts_install.CONFIG += no_check_exist
+
+transaltions_files.commands += lrelease $$TS_FILE
+transaltions_files.CONFIG += no_check_exist
+transaltions_files.depends = ts
+transaltions_files.input = $$TS_FILE
+transaltions_files.output = $$EE_QM
+
+transaltions_files_install.path = /usr/share/$${TARGET}/translations
+transaltions_files_install.files = $$OUT_PWD/translations/*.qm
+transaltions_files_install.CONFIG += no_check_exist
+
+QMAKE_EXTRA_TARGETS += ts transaltions_files
+PRE_TARGETDEPS += ts transaltions_files
+INSTALLS += ts_install transaltions_files_install
 
 HEADERS += \
     Types/stationlist.h \
@@ -90,7 +120,7 @@ license.files = LICENSE
 license.path = /usr/share/$${TARGET}
 INSTALLS += license
 
-OTHER_FILES += nmea/*
-nmea.files = nmea/*.nmea
-nmea.path = /usr/share/$$TARGET/nmea
-INSTALLS += nmea
+#OTHER_FILES += nmea/*
+#nmea.files = nmea/*.nmea
+#nmea.path = /usr/share/$$TARGET/nmea
+#INSTALLS += nmea
