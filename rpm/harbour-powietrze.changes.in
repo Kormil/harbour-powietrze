@@ -12,5 +12,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Jul 13 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.1.0-1
+- Added list of nearest stations
+- Added nearest station to main screen of app
+- Added initial notifications for favourites and nearest stations
+- Minor bug fixes
+
 * Sat Jun 01 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.0.0-1
 - Initial release

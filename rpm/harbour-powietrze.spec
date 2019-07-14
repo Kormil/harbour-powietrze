@@ -13,11 +13,11 @@ Name:       harbour-powietrze
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Application for checking the current state of air quality in Poland.
-Version:    1.0
+Version:    1.1.0
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
-URL:        http://example.org/
+URL:        https://github.com/Kormil/harbour-powietrze
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-powietrze.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9

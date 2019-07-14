@@ -1,11 +1,11 @@
 ﻿Name: harbour-powietrze
 Summary: Application for checking the current state of air quality in Poland.
-Version: 1.0
+Version: 1.1.0
 Release: 1
 # The contents of the Group field should be one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group: Qt/Qt
-URL: http://example.org/
+URL: https://github.com/Kormil/harbour-powietrze
 License: LICENSE
 # This must be generated before uploading a package to a remote build service.
 # Usually this line does not need to be modified.
