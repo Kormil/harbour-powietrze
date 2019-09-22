@@ -13,6 +13,7 @@ struct StationData
     QString cityName;
     QString street;
     QGeoCoordinate coordinate;
+    int provider;
 };
 
 QDataStream& operator<<(QDataStream& out, const StationData& v);

@@ -2,10 +2,15 @@
 #define MODELSMANAGER_H
 
 #include <QTimer>
-#include "connection.h"
+#include "connection/connection.h"
+#include "connection/powietrzeconnection.h"
+#include "connection/openaqconnection.h"
 #include "Models/stationlistmodel.h"
 #include "Models/provincelistmodel.h"
 #include "Models/sensorlistmodel.h"
+#include "Models/countrylistmodel.h"
+#include "Models/providerlistmodel.h"
+#include "Models/airqualityindexmodel.h"
 
 class QQuickView;
 
@@ -24,13 +29,18 @@ public:
     StationListModel *stationListModel() const;
     SensorListModel *sensorListModel() const;
     ProvinceListModel *provinceListModel() const;
+    CountryListModel *countryListModel() const;
+    ProviderListModel *providerListModel() const;
+    AirQualityIndexModel *airQualityIndexModel() const;
 
 private:
-    Connection m_connection;
     QTimer m_timer;
     StationListModel * m_stationListModel;
     SensorListModel * m_sensorListModel;
     ProvinceListModel * m_provinceListModel;
+    CountryListModel * m_countryListModel;
+    ProviderListModel * m_providerListModel;
+    AirQualityIndexModel * m_airQualityIndexModel;
 
 };
 

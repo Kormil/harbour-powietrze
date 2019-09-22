@@ -48,8 +48,7 @@ Page {
             MenuItem {
                 text: qsTr("Select station")
                 onClicked: {
-                    stationListModel.requestStationListData()
-                    pageStack.push(Qt.resolvedUrl("SelectProvincePage.qml"))
+                    pageStack.push(Qt.resolvedUrl("SelectProviderPage.qml"))
                 }
             }
         }

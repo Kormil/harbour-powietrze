@@ -9,6 +9,7 @@
 
 #include "settings.h"
 #include "modelsmanager.h"
+#include "providersmanager.h"
 #include "gpsmodule.h"
 
 int main(int argc, char *argv[])
@@ -29,6 +30,10 @@ int main(int argc, char *argv[])
     ModelsManager modelsManager;
     modelsManager.createModels();
     modelsManager.bindToQml(view);
+
+    ProvidersManager* providersManager = ProvidersManager::instance();
+    providersManager->createConenctions(&modelsManager);
+    providersManager->createProviders();
 
     GPSModule::bindToQml(view);
     Settings::bindToQml();

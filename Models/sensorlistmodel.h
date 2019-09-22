@@ -4,8 +4,10 @@
 #include <QAbstractItemModel>
 #include "Types/sensorlist.h"
 
-class Connection;
+class ModelsManager;
 class Station;
+
+using StationPtr = std::shared_ptr<Station>;
 
 class SensorListModel : public QAbstractListModel
 {
@@ -30,17 +32,18 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-    void requestData(Connection *connection);
+    void requestData();
 
     void setSensorList(SensorList *sensorList);
     int rowCount(const QModelIndex &parent) const;
-    void setStation(Station *station);
-
-    void setConnection(Connection *value);
+    void setStation(StationPtr station);
 
     float unitsConverter(UnitsType from, UnitsType to, float value) const;
+    void setModelsManager(ModelsManager *modelsManager);
+
+    void setSensorList(SensorListPtr sensorList, StationPtr station);
 private:
-    void requestSensorData(Connection *connection);
+    void requestSensorData();
     void connectModel();
 
 signals:
@@ -48,8 +51,8 @@ signals:
 
 
 private:
-    Connection *m_connection;
-    Station* m_station;
+    ModelsManager *m_modelsManager;
+    StationPtr m_station;
 };
 
 #endif // SENSORLISTMODEL_H

@@ -5,45 +5,12 @@
 #include <memory>
 #include "sensorlist.h"
 #include "stationdata.h"
+#include "stationindex.h"
 
 class QQuickView;
 
 class Station;
-class StationIndex;
-
 using StationPtr = std::shared_ptr<Station>;
-using StationIndexPtr = std::shared_ptr<StationIndex>;
-
-struct StationIndex : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(int id READ id NOTIFY idChanged)
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-public:
-
-    int id() const;
-    QString name() const;
-
-    static StationIndexPtr getFromJson(const QJsonDocument &jsonDocument);
-    static void bindToQml(QQuickView * view);
-
-    void setId(int id);
-    void setName(const QString &name);
-
-    bool shouldGetNewData(int frequency);
-    void setDateToCurent();
-    void setStation(Station *station);
-
-signals:
-    void idChanged();
-    void nameChanged();
-
-private:
-    int m_id = -1;
-    QString m_name;
-    Station* m_station;
-    QDateTime m_date;
-};
 
 class Station : public QObject
 {
@@ -65,8 +32,8 @@ public:
     void setStationIndex(StationIndexPtr stationIndex);
     static void bindToQml(QQuickView *view);
 
-    SensorList *sensorList();
-    void setSensorList(SensorListPtr thissensorList);
+    SensorListPtr sensorList();
+    void setSensorList(SensorListPtr sensorList);
 
     int id() const;
     QString name() const;
@@ -84,6 +51,12 @@ public:
     double distance() const;
     void setDistance(double distance);
     QString distanceString() const;
+
+    int provider() const;
+
+    unsigned int hash() const {
+        return qHash(name() % QString(m_stationData.provider));
+    }
 
 signals:
     void stationIndexChanged();

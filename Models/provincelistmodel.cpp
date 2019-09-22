@@ -1,14 +1,12 @@
 #include "provincelistmodel.h"
 #include "stationlistmodel.h"
 #include "src/modelsmanager.h"
-#include "src/connection.h"
 
 #include <QtQml>
 
 ProvinceListModel::ProvinceListModel(QObject *parent)
     : QAbstractListModel(parent),
-      m_provinceList(nullptr),
-      m_stationListModel(nullptr)
+      m_provinceList(nullptr)
 {
 }
 
@@ -25,7 +23,7 @@ QVariant ProvinceListModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || m_provinceList == nullptr)
         return QVariant();
 
-    const ProvinceItem* province = m_provinceList->provinceItems().at(index.row()).get();
+    const ProvinceItemPtr province = m_provinceList->get(index.row());
     switch (role)
     {
     case Qt::DisplayRole:
@@ -34,6 +32,12 @@ QVariant ProvinceListModel::data(const QModelIndex &index, int role) const
         name[0] = name[0].toUpper();
         return QVariant(name);
     }
+    case CountryCodeRole:
+    {
+        return QVariant(province->countryCode);
+    }
+    case ProviderRole:
+        return QVariant(province->provider);
     }
 
     return QVariant();
@@ -43,22 +47,20 @@ QHash<int, QByteArray> ProvinceListModel::roleNames() const
 {
     QHash<int, QByteArray> names;
     names[Qt::DisplayRole] = "name";
+    names[CountryCodeRole] = "countryCode";
+    names[ProviderRole] = "provider";
     return names;
-}
-
-void ProvinceListModel::setModels(ModelsManager *modelsManager)
-{
-    setStationListModel(modelsManager->stationListModel());
 }
 
 void ProvinceListModel::setProvinceList(ProvinceListPtr provinceList)
 {
     beginResetModel();
 
-    if (m_provinceList)
+    if (m_provinceList) {
         m_provinceList->disconnect(this);
+    }
 
-    m_provinceList = std::move(provinceList);
+    m_provinceList = provinceList;
 
     if (m_provinceList)
     {
@@ -73,27 +75,11 @@ void ProvinceListModel::setProvinceList(ProvinceListPtr provinceList)
     }
 
     endResetModel();
-}
-
-void ProvinceListModel::setStationListModel(StationListModel *value)
-{
-    m_stationListModel = value;
-    connect(m_stationListModel, &StationListModel::stationListLoaded, this, &ProvinceListModel::onStationListModelLoaded);
+    emit provinceLoaded();
 }
 
 void ProvinceListModel::onStationListModelLoaded()
 {
-    ProvinceListPtr provinceList(new ProvinceList());
-    std::vector<QString> provinceNames = m_stationListModel->provinceNames();
-
-    for (const auto& name: provinceNames)
-    {
-        ProvinceItem item;
-        item.name = name;
-        provinceList->append( item );
-    }
-
-    setProvinceList(std::move(provinceList));
     emit provinceLoaded();
 }
 
@@ -101,7 +87,7 @@ void ProvinceListModel::onItemClicked(int index)
 {
     if (index != -1)
     {
-        m_selectedItem = m_provinceList->get(index);
+        m_selectedItem = m_provinceList->get(index).get();
     }
     else
     {
@@ -122,4 +108,120 @@ QString ProvinceListModel::selectedProvinceName() const
         return m_selectedItem->name;
 
     return QStringLiteral("");
+}
+
+void ProvinceListModel::requestProvinceList()
+{
+    emit provinceListRequested();
+
+    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection;
+    connection->provinceListRequest([this](ProvinceListPtr provinceList) {
+        if (!provinceList) {
+            emit provinceLoaded();
+            return ;
+        }
+
+        if (m_provinceList) {
+            m_provinceList->appendList(provinceList);
+        }
+        else {
+            setProvinceList(provinceList);
+        }
+    });
+}
+
+void ProvinceListModel::setModelsManager(ModelsManager *modelsManager)
+{
+    m_modelsManager = modelsManager;
+
+    connect(m_modelsManager->stationListModel(), &StationListModel::stationListLoaded,
+            this, &ProvinceListModel::onStationListModelLoaded);
+}
+
+
+ProvinceListProxyModel::ProvinceListProxyModel(QObject *parent) :
+    QSortFilterProxyModel(parent)
+{
+
+}
+
+void ProvinceListProxyModel::setCountryFilter(const QString &countryFilter)
+{
+    m_countryFilter = countryFilter;
+    invalidateFilter();
+}
+
+void ProvinceListProxyModel::bindToQml()
+{
+    qmlRegisterType<ProvinceListProxyModel>("ProvinceListModel", 1, 0, "ProvinceListProxyModel");
+}
+
+bool ProvinceListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    Q_UNUSED(source_parent);
+
+    int providerId = sourceModel()->index(source_row, 0).data(ProvinceListModel::ProviderRole).toInt();
+    if (providerId != m_providerFilter) {
+        return false;
+    }
+
+    QString countryCode = sourceModel()->index(source_row, 0).data(ProvinceListModel::CountryCodeRole).toString();
+    if (!m_countryFilter.isEmpty() && countryCode != m_countryFilter)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool ProvinceListProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+{
+    QVariant leftData = sourceModel()->data(source_left);
+    QVariant rightData = sourceModel()->data(source_right);
+
+    return QString::localeAwareCompare(leftData.toString(), rightData.toString()) < 0;
+}
+
+int ProvinceListProxyModel::rowCount(const QModelIndex &parent) const
+{
+    return QSortFilterProxyModel::rowCount(parent);
+}
+
+int ProvinceListProxyModel::provider() const
+{
+    return m_providerFilter;
+}
+
+void ProvinceListProxyModel::setProvider(int providerFilter)
+{
+    m_providerFilter = providerFilter;
+    invalidateFilter();
+}
+
+QString ProvinceListProxyModel::countryFilter() const
+{
+    return m_countryFilter;
+}
+
+ProvinceListModel *ProvinceListProxyModel::provinceListModel() const
+{
+    return m_provinceListModel;
+}
+
+void ProvinceListProxyModel::setProvinceListModel(ProvinceListModel *provinceListModel)
+{
+    m_provinceListModel = provinceListModel;
+
+    setSourceModel(m_provinceListModel);
+    invalidateFilter();
+    sort(0);
+}
+
+void ProvinceListProxyModel::onItemClicked(int index)
+{
+    if (!m_provinceListModel)
+        return;
+
+    QModelIndex modelIndex = mapToSource(this->index(index, 0));
+    m_provinceListModel->onItemClicked(modelIndex.row());
 }

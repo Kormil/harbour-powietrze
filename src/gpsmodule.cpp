@@ -84,16 +84,16 @@ void GPSModule::onPositionUpdate(const QGeoPositionInfo &positionInfo)
 
 void GPSModule::onGpsUpdateFrequencyChanged()
 {
-    int timerFrequency = frequencyFromSettings();
-    if (timerFrequency) {
+    m_timerFrequency = frequencyFromSettings() * 60;
+    if (m_timerFrequency) {
 
         QDateTime currentTime = QDateTime::currentDateTime();
         if (!m_timeLastKnowPosition.isValid() &&
-                currentTime >= m_timeLastKnowPosition.addSecs(timerFrequency * 60)) {
+                currentTime >= m_timeLastKnowPosition.addSecs(m_timerFrequency)) {
             emit shouldRequest();
         }
 
-        m_timer.start(timerFrequency * 60 * 1000);
+        m_timer.start(60 * 1000);
     } else {
         m_positionSource->stopUpdates();
 
@@ -123,8 +123,8 @@ GPSModule::GPSModule(QObject *parent) :
     init();
 
     QObject::connect(&m_timer, &QTimer::timeout, [this]() {
-        std::cout << "GPS TIMER:" << QTime::currentTime().toString().toStdString() << std::endl;
-        emit shouldRequest();
+        if (QDateTime::currentDateTime() >= m_timeLastKnowPosition.addSecs(m_timerFrequency))
+            emit shouldRequest();
     });
 }
 
@@ -144,19 +144,24 @@ int GPSModule::frequencyFromSettings()
     return 0;
 }
 
+QGeoCoordinate GPSModule::lastKnowPosition() const
+{
+    return m_lastKnowPosition;
+}
+
 void GPSModule::init()
 {
-    m_minimumRequestIntervalInSec = 300; //five minutes
+//    m_minimumRequestIntervalInSec = 300; //five minutes
 
-    m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
+//    m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
 
-    QObject::connect(m_positionSource, &QNmeaPositionInfoSource::positionUpdated, this, &GPSModule::onPositionUpdate);
-    QObject::connect(m_positionSource, &QNmeaPositionInfoSource::updateTimeout, this, &GPSModule::onUpdateTimeout);
+//    QObject::connect(m_positionSource, &QGeoPositionInfoSource::positionUpdated, this, &GPSModule::onPositionUpdate);
+//    QObject::connect(m_positionSource, &QGeoPositionInfoSource::updateTimeout, this, &GPSModule::onUpdateTimeout);
 
-    m_positionSource->setUpdateInterval(1000);
+//    m_positionSource->setUpdateInterval(1000);
 
-    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-    QObject::connect(settings, &Settings::gpsUpdateFrequencyChanged, this, &GPSModule::onGpsUpdateFrequencyChanged);
+//    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+//    QObject::connect(settings, &Settings::gpsUpdateFrequencyChanged, this, &GPSModule::onGpsUpdateFrequencyChanged);
 
-    onGpsUpdateFrequencyChanged();
+//    onGpsUpdateFrequencyChanged();
 }

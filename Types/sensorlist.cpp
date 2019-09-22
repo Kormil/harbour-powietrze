@@ -14,62 +14,50 @@ std::vector<SensorData> SensorList::sensors() const
     return m_sensors;
 }
 
-SensorListPtr SensorList::getSensorsFromJson(const QJsonDocument &jsonDocument)
-{
-    if (jsonDocument.isNull())
-        return SensorListPtr(nullptr);
-
-    SensorListPtr sensorList(new SensorList());
-
-    QJsonArray array = jsonDocument.array();
-
-    for (const auto& sensor: array)
-    {
-        SensorData sensorData;
-
-        sensorData.id = sensor.toObject()["id"].toInt();
-        sensorData.name = sensor.toObject()["param"].toObject()["paramName"].toString();
-
-        sensorList->m_sensors.push_back(sensorData);
-    }
-
-    return std::move(sensorList);
-}
-
-float SensorList::getSensorDataFromJson(const QJsonDocument &jsonDocument)
-{
-    QJsonArray array = jsonDocument.object()["values"].toArray();
-
-    for (const auto& sensor: array)
-    {
-        if (sensor.toObject()["value"].isNull())
-            continue;
-
-        float value = sensor.toObject()["value"].toDouble();
-        return value;
-    }
-
-    return 0.0f;
-}
-
 size_t SensorList::size() const
 {
     return m_sensors.size();
 }
 
-void SensorList::setValue(int id, float value)
+bool SensorList::isAll()
 {
-    auto it = std::find_if(m_sensors.begin(), m_sensors.end(), [id](const SensorData& sensorData) {
-        return sensorData.id == id;
+    bool allDone = true;
+    for (const auto& sensor: m_sensors) {
+        if (!sensor.isInitialized()) {
+            allDone = false;
+            break;
+        }
+    }
+
+    return allDone;
+}
+
+void SensorList::setData(SensorData sensorData)
+{
+    if (sensorData.id.isNull() || sensorData.name.isEmpty())
+        return;
+
+    auto sensorIt = std::find_if(m_sensors.begin(), m_sensors.end(), [&sensorData](const SensorData& b) {
+        if (sensorData.name == b.name)
+            return true;
+
+        return false;
     });
 
-    int index = std::distance(m_sensors.begin(), it);
+    int index;
 
-    if (it != m_sensors.end())
-    {
-        it->value = value;
-        emit valueChanged(index);
+    if (sensorIt == m_sensors.end()) {
+        index = m_sensors.size();
+        m_sensors.push_back(sensorData);
+    } else {
+        index = std::distance(m_sensors.begin(), sensorIt);
+        *sensorIt = sensorData;
     }
+
+    emit valueChanged(index);
+
+    if (isAll())
+        emit allLoaded();
 }
 
 void SensorList::setStation(Station *value)
@@ -91,7 +79,26 @@ bool SensorList::shouldGetNewData(int frequency)
     return currentTime > nextDataTime;
 }
 
-void SensorList::setDateToCurent()
+void SensorList::setDateToCurrent()
 {
     m_date = QDateTime::currentDateTime();
+}
+
+void SensorList::waitForAll()
+{
+    for (const auto& sensor: m_sensors) {
+        while (!sensor.isInitialized()) {}
+    }
+}
+
+void SensorData::setValues(int value)
+{
+    values.push_back(value);
+    initialized = true;
+}
+
+void SensorData::setValues(const std::vector<float> &value)
+{
+    values = value;
+    initialized = true;
 }

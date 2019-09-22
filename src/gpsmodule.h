@@ -21,6 +21,8 @@ public:
     Q_INVOKABLE void requestPosition();
     void init();
 
+    QGeoCoordinate lastKnowPosition() const;
+
 private slots:
     void onPositionUpdate(const QGeoPositionInfo& positionInfo);
     void onGpsUpdateFrequencyChanged();
@@ -43,6 +45,7 @@ private:
     QTimer m_timer;
 
     int m_minimumRequestIntervalInSec;
+    int m_timerFrequency;
 };
 
 #endif // GPSMODULE_H

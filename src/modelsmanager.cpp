@@ -7,7 +7,6 @@
 #include "src/settings.h"
 
 ModelsManager::ModelsManager() :
-    m_connection(this),
     m_stationListModel(nullptr),
     m_sensorListModel(nullptr),
     m_provinceListModel(nullptr)
@@ -27,12 +26,15 @@ void ModelsManager::createModels()
     m_stationListModel = new StationListModel();
     m_provinceListModel = new ProvinceListModel();
     m_sensorListModel = new SensorListModel();
+    m_countryListModel = new CountryListModel();
+    m_providerListModel = new ProviderListModel();
+    m_airQualityIndexModel = new AirQualityIndexModel();
 
-    m_provinceListModel->setModels(this);
-    m_stationListModel->setModels(this);
-
-    m_sensorListModel->setConnection(&m_connection);
-    m_stationListModel->setConnection(&m_connection);
+    m_airQualityIndexModel->setModelsManager(this);
+    m_stationListModel->setModelsManager(this);
+    m_provinceListModel->setModelsManager(this);
+    m_sensorListModel->setModelsManager(this);
+    m_countryListModel->setModelsManager(this);
 }
 
 void ModelsManager::deleteModels()
@@ -40,18 +42,28 @@ void ModelsManager::deleteModels()
     delete m_stationListModel;
     delete m_provinceListModel;
     delete m_sensorListModel;
+    delete m_countryListModel;
+    delete m_providerListModel;
+    delete m_airQualityIndexModel;
 }
 
 void ModelsManager::bindToQml(QQuickView * view)
 {
     qmlRegisterType<ProvinceListModel>("ProvinceListModel", 1, 0, "ProvinceListModel");
+    qmlRegisterType<CountryListModel>("CountryListModel", 1, 0, "CountryListModel");
+    qmlRegisterType<ProviderListModel>("ProviderListModel", 1, 0, "ProviderListModel");
 
+    ProvinceListProxyModel::bindToQml(); //FIXME nie podob mi się że to tu jest
     StationListProxyModel::bindToQml();
+    ProviderListProxyModel::bindToQml();
+    CountryListProxyModel::bindToQml();
     StationListModel::bindToQml(view);
 
     view->rootContext()->setContextProperty(QStringLiteral("stationListModel"), m_stationListModel);
     view->rootContext()->setContextProperty(QStringLiteral("provinceListModel"), m_provinceListModel);
     view->rootContext()->setContextProperty(QStringLiteral("sensorListModel"), m_sensorListModel);
+    view->rootContext()->setContextProperty(QStringLiteral("countryListModel"), m_countryListModel);
+    view->rootContext()->setContextProperty(QStringLiteral("providerListModel"), m_providerListModel);
 }
 
 void ModelsManager::loadSettings()
@@ -60,7 +72,7 @@ void ModelsManager::loadSettings()
 
     StationListPtr stationList = settings->favouriteStations();
 
-    m_stationListModel->setStationList(std::move(stationList));
+    m_stationListModel->setStationList(stationList);
     m_stationListModel->getIndexForFavourites();
 
     m_timer.start(60 * 60 * 1000);
@@ -69,6 +81,21 @@ void ModelsManager::loadSettings()
 ProvinceListModel *ModelsManager::provinceListModel() const
 {
     return m_provinceListModel;
+}
+
+CountryListModel *ModelsManager::countryListModel() const
+{
+    return m_countryListModel;
+}
+
+ProviderListModel *ModelsManager::providerListModel() const
+{
+    return m_providerListModel;
+}
+
+AirQualityIndexModel *ModelsManager::airQualityIndexModel() const
+{
+    return m_airQualityIndexModel;
 }
 
 void ModelsManager::updateModels()

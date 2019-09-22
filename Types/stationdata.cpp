@@ -1,8 +1,12 @@
 #include "stationdata.h"
 
+namespace {
+    int DEFAULT_PROVIDER = 1;
+}
+
 QDataStream& operator<<(QDataStream& out, const StationData& v)
 {
-    out << v.id << v.province << v.cityName << v.street << v.coordinate.latitude() << v.coordinate.longitude();
+    out << v.id << v.province << v.cityName << v.street << v.coordinate.latitude() << v.coordinate.longitude() << v.provider;
     return out;
 }
 
@@ -20,6 +24,13 @@ QDataStream& operator>>(QDataStream& in, StationData& v)
 
     v.coordinate.setLatitude(latitude);
     v.coordinate.setLongitude(longitude);
+
+    if (!in.atEnd()) {
+        in >> v.provider;
+
+    if (!v.provider)
+        v.provider = DEFAULT_PROVIDER;
+    }
 
     return in;
 }

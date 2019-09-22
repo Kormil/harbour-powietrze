@@ -12,22 +12,33 @@
 # The name of your application
 TARGET = harbour-powietrze
 
-QT += dbus positioning
+QT += dbus positioning concurrent
 CONFIG += sailfishapp
 
 PKGCONFIG += \
     nemonotifications-qt5
 
 SOURCES += src/harbour-powietrze.cpp \
+    Models/airqualityindexmodel.cpp \
+    Models/countrylistmodel.cpp \
+    Models/providerlistmodel.cpp \
+    Types/countrylist.cpp \
+    Types/stationindex.cpp \
     Types/stationlist.cpp \
     Models/stationlistmodel.cpp \
     Models/provincelistmodel.cpp \
     Types/provincelist.cpp \
+    src/index/airindexfromserver.cpp \
+    src/index/airqualityindex.cpp \
+    src/connection/powietrzeconnection.cpp \
+    src/connection/openaqconnection.cpp \
+    src/index/europeanaq.cpp \
     src/modelsmanager.cpp \
-    src/connection.cpp \
+    src/connection/connection.cpp \
     Types/station.cpp \
     Types/sensorlist.cpp \
     Models/sensorlistmodel.cpp \
+    src/providersmanager.cpp \
     src/settings.cpp \
     Types/stationdata.cpp \
     src/gpsmodule.cpp \
@@ -35,6 +46,8 @@ SOURCES += src/harbour-powietrze.cpp \
 
 DISTFILES += \
     qml/cover/CoverPage.qml \
+    qml/pages/SelectCountryPage.qml \
+    qml/pages/SelectProviderPage.qml \
     rpm/harbour-powietrze.changes.in \
     rpm/harbour-powietrze.changes.run.in \
     rpm/harbour-powietrze.spec \
@@ -98,15 +111,26 @@ PRE_TARGETDEPS += ts transaltions_files
 INSTALLS += ts_install transaltions_files_install
 
 HEADERS += \
+    Models/airqualityindexmodel.h \
+    Models/countrylistmodel.h \
+    Models/providerlistmodel.h \
+    Types/countrylist.h \
+    Types/stationindex.h \
     Types/stationlist.h \
     Models/stationlistmodel.h \
     Models/provincelistmodel.h \
     Types/provincelist.h \
+    src/index/airindexfromserver.h \
+    src/index/airqualityindex.h \
+    src/connection/powietrzeconnection.h \
+    src/connection/openaqconnection.h \
+    src/index/europeanaq.h \
     src/modelsmanager.h \
-    src/connection.h \
+    src/connection/connection.h \
     Types/station.h \
     Types/sensorlist.h \
     Models/sensorlistmodel.h \
+    src/providersmanager.h \
     src/settings.h \
     Types/stationdata.h \
     src/gpsmodule.h \

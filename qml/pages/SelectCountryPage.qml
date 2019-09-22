@@ -1,50 +1,30 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import CountryListModel 1.0
 import ProvinceListModel 1.0
 import ProviderListModel 1.0
-import CountryListModel 1.0
-import StationListModel 1.0
 
 Page {
     id: page
 
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
-    allowedOrientations: Orientation.All   
+    allowedOrientations: Orientation.All
 
     SilicaFlickable {
         anchors.fill: parent
 
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("Show all")
-                onClicked: {
-                    provinceListModel.onItemClicked(-1)
-                    pageStack.push(Qt.resolvedUrl("SelectStationPage.qml"))
-                }
-            }
-
-            MenuItem {
-                text: qsTr("Find nearest")
-                onClicked: {
-                    pageStack.push(Qt.resolvedUrl("FindNearestPage.qml"))
-                }
-            }
-        }
-
         SilicaListView {
             id: listView
-
-            model: ProvinceListProxyModel {
-                id: provinceListProxyModel
-                countryFilter: countryListModel.selectedCountry
+            model: CountryListProxyModel {
+                id: countryListProxyModel
+                countryModel: countryListModel
                 provider: providerListModel.selectedProviderId
-                provinceModel: provinceListModel
             }
 
             anchors.fill: parent
             header: PageHeader {
-                title: qsTr("Select province")
+                title: qsTr("Select country")
             }
             delegate: BackgroundItem {
                 id: delegate
@@ -56,9 +36,9 @@ Page {
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
                 }
                 onClicked: {
-                    provinceListProxyModel.onItemClicked(index)
-                    stationListModel.requestStationListData()
-                    pageStack.push(Qt.resolvedUrl("SelectStationPage.qml"))
+                    countryListProxyModel.onItemClicked(index)
+                    provinceListModel.requestProvinceList()
+                    pageStack.push(Qt.resolvedUrl("SelectProvincePage.qml"))
                 }
             }
             VerticalScrollDecorator {}
@@ -74,16 +54,16 @@ Page {
         }
 
         Connections {
-            target: stationListModel
-            onStationListRequested: {
+            target: countryListModel
+            onCountryListRequested: {
                 loading.enabled = true
                 loading.visible = true
             }
         }
 
         Connections {
-            target: provinceListModel
-            onProvinceLoaded: {
+            target: countryListModel
+            onCountryListLoaded: {
                 loading.enabled = false
                 loading.visible = false
             }

@@ -1,12 +1,14 @@
 #include "sensorlistmodel.h"
-#include "src/connection.h"
+#include "src/connection/connection.h"
+#include "src/modelsmanager.h"
+#include "src/providersmanager.h"
 #include "Types/station.h"
 #include "src/settings.h"
 #include <iostream>
 
 SensorListModel::SensorListModel(QObject *parent)
     : QAbstractListModel(parent),
-      m_connection(nullptr),
+      m_modelsManager(nullptr),
       m_station(nullptr)
 {
 }
@@ -27,8 +29,12 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
             return QVariant(it.name);
         case VALUE:
         {
+            if (it.value() == Connection::NoData) {
+                return QVariant(tr("No data"));
+            }
+
             Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-            float value = unitsConverter(UnitsType::MICROGRAM, static_cast<UnitsType>(settings->unitType()), it.value);
+            float value = unitsConverter(UnitsType::MICROGRAM, static_cast<UnitsType>(settings->unitType()), it.value());
             return QVariant(QString::number(value, 'G', 5));
         }
     }
@@ -44,27 +50,14 @@ QHash<int, QByteArray> SensorListModel::roleNames() const
     return names;
 }
 
-void SensorListModel::requestData(Connection *connection)
+void SensorListModel::requestData()
 {
     if (!m_station)
         return;
 
-    connection->sensorListRequest(m_station->stationData().id, [=](SensorListPtr sensorList) {
-        if (!sensorList) {
-            return;
-        }
-
-        m_station->setSensorList(std::move(sensorList));
-
-        beginResetModel();
-        connectModel();
-
-        if (m_station->sensorList() == nullptr)
-            return;
-
-        requestSensorData(connection);
-        m_station->sensorList()->setDateToCurent();
-        endResetModel();
+    Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
+    connection->sensorListRequest(m_station, [=](SensorListPtr sensorList) {
+        setSensorList(sensorList, m_station);
     });
 }
 
@@ -78,13 +71,13 @@ int SensorListModel::rowCount(const QModelIndex &parent) const
     return 0;
 }
 
-void SensorListModel::requestSensorData(Connection *connection)
+void SensorListModel::requestSensorData()
 {
+    Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
     for (const auto& sensor:  m_station->sensorList()->sensors())
     {
-        int sensorDataID = sensor.id;
-        connection->sensorDataRequest(sensorDataID, [this, sensorDataID](float sensorValue) {
-             m_station->sensorList()->setValue(sensorDataID, sensorValue);
+        connection->sensorDataRequest(sensor, [this](SensorData sensorData) {
+             m_station->sensorList()->setData(sensorData);
         });
     }
 }
@@ -96,25 +89,44 @@ void SensorListModel::connectModel()
 
     if (m_station && m_station->sensorList())
     {
-        connect(m_station->sensorList(), &SensorList::preItemAppended, this, [this]() {
+        connect(m_station->sensorList().get(), &SensorList::preItemAppended, this, [this]() {
             const int index = m_station->sensorList()->size();
             beginInsertRows(QModelIndex(), index, index);
         });
 
-        connect(m_station->sensorList(), &SensorList::postItemAppended, this, [this]() {
+        connect(m_station->sensorList().get(), &SensorList::postItemAppended, this, [this]() {
             endInsertRows();
         });
 
-        connect(m_station->sensorList(), &SensorList::valueChanged, this, [this](int index) {
+        connect(m_station->sensorList().get(), &SensorList::valueChanged, this, [this](int index) {
             QModelIndex modelIndex = this->index(index);
             dataChanged(modelIndex, modelIndex, {SensorsListRole::VALUE});
         });
     }
 }
 
-void SensorListModel::setConnection(Connection *value)
+void SensorListModel::setModelsManager(ModelsManager *modelsManager)
 {
-    m_connection = value;
+    m_modelsManager = modelsManager;
+}
+
+void SensorListModel::setSensorList(SensorListPtr sensorList, StationPtr station)
+{
+    if (!sensorList) {
+        return;
+    }
+
+    station->setSensorList(sensorList);
+
+    beginResetModel();
+    connectModel();
+
+    if (station->sensorList() == nullptr)
+        return;
+
+    requestSensorData();
+    station->sensorList()->setDateToCurrent();
+    endResetModel();
 }
 
 float SensorListModel::unitsConverter(SensorListModel::UnitsType from, SensorListModel::UnitsType to, float value) const
@@ -137,7 +149,7 @@ float SensorListModel::unitsConverter(SensorListModel::UnitsType from, SensorLis
     return value * to_ / from_;
 }
 
-void SensorListModel::setStation(Station *station)
+void SensorListModel::setStation(StationPtr station)
 {
     beginResetModel();
 
@@ -146,8 +158,8 @@ void SensorListModel::setStation(Station *station)
 
     m_station = station;
 
-    if (m_connection)
-        requestData(m_connection);
+    if (m_modelsManager)
+        requestData();
 
     endResetModel();
 }

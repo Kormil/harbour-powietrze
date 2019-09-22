@@ -2,18 +2,26 @@
 #define PROVINCELIST_H
 
 #include <QObject>
+#include <QStringBuilder>
 #include <memory>
+#include <map>
 
 class StationList;
 class ProvinceList;
 class ProvinceItem;
 
-using ProvinceItemPtr = std::unique_ptr<ProvinceItem>;
-using ProvinceListPtr = std::unique_ptr<ProvinceList>;
+using ProvinceItemPtr = std::shared_ptr<ProvinceItem>;
+using ProvinceListPtr = std::shared_ptr<ProvinceList>;
 
 struct ProvinceItem
 {
     QString name;
+    QString countryCode;
+    int provider;
+
+    unsigned int hash() const {
+        return qHash(name % countryCode % QString(provider));
+    }
 };
 
 class ProvinceList : public QObject
@@ -22,17 +30,12 @@ class ProvinceList : public QObject
 public:
     explicit ProvinceList(QObject *parent = nullptr);
     virtual ~ProvinceList();
-\
-    bool setItemAt(unsigned int index, const ProvinceItem &provinceItem);
 
     size_t size() const;
 
-    const std::vector<ProvinceItemPtr> &provinceItems() const;
-    ProvinceItem* get(unsigned int index) const;
-
-    static ProvinceListPtr getFromJson(const QJsonDocument& jsonDocument);
-
-    void append(const ProvinceItem &item);
+    ProvinceItemPtr get(int index);
+    void append(const ProvinceItemPtr &item);
+    void appendList(ProvinceListPtr &provinceList);
 
 signals:
     void preItemAppended();
@@ -41,6 +44,8 @@ signals:
 public slots:
 
 private:
+    using Hash = unsigned int;
+    std::map<Hash, unsigned int> m_hashToRow;
     std::vector<ProvinceItemPtr> m_provinceItems;
 };
 

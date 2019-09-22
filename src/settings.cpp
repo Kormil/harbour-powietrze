@@ -174,7 +174,7 @@ StationListPtr Settings::favouriteStations() const
 
     for (auto& stationData: stations)
     {
-        Station * station = new Station();
+        StationPtr station = StationPtr(new Station());
         station->setFavourite(true);
         station->setStationData(stationData.value<StationData>());
 

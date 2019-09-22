@@ -2,9 +2,10 @@
 #include <set>
 #include <QtQml>
 #include <QQuickView>
-#include "src/connection.h"
+#include "src/connection/connection.h"
 #include "sensorlistmodel.h"
 #include "src/modelsmanager.h"
+#include "src/providersmanager.h"
 #include "src/settings.h"
 #include "src/gpsmodule.h"
 #include "src/utils.h"
@@ -17,10 +18,17 @@ StationListModel::StationListModel(QObject *parent)
 {
     QObject::connect(GPSModule::instance(), &GPSModule::shouldRequest, this, &StationListModel::findNearestStation);
     QObject::connect(GPSModule::instance(), &GPSModule::positionUpdated, this, [this](QGeoCoordinate coordinate) {
+        ProvidersManager::instance()->findNearestStation(coordinate, 1, [this](StationListPtr stationList) {
+            if (m_stationList) {
+                if (stationList) {
+                    m_stationList->appendList(stationList);
+                }
+            }
+            else {
+                setStationList(stationList);
+            }
 
-        //TODO sprawdzić czy jest potrzeba wysyłania requestu
-        m_connection->findNearestStationRequest(coordinate, [this](StationListPtr stationList) {
-            if (!stationList) {
+            if (m_stationList) {
                 setNearestStation(m_stationList->findNearest());
             }
         });
@@ -42,7 +50,7 @@ QVariant StationListModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || m_stationList == nullptr)
         return QVariant();
 
-    const Station * station = m_stationList->station(index.row());
+    const StationPtr station = m_stationList->station(index.row());
     switch (role)
     {
     case Qt::UserRole:
@@ -57,6 +65,8 @@ QVariant StationListModel::data(const QModelIndex &index, int role) const
         return QVariant(station->favourite());
     case DistanceRole:
         return QVariant(station->distanceString());
+    case ProviderRole:
+        return QVariant(station->provider());
     case IndexRole:
     {
         if (station->stationIndex())
@@ -78,21 +88,13 @@ Qt::ItemFlags StationListModel::flags(const QModelIndex &index) const
 
 void StationListModel::setStationList(StationListPtr stationList)
 {
-    if (!stationList)
-    {
-        emit stationListLoaded();
-        return;
-    }
-
     beginResetModel();
 
-    if (m_stationList)
-    {
+    if (m_stationList) {
         m_stationList->disconnect(this);
-        stationList->appendList(m_stationList);
     }
 
-    m_stationList = std::move(stationList);
+    m_stationList = stationList;
 
     if (m_stationList)
     {
@@ -116,32 +118,35 @@ void StationListModel::setStationList(StationListPtr stationList)
     emit stationListLoaded();
 }
 
-void StationListModel::appendStationList(StationListPtr& stationList)
-{
-    if (!m_stationList)
-    {
-        setStationList(std::move(stationList));
-        return;
-    }
-
-    m_stationList->appendList(stationList);
-}
-
 void StationListModel::requestStationListData()
 {
     emit stationListRequested();
 
-    m_connection->stationListRequest([this](StationListPtr stationList) {
-        setStationList(std::move(stationList));
+    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection;
+
+    connection->stationListRequest([this](StationListPtr stationList) {
+        if (!stationList) {
+            stationListLoaded();
+            return;
+        }
+
+        if (m_stationList) {
+            m_stationList->appendList(stationList);
+        }
+        else {
+            setStationList(stationList);
+        }
     });
 }
 
-void StationListModel::requestStationIndexData(Station *station)
+void StationListModel::requestStationIndexData(StationPtr station)
 {
     if (!station)
         return;
 
-    m_connection->stationIndexRequest(station->id(), [=](StationIndexPtr stationIndex) {
+    auto provider = m_modelsManager->providerListModel()->provider(station->provider());
+    auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId);
+    airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
         {
             if (m_nearestStation && station->id() == m_nearestStation->id())
@@ -155,12 +160,12 @@ void StationListModel::requestStationIndexData(Station *station)
 
                     if (m_beforeNearestStation->stationIndex()->id() < stationIndex->id())
                     {
-                        Utils::SimpleNotification(tr("Nearest station"),
+                        Utils::simpleNotification(tr("Nearest station"),
                                                   tr("Air pollution in your neighbour is getting worse: ").append(stationIndex->name()));
                     }
                     else if (m_beforeNearestStation->stationIndex()->id() > stationIndex->id())
                     {
-                        Utils::SimpleNotification(tr("Nearest station"),
+                        Utils::simpleNotification(tr("Nearest station"),
                                                   tr("Air pollution in your neighbour is getting better: ").append(stationIndex->name()));
                     }
                 }
@@ -169,7 +174,13 @@ void StationListModel::requestStationIndexData(Station *station)
             if (stationIndex != station->stationIndexPtr())
             {
                 int row = m_stationList->row(station->id());
-                station->setStationIndex(std::move(stationIndex));
+
+                StationIndexPtr stationIndex2(new StationIndex);
+                stationIndex2->setId(stationIndex->id());
+                stationIndex2->setName(stationIndex->name());
+                stationIndex2->setStation(station.get());
+
+                station->setStationIndex(std::move(stationIndex2));
                 station->stationIndex()->setDateToCurent();
 
                 emit dataChanged(index(row), index(row), {IndexRole});
@@ -183,16 +194,6 @@ void StationListModel::requestStationIndexData(Station *station)
     });
 }
 
-void StationListModel::setModels(ModelsManager *modelsManager)
-{
-    setSensorListModel(modelsManager->sensorListModel());
-}
-
-void StationListModel::setSensorListModel(SensorListModel *sensorListModel)
-{
-    m_sensorListModel = sensorListModel;
-}
-
 QHash<int, QByteArray> StationListModel::roleNames() const
 {
     QHash<int, QByteArray> names;
@@ -200,27 +201,8 @@ QHash<int, QByteArray> StationListModel::roleNames() const
     names[Qt::DisplayRole] = "description";
     names[IndexRole] = "indexName";
     names[DistanceRole] = "distance";
+    names[ProviderRole] = "provider";
     return names;
-}
-
-std::vector<QString> StationListModel::provinceNames() const
-{
-    if (m_stationList == nullptr)
-        return std::vector<QString>();
-
-    auto cmp = [](const QString& a, const QString& b) {
-        return QString::localeAwareCompare(a, b) < 0;
-    };
-
-    std::set<QString, decltype(cmp)> names(cmp);
-    for (unsigned int i = 0; i < m_stationList->size(); ++i)
-    {
-        Station* station = m_stationList->station(i);
-        QString name = station->province();
-        names.insert(name);
-    }
-
-    return std::vector<QString>(names.begin(), names.end());
 }
 
 void StationListModel::onStationClicked(Station* station)
@@ -230,18 +212,18 @@ void StationListModel::onStationClicked(Station* station)
 
 void StationListModel::onItemClicked(int index)
 {
-    if (!m_sensorListModel)
+    if (!m_modelsManager && m_modelsManager->sensorListModel())
         return;
 
-    Station* station = m_stationList->station(index);
+    StationPtr station = m_stationList->station(index);
 
     if (station == nullptr)
         return;
 
-    m_sensorListModel->setStation(station);
+    m_modelsManager->sensorListModel()->setStation(station);
     setSelectedStation(station);
 
-    if (m_connection)
+    if (m_modelsManager)
         requestStationIndexData(m_selectedItem);
 }
 
@@ -251,42 +233,14 @@ void StationListModel::bindToQml(QQuickView * view)
     Station::bindToQml(view);
 }
 
-Station *StationListModel::station(int id) const
-{
-    return m_stationList->find(id);
-}
-
 Station *StationListModel::nearestStation() const
 {
-    return m_nearestStation;
+    return m_nearestStation.get();
 }
 
 Station *StationListModel::selectedStation() const
 {
-    return m_selectedItem;
-}
-
-void StationListModel::setConnection(Connection *connection)
-{
-    m_connection = connection;
-}
-
-bool StationListModel::shouldGetNewData()
-{
-    if (m_stationList == nullptr)
-        return true;
-
-    QDateTime currentTime = QDateTime::currentDateTime();
-
-    if (!m_lastRequestDate.isValid() || currentTime.daysTo(m_lastRequestDate))
-        return true;
-
-    return false;
-}
-
-void StationListModel::setDateToCurrent()
-{
-    m_lastRequestDate = QDateTime::currentDateTime();
+    return m_selectedItem.get();
 }
 
 void StationListModel::calculateDistances(QGeoCoordinate coordinate)
@@ -301,26 +255,19 @@ void StationListModel::calculateDistances(QGeoCoordinate coordinate)
 void StationListModel::findNearestStation()
 {
     emit nearestStationRequested();
+    emit stationListRequested();
 
-    if (shouldGetNewData())
-    {
-        emit stationListRequested();
-
-        m_connection->stationListRequest([this](StationListPtr stationList) {
-            setStationList(std::move(stationList));
-            GPSModule::instance()->requestPosition();
-        });
-    }
-    else
-    {
-        GPSModule::instance()->requestPosition();
-    }
+    //FIXME !!!!!
+//    m_connection->stationListRequest([this](StationListPtr stationList) {
+//        setStationList(std::move(stationList));
+//        GPSModule::instance()->requestPosition();
+//    });
 }
 
 void StationListModel::getIndexForFavourites()
 {
     Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-    std::vector<int> favourites = m_stationList->favouriteIds();
+    auto favourites = m_stationList->favourites();
 
     m_indexesToDownload = favourites.size();
 
@@ -328,17 +275,20 @@ void StationListModel::getIndexForFavourites()
         emit favourtiesUpdatingStarted();
     }
 
-    for (const auto& id: favourites)
+    for (const auto& hash: favourites)
     {
-        Station* station = m_stationList->find(id);
+        StationPtr station = m_stationList->find(hash);
 
-        m_connection->stationIndexRequest(station->id(), [=](StationIndexPtr stationIndex) {
-            --m_indexesToDownload;
+        auto provider = m_modelsManager->providerListModel()->provider(station->provider());
+        auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId);
+
+        airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
+            m_indexesToDownload = m_indexesToDownload - 1;
             if (m_indexesToDownload == 0) {
                 emit favourtiesUpdated();
             }
 
-            if (stationIndex == nullptr) {
+            if (!stationIndex) {
                 return;
             }
 
@@ -350,11 +300,11 @@ void StationListModel::getIndexForFavourites()
                         return;
 
                     if (station->stationIndex()->id() < stationIndex->id()) {
-                        Utils::SimpleNotification(station->name(),
+                        Utils::simpleNotification(station->name(),
                                                   tr("Air pollution is getting worse: ").append(stationIndex->name()));
                     }
                     else if (station->stationIndex()->id() > stationIndex->id()) {
-                        Utils::SimpleNotification(station->name(),
+                        Utils::simpleNotification(station->name(),
                                                   tr("Air pollution is getting better: ").append(stationIndex->name()));
                     }
                 }
@@ -369,11 +319,29 @@ void StationListModel::getIndexForFavourites()
     }
 }
 
-void StationListModel::setNearestStation(Station *nearestStation)
+void StationListModel::setModelsManager(ModelsManager *modelsManager)
+{
+    m_modelsManager = modelsManager;
+}
+
+StationListPtr StationListModel::stationList() const
+{
+    return m_stationList;
+}
+
+void StationListModel::setNearestStation(StationPtr nearestStation)
 {
     if (!nearestStation) {
         return;
     }
+
+    auto coordinate = GPSModule::instance()->lastKnowPosition();
+
+    double oldDistance = m_nearestStation->coordinate().distanceTo(coordinate);
+    double newDistance = nearestStation->coordinate().distanceTo(coordinate);
+
+    if (newDistance >= oldDistance)
+        return;
 
     m_beforeNearestStation = m_nearestStation;
     m_nearestStation = nearestStation;
@@ -381,16 +349,7 @@ void StationListModel::setNearestStation(Station *nearestStation)
     emit nearestStationFounded();
 }
 
-void StationListModel::setSelectedStation(int id)
-{
-    if (!m_stationList)
-        return;
-
-    Station* selectedStation = m_stationList->find(id);
-    setSelectedStation(selectedStation);
-}
-
-void StationListModel::setSelectedStation(Station *selected)
+void StationListModel::setSelectedStation(StationPtr selected)
 {
     m_selectedItem = selected;
     emit selectedStationChanged();
@@ -417,6 +376,14 @@ void StationListProxyModel::bindToQml()
 bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     Q_UNUSED(source_parent);
+
+    if (m_providerFilter)
+    {
+        int providerId = sourceModel()->index(source_row, 0).data(StationListModel::ProviderRole).toInt();
+        if (providerId != m_providerFilter) {
+            return false;
+        }
+    }
 
     if (m_sortedBy == SortStation::ByDistance && sourceModel()->index(source_row, 0).data(StationListModel::DistanceRole).toDouble() == 0)
         return false;
@@ -484,6 +451,17 @@ void StationListProxyModel::setSortedBy(const SortStation::EnSortStation &sorted
     m_sortedBy = sortedBy;
     invalidateFilter();
     sort(0);
+}
+
+int StationListProxyModel::provider() const
+{
+    return m_providerFilter;
+}
+
+void StationListProxyModel::setProvider(const int &providerID)
+{
+    m_providerFilter = providerID;
+    invalidateFilter();
 }
 
 int StationListProxyModel::limit() const

@@ -74,6 +74,58 @@
     </message>
 </context>
 <context>
+    <name>PowietrzeConnection</name>
+    <message>
+        <source>OTHER</source>
+        <translation type="obsolete">OTHER</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Poland</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OTHER</source>
+        <translation type="unfinished">OTHER</translation>
+    </message>
+    <message>
+        <source>Good</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moderate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Poor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Very poor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectCountryPage</name>
+    <message>
+        <source>Select country</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectProviderPage</name>
+    <message>
+        <source>Select provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SelectProvincePage</name>
     <message>
         <source>Select province</source>
@@ -100,6 +152,10 @@
     <message>
         <source>brak danych</source>
         <translation>brak danych</translation>
+    </message>
+    <message>
+        <source>No data</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -176,7 +232,7 @@
     <name>StationList</name>
     <message>
         <source>OTHER</source>
-        <translation>OTHER</translation>
+        <translation type="vanished">OTHER</translation>
     </message>
 </context>
 <context>

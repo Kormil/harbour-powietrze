@@ -5,19 +5,14 @@ StationList::StationList(QObject *parent) : QObject(parent)
 {
 }
 
-bool StationList::setItemAt(unsigned int index, Station *station)
+StationPtr StationList::station(int index)
 {
-    if (index > m_stations.size())
-        return false;
-
-    m_stations[index] = StationPtr(station);
-    m_idToRow[station->id()] = index;
-    return true;
+    return m_stations[index];
 }
 
-Station* StationList::station(int index)
+StationPtr StationList::find(unsigned int hash)
 {
-    return m_stations[index].get();
+    return m_stations[m_hashToRow[hash]];
 }
 
 size_t StationList::size() const
@@ -25,76 +20,25 @@ size_t StationList::size() const
     return m_stations.size();
 }
 
-void StationList::setStations(std::vector<StationPtr> &stations)
-{
-    m_stations = std::move(stations);
-    m_idToRow.clear();
-
-    for (unsigned int i = 0; i < m_stations.size(); ++i)
-    {
-        m_idToRow[m_stations[i]->id()] = i;
-    }
-}
-
-StationListPtr StationList::getFromJson(const QJsonDocument &jsonDocument)
-{
-    StationListPtr stationList(new StationList());
-
-    QJsonArray array = jsonDocument.array();
-
-    for (const auto& station: array)
-    {
-        Station* item = new Station();
-        StationData stationData;
-        stationData.id = station.toObject()["id"].toInt();
-        stationData.cityName = station.toObject()["city"].toObject()["name"].toString();
-        stationData.street = station.toObject()["addressStreet"].toString();
-
-        double lat = station.toObject()["gegrLat"].toString().toDouble();
-        double lon = station.toObject()["gegrLon"].toString().toDouble();
-        stationData.coordinate = QGeoCoordinate(lat, lon);
-
-        stationData.province = station.toObject()["city"].toObject()["commune"].toObject()["provinceName"].toString();
-
-        if (stationData.province.isNull())
-            stationData.province = tr("OTHER");
-
-        item->setStationData(stationData);
-        stationList->append(item);
-    }
-
-    return std::move(stationList);
-}
-
-
-void StationList::append(Station* station)
-{
-    append(std::move(StationPtr(station)));
-}
-
 void StationList::append(StationPtr station)
 {
     if (station == nullptr)
         return;
 
-    auto idAndRow = m_idToRow.find(station->id());
+    auto hash = station->hash();
+    auto hashAndRow = m_hashToRow.find(hash);
 
-    if (m_idToRow.end() == idAndRow)
+    if (m_hashToRow.end() == hashAndRow)
     {
         emit preItemAppended();
 
-        m_idToRow[station->id()] = m_stations.size();
-        m_stations.push_back(std::move(station));
+        m_hashToRow[hash] = m_stations.size();
+        m_stations.push_back(station);
 
-        connect(m_stations.back().get(), &Station::dataChanged, this, &StationList::onItemChanged);
+        connect(station.get(), &Station::dataChanged, this, &StationList::onItemChanged);
         emit postItemAppended();
-    }
-    else
-    {
-        station->setStationData(m_stations[idAndRow->second]->stationData());
-        m_stations[idAndRow->second] = std::move(station);
-        connect(m_stations[idAndRow->second].get(), &Station::dataChanged, this, &StationList::onItemChanged);
-        emit itemChanged(idAndRow->second);
+    } else {
+        m_stations[hashAndRow->second]->setDistance(station->distance());
     }
 }
 
@@ -102,33 +46,23 @@ void StationList::appendList(StationListPtr& stationList)
 {
     for (auto& station: stationList->m_stations)
     {
-        append(std::move(station));
+        append(station);
     }
 
     stationList = nullptr;
 }
 
-Station* StationList::find(int stationId)
-{
-    int index = row(stationId);
-
-    if (index == -1)
-        return nullptr;
-
-    return m_stations[index].get();
-}
-
-Station *StationList::findNearest()
+StationPtr StationList::findNearest()
 {
     if (m_stations.size() == 0) {
         return nullptr;
     }
 
-    Station *nearest = m_stations.front().get();
+    StationPtr nearest = m_stations.front();
     for (auto& station: m_stations)
     {
         if (station->distance() && station->distance() < nearest->distance()) {
-            nearest = station.get();
+            nearest = station;
         }
     }
 
@@ -146,21 +80,21 @@ void StationList::calculateDistances(QGeoCoordinate coordinate)
 
 int StationList::row(int stationId) const
 {
-    auto idAndRow = m_idToRow.find(stationId);
-    if (m_idToRow.end() == idAndRow)
+    auto idAndRow = m_hashToRow.find(stationId);
+    if (m_hashToRow.end() == idAndRow)
         return -1;
 
     return idAndRow->second;
 }
 
-std::vector<int> StationList::favouriteIds() const
+std::vector<StationList::Hash> StationList::favourites() const
 {
-    std::vector<int> favouriteStations;
+    std::vector<Hash> favouriteStations;
 
     for (const auto & station: m_stations)
     {
         if (station->favourite())
-            favouriteStations.push_back(station->id());
+            favouriteStations.push_back(station->hash());
     }
 
     return favouriteStations;
@@ -168,6 +102,6 @@ std::vector<int> StationList::favouriteIds() const
 
 void StationList::onItemChanged(int id)
 {
-    auto idAndRow = m_idToRow.find(id);
-    emit itemChanged(idAndRow->second);
+    auto hashAndRow = m_hashToRow.find(id);
+    emit itemChanged(hashAndRow->second);
 }

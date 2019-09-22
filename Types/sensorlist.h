@@ -5,19 +5,73 @@
 #include <QObject>
 #include <QDateTime>
 #include <QJsonDocument>
+#include <QVariant>
 #include <vector>
 #include <memory>
+#include <numeric>
+#include <atomic>
 
 class Station;
 class SensorList;
 
-using SensorListPtr = std::unique_ptr<SensorList>;
+using SensorListPtr = std::shared_ptr<SensorList>;
 
 struct SensorData
 {
-    int id;
+    QVariant id;
     QString name;
-    float value = 0.0f;
+    QString pollutionCode;
+
+    SensorData() {
+        initialized = false;
+    }
+
+    SensorData(const SensorData& second) {
+        id = second.id;
+        name = second.name;
+        pollutionCode = second.pollutionCode;
+        values = second.values;
+        initialized = second.isInitialized();
+    }
+
+    SensorData& operator=(const SensorData& second) {
+        id = second.id;
+        name = second.name;
+        pollutionCode = second.pollutionCode;
+        values = second.values;
+        initialized = second.isInitialized();
+    }
+
+    float value() const {
+        if (values.size())
+            return values.front();
+
+        return 0.0f;
+    }
+
+    float avg(size_t hours) const {
+        hours = std::min(values.size(), hours);
+        float sum = 0;
+
+        for (int i = 0; i < hours; ++i) {
+            sum += values[i];
+        }
+
+        return sum / hours;
+    }
+
+    bool isInitialized() const {
+        return initialized;
+    }
+
+
+public:
+    void setValues(int value);
+    void setValues(const std::vector<float> &value);
+
+private:
+    std::atomic_bool initialized;
+    std::vector<float> values;
 };
 
 class SensorList : public QObject
@@ -28,19 +82,22 @@ public:
     explicit SensorList(QObject *parent = nullptr);
 
     std::vector<SensorData> sensors() const;
-    static SensorListPtr getSensorsFromJson(const QJsonDocument& jsonDocument);
-    static float getSensorDataFromJson(const QJsonDocument &jsonDocument);
 
     size_t size() const;
-    void setValue(int id, float value);
+    void setData(SensorData sensorData);
     void setStation(Station *value);
 
     bool shouldGetNewData(int frequency);
-    void setDateToCurent();
+    void setDateToCurrent();
+
+    void waitForAll();
+    bool isAll();
+
 signals:
     void valueChanged(int index);
     void preItemAppended();
     void postItemAppended();
+    void allLoaded();
 
 private:
     QDateTime m_createTime;

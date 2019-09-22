@@ -7,7 +7,8 @@
 
 Station::Station(QObject *parent) :
     QObject(parent),
-    m_favourite(false)
+    m_favourite(false),
+    m_sensorList(nullptr)
 {
 
 }
@@ -75,6 +76,11 @@ QString Station::distanceString() const
     return QString::number(distance() / 1000, 'f', 2);
 }
 
+int Station::provider() const
+{
+    return m_stationData.provider;
+}
+
 void Station::setDistance(double distance)
 {
     m_distance = distance;
@@ -107,90 +113,20 @@ void Station::bindToQml(QQuickView * view)
     StationIndex::bindToQml(view);
 }
 
-SensorList* Station::sensorList()
+SensorListPtr Station::sensorList()
 {
-    return m_sensorList.get();
+    return m_sensorList;
 }
 
 void Station::setSensorList(SensorListPtr sensorList)
 {
-    m_sensorList = std::move(sensorList);
+    m_sensorList = sensorList;
 
-    if (m_sensorList != nullptr)
+    if (m_sensorList)
         m_sensorList->setStation(this);
 }
 
 int Station::id() const
 {
     return m_stationData.id;
-}
-
-int StationIndex::id() const
-{
-    return m_id;
-}
-
-QString StationIndex::name() const
-{
-    return m_name;
-}
-
-StationIndexPtr StationIndex::getFromJson(const QJsonDocument &jsonDocument)
-{
-    if (jsonDocument.isNull())
-        return StationIndexPtr(nullptr);
-
-    QJsonObject object = jsonDocument.object()["stIndexLevel"].toObject();
-
-    float id = object["id"].toInt();
-    QString name = object["indexLevelName"].toString();
-
-    StationIndex* stationIndex = new StationIndex;
-
-    if (!name.isEmpty())
-        stationIndex->setId(id);
-    stationIndex->setName(name);
-    return StationIndexPtr( stationIndex );
-}
-
-void StationIndex::bindToQml(QQuickView * view)
-{
-    Q_UNUSED(view);
-    qmlRegisterType<Station>("StationListModel", 1, 0, "StationIndex");
-}
-
-void StationIndex::setId(int id)
-{
-    m_id = id;
-    emit idChanged();
-}
-
-void StationIndex::setName(const QString &name)
-{
-    m_name = name;
-    emit nameChanged();
-}
-
-bool StationIndex::shouldGetNewData(int frequency)
-{
-    if (m_station == nullptr)
-        return false;
-
-    QDateTime currentTime = QDateTime::currentDateTime();
-
-    if (currentTime.time().hour() < m_date.time().hour())
-        return true;
-
-    QDateTime nextDataTime = m_date.addSecs( frequency * 60 );
-    return currentTime > nextDataTime;
-}
-
-void StationIndex::setStation(Station *station)
-{
-    m_station = station;
-}
-
-void StationIndex::setDateToCurent()
-{
-    m_date = QDateTime::currentDateTime();
 }

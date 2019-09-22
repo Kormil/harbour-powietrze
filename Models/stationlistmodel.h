@@ -34,6 +34,7 @@ class StationListProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(StationListModel* stationModel READ stationListModel WRITE setStationListModel)
     Q_PROPERTY(SortStation::EnSortStation sort READ sortedBy WRITE setSortedBy)
     Q_PROPERTY(int limit READ limit WRITE setLimit)
+    Q_PROPERTY(int provider READ provider WRITE setProvider)
 
 public:
 
@@ -50,6 +51,8 @@ public:
     void setLimit(int value);
     SortStation::EnSortStation sortedBy() const;
     void setSortedBy(const SortStation::EnSortStation &sortedBy);
+    int provider() const;
+    void setProvider(const int &providerID);
 
     static void bindToQml();
 
@@ -61,6 +64,7 @@ protected:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
 private:
+    int m_providerFilter = 0;
     QString m_provinceNameFilter = "";
     QStringList m_stationNameFilter;
     bool m_favourites = false;
@@ -72,8 +76,8 @@ private:
 class StationListModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(Station* nearestStation READ nearestStation WRITE setNearestStation NOTIFY nearestStationFounded)
-    Q_PROPERTY(Station* selectedStation READ selectedStation WRITE setSelectedStation NOTIFY selectedStationChanged)
+    Q_PROPERTY(Station* nearestStation READ nearestStation NOTIFY nearestStationFounded)
+    Q_PROPERTY(Station* selectedStation READ selectedStation NOTIFY selectedStationChanged)
 
 public:
     enum StationListRole
@@ -82,7 +86,8 @@ public:
         ProvinceNameRole,
         FavouriteRole,
         IndexRole,
-        DistanceRole
+        DistanceRole,
+        ProviderRole
     };
 
     explicit StationListModel(QObject *parent = nullptr);
@@ -95,32 +100,25 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
     QHash<int, QByteArray> roleNames() const override;
-    std::vector<QString> provinceNames() const;
 
-    void setModels(ModelsManager *modelsManager);
     void setStationList(StationListPtr stationList);
-    void appendStationList(StationListPtr &stationList);
-    void setSensorListModel(SensorListModel *sensorListModel);
     Q_INVOKABLE void requestStationListData();
-    void requestStationIndexData(Station* station);
+    void requestStationIndexData(StationPtr station);
 
     Q_INVOKABLE void onStationClicked(Station* station);
     Q_INVOKABLE void onItemClicked(int index);
     static void bindToQml(QQuickView *view);
 
-    Station *station(int id) const;
     Station *nearestStation() const;
     Station *selectedStation() const;
-    void setSelectedStation(int id);
-    void setSelectedStation(Station *selected);
-    void setNearestStation(Station *nearestStation);
-
-    void setConnection(Connection *connection);
-
-    bool shouldGetNewData();
-    void setDateToCurrent();
+    void setSelectedStation(StationPtr selected);
+    void setNearestStation(StationPtr nearestStation);
 
     void calculateDistances(QGeoCoordinate coordinate);
+
+    StationListPtr stationList() const;
+
+    void setModelsManager(ModelsManager *modelsManager);
 
 public slots:
     void findNearestStation();
@@ -137,16 +135,13 @@ signals:
     void nearestStationFounded();
 
 private:
-    Connection *m_connection;
-    Station* m_selectedItem;
-    Station* m_nearestStation;
-    Station* m_beforeNearestStation;
+    StationPtr m_selectedItem;
+    StationPtr m_nearestStation;
+    StationPtr m_beforeNearestStation;
     StationListPtr m_stationList;
 
-    SensorListModel* m_sensorListModel;
+    ModelsManager* m_modelsManager;
     std::atomic_int m_indexesToDownload;
-
-    QDateTime m_lastRequestDate;
 };
 
 #endif // STATIONLISTMODEL_H

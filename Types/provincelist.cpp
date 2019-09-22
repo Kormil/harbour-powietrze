@@ -10,71 +10,37 @@ ProvinceList::~ProvinceList()
 {
 }
 
-bool ProvinceList::setItemAt(unsigned int index, const ProvinceItem &provinceItem)
-{
-    if (index > m_provinceItems.size())
-        return false;
-
-    m_provinceItems[index] = ProvinceItemPtr( new ProvinceItem(provinceItem) );
-    return true;
-}
-
 size_t ProvinceList::size() const
 {
     return m_provinceItems.size();
 }
 
-const std::vector<ProvinceItemPtr>& ProvinceList::provinceItems() const
+ProvinceItemPtr ProvinceList::get(int index)
 {
-    return m_provinceItems;
+    return m_provinceItems[index];
 }
 
-ProvinceItem *ProvinceList::get(unsigned int index) const
+void ProvinceList::append(const ProvinceItemPtr &item)
 {
-    if (index >= m_provinceItems.size())
-        return nullptr;
+    auto hash = item->hash();
+    auto provinceIt = m_hashToRow.find(hash);
 
-    return m_provinceItems[index].get();
-}
-
-ProvinceListPtr ProvinceList::getFromJson(const QJsonDocument &jsonDocument)
-{
-    ProvinceListPtr provinceList(new ProvinceList());
-
-    QJsonArray array = jsonDocument.array();
-
-    for (const auto& station: array)
+    if (provinceIt == m_hashToRow.end())
     {
-        ProvinceItem item;
-        item.name = station.toObject()["city"].toObject()["commune"].toObject()["provinceName"].toString();
+        emit preItemAppended();
+        int row = m_provinceItems.size();
+        m_provinceItems.push_back(item);
+        m_hashToRow[hash] = row;
+        emit postItemAppended();
+    }
+}
 
-        bool exist = false;
-        for (const auto& province: provinceList->m_provinceItems)
-        {
-            if (item.name == province->name)
-            {
-                exist = true;
-                break;
-            }
-        }
-
-        if (!exist)
-            provinceList->append(item);
+void ProvinceList::appendList(ProvinceListPtr &provinceList)
+{
+    for (auto& province: provinceList->m_provinceItems)
+    {
+        append(province);
     }
 
-    std::sort(provinceList->m_provinceItems.begin(), provinceList->m_provinceItems.end(),
-              [](const ProvinceItemPtr& a, const ProvinceItemPtr& b) {
-                 return a->name < b->name;
-              });
-
-    return std::move(provinceList);
-}
-
-void ProvinceList::append(const ProvinceItem &item)
-{
-    emit preItemAppended();
-
-    m_provinceItems.push_back( ProvinceItemPtr(new ProvinceItem(item)) );
-
-    emit postItemAppended();
+    provinceList = nullptr;
 }
