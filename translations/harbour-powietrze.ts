@@ -128,22 +128,11 @@
 <context>
     <name>SelectProvincePage</name>
     <message>
-        <source>Select province</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Show all</source>
         <translation></translation>
     </message>
     <message>
         <source>Find nearest</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
-    <name>SelectStationPage</name>
-    <message>
-        <source>Select station</source>
         <translation></translation>
     </message>
 </context>
@@ -224,8 +213,8 @@
         <translation></translation>
     </message>
     <message>
-        <source>Data by powietrze.gios.gov.pl</source>
-        <translation></translation>
+        <source>Data by </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

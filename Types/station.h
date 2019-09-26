@@ -23,6 +23,7 @@ class Station : public QObject
     Q_PROPERTY(bool favourite READ favourite WRITE setFavourite)
     Q_PROPERTY(StationIndex* stationIndex READ stationIndex NOTIFY stationIndexChanged)
     Q_PROPERTY(StationData stationData READ stationData NOTIFY stationDataChanged)
+    Q_PROPERTY(int provider READ provider NOTIFY dataChanged)
 public:
     explicit Station(QObject *parent = nullptr);
     virtual ~Station() = default;

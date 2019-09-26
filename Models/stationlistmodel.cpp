@@ -20,6 +20,8 @@ StationListModel::StationListModel(QObject *parent)
     QObject::connect(GPSModule::instance(), &GPSModule::positionUpdated, this, [this](QGeoCoordinate coordinate) {
         ProvidersManager::instance()->findNearestStation(coordinate, 1, [this](StationListPtr stationList) {
             if (m_stationList) {
+                std::lock_guard<std::mutex> guard(m_setStationListMutex);
+
                 if (stationList) {
                     m_stationList->appendList(stationList);
                 }
@@ -88,6 +90,7 @@ Qt::ItemFlags StationListModel::flags(const QModelIndex &index) const
 
 void StationListModel::setStationList(StationListPtr stationList)
 {
+    std::lock_guard<std::mutex> guard(m_setStationListMutex);
     beginResetModel();
 
     if (m_stationList) {
@@ -131,6 +134,7 @@ void StationListModel::requestStationListData()
         }
 
         if (m_stationList) {
+            std::lock_guard<std::mutex> guard(m_setStationListMutex);
             m_stationList->appendList(stationList);
         }
         else {
@@ -171,20 +175,11 @@ void StationListModel::requestStationIndexData(StationPtr station)
                 }
             }
 
-            if (stationIndex != station->stationIndexPtr())
-            {
-                int row = m_stationList->row(station->id());
+            int row = m_stationList->row(station->id());
+            station->setStationIndex(stationIndex);
+            stationIndex->setDateToCurent();
 
-                StationIndexPtr stationIndex2(new StationIndex);
-                stationIndex2->setId(stationIndex->id());
-                stationIndex2->setName(stationIndex->name());
-                stationIndex2->setStation(station.get());
-
-                station->setStationIndex(std::move(stationIndex2));
-                station->stationIndex()->setDateToCurent();
-
-                emit dataChanged(index(row), index(row), {IndexRole});
-            }
+            emit dataChanged(index(row), index(row), {IndexRole});
 
         } else {
             emit station->stationIndexChanged();
@@ -207,7 +202,7 @@ QHash<int, QByteArray> StationListModel::roleNames() const
 
 void StationListModel::onStationClicked(Station* station)
 {
-    onItemClicked(m_stationList->row(station->id()));
+    onItemClicked(m_stationList->row(station->hash()));
 }
 
 void StationListModel::onItemClicked(int index)
@@ -257,11 +252,7 @@ void StationListModel::findNearestStation()
     emit nearestStationRequested();
     emit stationListRequested();
 
-    //FIXME !!!!!
-//    m_connection->stationListRequest([this](StationListPtr stationList) {
-//        setStationList(std::move(stationList));
-//        GPSModule::instance()->requestPosition();
-//    });
+    GPSModule::instance()->requestPosition();
 }
 
 void StationListModel::getIndexForFavourites()
@@ -337,11 +328,13 @@ void StationListModel::setNearestStation(StationPtr nearestStation)
 
     auto coordinate = GPSModule::instance()->lastKnowPosition();
 
-    double oldDistance = m_nearestStation->coordinate().distanceTo(coordinate);
-    double newDistance = nearestStation->coordinate().distanceTo(coordinate);
+    if (m_nearestStation && m_nearestStation != nearestStation) {
+        double oldDistance = m_nearestStation->coordinate().distanceTo(coordinate);
+        double newDistance = nearestStation->coordinate().distanceTo(coordinate);
 
-    if (newDistance >= oldDistance)
-        return;
+        if (newDistance > oldDistance)
+            return;
+    }
 
     m_beforeNearestStation = m_nearestStation;
     m_nearestStation = nearestStation;

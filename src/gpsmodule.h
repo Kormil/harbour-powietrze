@@ -23,6 +23,8 @@ public:
 
     QGeoCoordinate lastKnowPosition() const;
 
+    void stop();
+
 private slots:
     void onPositionUpdate(const QGeoPositionInfo& positionInfo);
     void onGpsUpdateFrequencyChanged();
@@ -45,7 +47,6 @@ private:
     QTimer m_timer;
 
     int m_minimumRequestIntervalInSec;
-    int m_timerFrequency;
 };
 
 #endif // GPSMODULE_H

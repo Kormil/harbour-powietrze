@@ -42,5 +42,10 @@ int main(int argc, char *argv[])
 
     view->setSource(SailfishApp::pathToMainQml());
     view->show();
-    return app->exec();
+    int result = app->exec();
+
+    GPSModule::instance()->stop();
+    ProvidersManager::instance()->deleteProviders();
+
+    return result;
 }

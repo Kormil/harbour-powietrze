@@ -97,6 +97,14 @@ QString CountryListModel::selectedCountryCode() const
     return QStringLiteral("");
 }
 
+QString CountryListModel::selectedCountryName() const
+{
+    if (m_selectedItem)
+        return m_selectedItem->name;
+
+    return QStringLiteral("");
+}
+
 void CountryListModel::requestCountryList()
 {
     emit countryListRequested();

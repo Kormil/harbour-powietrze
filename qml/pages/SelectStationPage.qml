@@ -25,7 +25,8 @@ Page {
 
         anchors.fill: parent
         header: PageHeader {
-            title: qsTr("Select station")
+            property string provinceName: provinceListModel.selectedProvince.toLowerCase()
+            title: provinceName.charAt(0).toUpperCase() + provinceName.slice(1);
         }
 
         delegate: StationItem {

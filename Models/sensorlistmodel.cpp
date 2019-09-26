@@ -55,9 +55,11 @@ void SensorListModel::requestData()
     if (!m_station)
         return;
 
+    auto station = m_station;
     Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
-    connection->sensorListRequest(m_station, [=](SensorListPtr sensorList) {
-        setSensorList(sensorList, m_station);
+    connection->sensorListRequest(station, [=](SensorListPtr sensorList) {
+        setSensorList(sensorList, station);
+        requestSensorData(station);
     });
 }
 
@@ -71,13 +73,16 @@ int SensorListModel::rowCount(const QModelIndex &parent) const
     return 0;
 }
 
-void SensorListModel::requestSensorData()
+void SensorListModel::requestSensorData(StationPtr station)
 {
-    Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
-    for (const auto& sensor:  m_station->sensorList()->sensors())
+    if (!station || !station->sensorList())
+        return;
+
+    Connection* connection = ProvidersManager::instance()->connection(station->provider());
+    for (const auto& sensor:  station->sensorList()->sensors())
     {
-        connection->sensorDataRequest(sensor, [this](SensorData sensorData) {
-             m_station->sensorList()->setData(sensorData);
+        connection->sensorDataRequest(sensor, [station](SensorData sensorData) {
+             station->sensorList()->setData(sensorData);
         });
     }
 }
@@ -112,7 +117,7 @@ void SensorListModel::setModelsManager(ModelsManager *modelsManager)
 
 void SensorListModel::setSensorList(SensorListPtr sensorList, StationPtr station)
 {
-    if (!sensorList) {
+    if (!sensorList || !station) {
         return;
     }
 
@@ -124,7 +129,6 @@ void SensorListModel::setSensorList(SensorListPtr sensorList, StationPtr station
     if (station->sensorList() == nullptr)
         return;
 
-    requestSensorData();
     station->sensorList()->setDateToCurrent();
     endResetModel();
 }

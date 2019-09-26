@@ -7,6 +7,9 @@ StationList::StationList(QObject *parent) : QObject(parent)
 
 StationPtr StationList::station(int index)
 {
+    if (m_stations.size() < index)
+        return nullptr;
+
     return m_stations[index];
 }
 
@@ -24,6 +27,8 @@ void StationList::append(StationPtr station)
 {
     if (station == nullptr)
         return;
+
+    std::lock_guard<std::mutex> guard(m_appendStationMutex);
 
     auto hash = station->hash();
     auto hashAndRow = m_hashToRow.find(hash);
@@ -78,9 +83,9 @@ void StationList::calculateDistances(QGeoCoordinate coordinate)
     }
 }
 
-int StationList::row(int stationId) const
+int StationList::row(int hash) const
 {
-    auto idAndRow = m_hashToRow.find(stationId);
+    auto idAndRow = m_hashToRow.find(hash);
     if (m_hashToRow.end() == idAndRow)
         return -1;
 

@@ -40,6 +40,8 @@ struct SensorData
         pollutionCode = second.pollutionCode;
         values = second.values;
         initialized = second.isInitialized();
+
+        return *this;
     }
 
     float value() const {
@@ -53,7 +55,7 @@ struct SensorData
         hours = std::min(values.size(), hours);
         float sum = 0;
 
-        for (int i = 0; i < hours; ++i) {
+        for (size_t i = 0; i < hours; ++i) {
             sum += values[i];
         }
 

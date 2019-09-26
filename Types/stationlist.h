@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <mutex>
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -32,7 +33,7 @@ public:
 
     StationPtr findNearest();
     void calculateDistances(QGeoCoordinate coordinate);
-    int row(int stationId) const;
+    int row(int hash) const;
 
     std::vector<Hash> favourites() const;
 signals:
@@ -46,6 +47,8 @@ private slots:
 private:
     std::vector<StationPtr> m_stations;
     std::map<Hash, unsigned int> m_hashToRow;
+
+    std::mutex m_appendStationMutex;
 };
 
 #endif // STATIONLIST_H

@@ -46,6 +46,7 @@ Page {
             stationModel: stationListModel
             sort: SortStation.ByDistance
             limit: count
+            provider: providerListModel.selectedProviderId
         }
 
         delegate: StationNearestItem {

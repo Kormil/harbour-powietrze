@@ -55,7 +55,7 @@ void ProviderListModel::addProvider(ProviderDataPtr provider)
     endInsertRows();
 }
 
-ProviderDataPtr ProviderListModel::provider(int providerId)
+ProviderDataPtr ProviderListModel::provider(int providerId) const
 {
     for (const auto& provider: m_providerList) {
         if (provider->id == providerId)
@@ -91,6 +91,11 @@ int ProviderListModel::selectedProviderId()
 int ProviderListModel::size() const
 {
     return m_providerList.size();
+}
+
+QString ProviderListModel::site(int provider) const
+{
+    return this->provider(provider)->site;
 }
 
 ProviderListProxyModel::ProviderListProxyModel(QObject *parent) :

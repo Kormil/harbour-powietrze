@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 
 import StationListModel 1.0
 import SensorListModel 1.0
+import ProviderListModel 1.0
 import Settings 1.0
 
 Page {
@@ -122,7 +123,6 @@ Page {
             color: Theme.secondaryColor
             anchors.bottomMargin: Theme.paddingSmall
             horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Data by powietrze.gios.gov.pl")
         }
 
         Connections {
@@ -141,6 +141,8 @@ Page {
                 removeFevourite.visible = stationListModel.selectedStation.favourite
 
                 changeCoverPage(Qt.resolvedUrl("../cover/StationCoverPage.qml"));
+
+                prviderLabel.text = qsTr("Data by ") + providerListModel.site(stationListModel.selectedStation.provider)
             }
         }
 

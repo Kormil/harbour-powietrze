@@ -15,6 +15,7 @@ struct ProviderData {
     bool enabled;
     QString name;
     QString shortName;
+    QString site;
     int airQualityIndexId;
 };
 
@@ -66,15 +67,18 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void addProvider(ProviderDataPtr provider);
-    ProviderDataPtr provider(int providerId);
+    ProviderDataPtr provider(int providerId) const;
 
     Q_INVOKABLE void onItemClicked(int index);
     ProviderData *selectedProvider();
     int selectedProviderId();
 
     int size() const;
+
+    Q_INVOKABLE QString site(int provider) const;
 signals:
     void selectedProviderChanged();
+    void siteChanged();
 
 private:
     std::vector<ProviderDataPtr> m_providerList;

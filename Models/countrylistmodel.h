@@ -40,6 +40,7 @@ class CountryListModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(QString selectedCountry READ selectedCountryCode NOTIFY selectedCountryCodeChanged)
+    Q_PROPERTY(QString selectedCountryName READ selectedCountryName NOTIFY selectedCountryCodeChanged)
 
 public:
     enum CountryListRole
@@ -58,6 +59,7 @@ public:
     Q_INVOKABLE void onItemClicked(int index);
     CountryItem *selectedItem() const;
     QString selectedCountryCode() const;
+    QString selectedCountryName() const;
 
     Q_INVOKABLE void requestCountryList();
 

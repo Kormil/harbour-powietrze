@@ -44,7 +44,7 @@ Page {
 
             anchors.fill: parent
             header: PageHeader {
-                title: qsTr("Select province")
+                title: countryListModel.selectedCountryName
             }
             delegate: BackgroundItem {
                 id: delegate
@@ -74,8 +74,8 @@ Page {
         }
 
         Connections {
-            target: stationListModel
-            onStationListRequested: {
+            target: provinceListModel
+            onProvinceListRequested: {
                 loading.enabled = true
                 loading.visible = true
             }

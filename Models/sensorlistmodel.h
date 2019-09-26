@@ -43,7 +43,7 @@ public:
 
     void setSensorList(SensorListPtr sensorList, StationPtr station);
 private:
-    void requestSensorData();
+    void requestSensorData(StationPtr station);
     void connectModel();
 
 signals:

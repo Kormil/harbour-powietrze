@@ -26,6 +26,7 @@ void ProvidersManager::createProviders()
     powietrze->enabled = true;
     powietrze->name = "Powietrze";
     powietrze->shortName = "Powietrze";
+    powietrze->site = "powietrze.gios.gov.pl";
     powietrze->connection = m_powietrze;
     powietrze->airQualityIndexId = 0;   //TODO zrobić wczytywanie z opcji
 
@@ -34,6 +35,7 @@ void ProvidersManager::createProviders()
     openaq->enabled = true;
     openaq->name = "OpenAQ";
     openaq->shortName = "OpenAQ";
+    openaq->site = "openaq.org";
     openaq->connection = m_openAq;
     openaq->airQualityIndexId = 1;
 
@@ -61,8 +63,12 @@ void ProvidersManager::createConenctions(ModelsManager *modelsManager)
 
 void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int limit, std::function<void (StationListPtr)> handler)
 {
+    if (!coordinate.isValid()) {
+        handler(nullptr);
+    }
+
     auto providerListModel = m_modelsManager->providerListModel();
-    for (int i = 0; i < providerListModel->size(); ++i) {
+    for (int i = 1; i < providerListModel->size() + 1; ++i) {
         auto provider = providerListModel->provider(i);
 
         if (provider->enabled) {
@@ -73,6 +79,15 @@ void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int limit, 
 
 void ProvidersManager::deleteProviders()
 {
-    delete m_powietrze;
-    delete m_openAq;
+    if (m_powietrze) {
+        m_powietrze->clearRequests();
+        delete m_powietrze;
+        m_powietrze = nullptr;
+    }
+
+    if (m_openAq) {
+        m_openAq->clearRequests();
+        delete m_openAq;
+        m_openAq = nullptr;
+    }
 }

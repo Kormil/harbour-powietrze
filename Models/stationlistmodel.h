@@ -2,6 +2,7 @@
 #define STATIONLISTMODEL_H
 
 #include <atomic>
+#include <mutex>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 #include <QDateTime>
@@ -142,6 +143,7 @@ private:
 
     ModelsManager* m_modelsManager;
     std::atomic_int m_indexesToDownload;
+    std::mutex m_setStationListMutex;
 };
 
 #endif // STATIONLISTMODEL_H

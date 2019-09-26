@@ -129,7 +129,7 @@
     <name>SelectProvincePage</name>
     <message>
         <source>Select province</source>
-        <translation>Wybierz województwo</translation>
+        <translation type="vanished">Wybierz województwo</translation>
     </message>
     <message>
         <source>Show all</source>
@@ -144,7 +144,7 @@
     <name>SelectStationPage</name>
     <message>
         <source>Select station</source>
-        <translation>Wybierz stację</translation>
+        <translation type="vanished">Wybierz stację</translation>
     </message>
 </context>
 <context>
@@ -225,7 +225,11 @@
     </message>
     <message>
         <source>Data by powietrze.gios.gov.pl</source>
-        <translation>Dane od powietrze.gios.gov.pl</translation>
+        <translation type="vanished">Dane od powietrze.gios.gov.pl</translation>
+    </message>
+    <message>
+        <source>Data by </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
