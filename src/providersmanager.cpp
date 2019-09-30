@@ -1,4 +1,5 @@
 #include "providersmanager.h"
+#include "src/settings.h"
 
 ProvidersManager::ProvidersManager()
 {
@@ -21,23 +22,30 @@ void ProvidersManager::createProviders()
     if (!m_modelsManager)
         return;
 
+    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+
     ProviderDataPtr powietrze(new ProviderData);
-    powietrze->id = m_powietrze->id();
-    powietrze->enabled = true;
-    powietrze->name = "Powietrze";
-    powietrze->shortName = "Powietrze";
-    powietrze->site = "powietrze.gios.gov.pl";
-    powietrze->connection = m_powietrze;
-    powietrze->airQualityIndexId = 0;   //TODO zrobić wczytywanie z opcji
+    powietrze->setId(m_powietrze->id());
+    powietrze->setName("Powietrze");
+    powietrze->setShortName("Powietrze");
+    powietrze->setSite("powietrze.gios.gov.pl");
+    powietrze->setIcon("powietrze.png");
+    powietrze->setConnection(m_powietrze);
+    powietrze->setAirQualityIndexId(settings->providerSettings(powietrze->name(), "aqi").toInt());
+    QVariant enabled = settings->providerSettings(powietrze->name(), "enabled");
+    powietrze->setEnabled(enabled.isValid() ? enabled.toBool() : true);
+    powietrze->setNameVariant(settings->providerSettings(powietrze->name(), "nameVariant").toInt());
 
     ProviderDataPtr openaq(new ProviderData);
-    openaq->id = m_openAq->id();
-    openaq->enabled = true;
-    openaq->name = "OpenAQ";
-    openaq->shortName = "OpenAQ";
-    openaq->site = "openaq.org";
-    openaq->connection = m_openAq;
-    openaq->airQualityIndexId = 1;
+    openaq->setId(m_openAq->id());
+    openaq->setName("OpenAQ");
+    openaq->setShortName("OpenAQ");
+    openaq->setSite("openaq.org");
+    openaq->setIcon("openaq.jpeg");
+    openaq->setConnection(m_openAq);
+    openaq->setAirQualityIndexId(1);
+    enabled = settings->providerSettings(openaq->name(), "enabled");
+    openaq->setEnabled(enabled.isValid() ? enabled.toBool() : true);
 
     ProviderListModel* providerListModel = m_modelsManager->providerListModel();
 
@@ -50,7 +58,7 @@ void ProvidersManager::createProviders()
 
 Connection *ProvidersManager::connection(int providerId) const
 {
-    return m_modelsManager->providerListModel()->provider(providerId)->connection;
+    return m_modelsManager->providerListModel()->provider(providerId)->connection();
 }
 
 void ProvidersManager::createConenctions(ModelsManager *modelsManager)
@@ -71,8 +79,8 @@ void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int limit, 
     for (int i = 1; i < providerListModel->size() + 1; ++i) {
         auto provider = providerListModel->provider(i);
 
-        if (provider->enabled) {
-            provider->connection->findNearestStationRequest(coordinate, limit, handler);
+        if (provider->enabled()) {
+            provider->connection()->findNearestStationRequest(coordinate, limit, handler);
         }
     }
 }

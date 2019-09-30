@@ -110,7 +110,7 @@ void CountryListModel::requestCountryList()
     emit countryListRequested();
 
     ProviderData * provider = m_modelsManager->providerListModel()->selectedProvider();
-    Connection* connection = provider->connection;
+    Connection* connection = provider->connection();
 
     connection->countryListRequest([this](CountryListPtr countryList) {
         if (!countryList) {

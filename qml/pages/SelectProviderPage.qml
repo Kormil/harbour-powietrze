@@ -12,6 +12,15 @@ Page {
     SilicaFlickable {
         anchors.fill: parent
 
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("Manage providers")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("ManageProvidersPage.qml"))
+                }
+            }
+        }
+
         SilicaListView {
             id: listView
             model: ProviderListProxyModel {

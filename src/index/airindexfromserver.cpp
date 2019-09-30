@@ -13,7 +13,7 @@ void AirIndexFromServer::calculate(StationPtr station, std::function<void(Statio
         handler(nullptr);
     }
 
-    Connection* connection = m_modelsManager->providerListModel()->provider(station->provider())->connection;
+    Connection* connection = m_modelsManager->providerListModel()->provider(station->provider())->connection();
     connection->stationIndexRequest(station, handler);
 }
 

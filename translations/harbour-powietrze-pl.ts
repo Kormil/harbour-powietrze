@@ -65,6 +65,30 @@
         <source>Favourite</source>
         <translation>Ulubione</translation>
     </message>
+    <message>
+        <source>Stop locating the device for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only once</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 hours</source>
+        <translation type="unfinished">4 godziny</translation>
+    </message>
+    <message>
+        <source>8 hours</source>
+        <translation type="unfinished">4 godziny {8 ?}</translation>
+    </message>
+    <message>
+        <source>Today</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Permanently</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LicensePage</name>
@@ -74,10 +98,66 @@
     </message>
 </context>
 <context>
+    <name>ManageProvidersPage</name>
+    <message>
+        <source>Providers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenAQPage</name>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>License</source>
+        <translation type="unfinished">Licencja</translation>
+    </message>
+</context>
+<context>
     <name>PowietrzeConnection</name>
     <message>
         <source>OTHER</source>
         <translation type="obsolete">INNE</translation>
+    </message>
+</context>
+<context>
+    <name>PowietrzePage</name>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Air quality index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pollution names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Short</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>License</source>
+        <translation type="unfinished">Licencja</translation>
+    </message>
+</context>
+<context>
+    <name>ProviderLicensePage</name>
+    <message>
+        <source>License</source>
+        <translation type="unfinished">Licencja</translation>
     </message>
 </context>
 <context>
@@ -122,6 +202,10 @@
     <name>SelectProviderPage</name>
     <message>
         <source>Select provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage providers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -211,6 +295,10 @@
     <message>
         <source>Works only with the screen on. If the screen is off, the program will automatically look for the nearest station after turning the screen on.</source>
         <translation>Działa tylko przy włączonym ekranie. Jeżeli ekran będzie zgaszony, program wyszuka najbliższą stację po ponownym włączeniu ekranu.</translation>
+    </message>
+    <message>
+        <source>Manage providers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

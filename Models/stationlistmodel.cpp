@@ -125,7 +125,7 @@ void StationListModel::requestStationListData()
 {
     emit stationListRequested();
 
-    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection;
+    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection();
 
     connection->stationListRequest([this](StationListPtr stationList) {
         if (!stationList) {
@@ -149,7 +149,7 @@ void StationListModel::requestStationIndexData(StationPtr station)
         return;
 
     auto provider = m_modelsManager->providerListModel()->provider(station->provider());
-    auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId);
+    auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId());
     airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
         {
@@ -271,7 +271,7 @@ void StationListModel::getIndexForFavourites()
         StationPtr station = m_stationList->find(hash);
 
         auto provider = m_modelsManager->providerListModel()->provider(station->provider());
-        auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId);
+        auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId());
 
         airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
             m_indexesToDownload = m_indexesToDownload - 1;

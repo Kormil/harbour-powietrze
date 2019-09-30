@@ -194,8 +194,7 @@ void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, int 
 {
     QString url = "https://" + m_host + m_port + "/v1/locations?coordinates="
             + QString::number(coordinate.latitude()) + "," + QString::number(coordinate.longitude())
-            + "&order_by=distance&limit=" + QString::number(limit) + "&radius=" + QString::number(m_radiusDistance)
-            + "&limit=" + QString::number(m_recordLimits);
+            + "&order_by=distance&limit=" + QString::number(limit) + "&radius=" + QString::number(m_radiusDistance);
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);

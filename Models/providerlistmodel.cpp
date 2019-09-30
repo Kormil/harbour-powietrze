@@ -2,6 +2,7 @@
 #include "src/modelsmanager.h"
 
 #include <QtQml>
+#include <iostream>
 
 namespace {
     int DEFAULT_PROVIDER = 1;
@@ -30,8 +31,14 @@ QVariant ProviderListModel::data(const QModelIndex &index, int role) const
     {
     case Qt::DisplayRole:
     {
-        QString name = provider->shortName;
+        QString name = provider->shortName();
         return QVariant(name);
+    }
+    case IsEnabledRole: {
+        return provider->enabled();
+    }
+    case IconRole: {
+        return provider->icon();
     }
     }
 
@@ -42,6 +49,8 @@ QHash<int, QByteArray> ProviderListModel::roleNames() const
 {
     QHash<int, QByteArray> names;
     names[Qt::DisplayRole] = "name";
+    names[IsEnabledRole] = "enabled";
+    names[IconRole] = "icon";
     return names;
 }
 
@@ -52,19 +61,21 @@ void ProviderListModel::addProvider(ProviderDataPtr provider)
 
     m_providerList.push_back(provider);
 
+    connect(provider.get(), &ProviderData::dataChanged, this, &ProviderListModel::onItemChanged);
+
     endInsertRows();
 }
 
 ProviderDataPtr ProviderListModel::provider(int providerId) const
 {
     for (const auto& provider: m_providerList) {
-        if (provider->id == providerId)
+        if (provider->id() == providerId)
             return provider;
     }
 
     //Default provider with id = 1
     for (const auto& provider: m_providerList) {
-        if (provider->id == DEFAULT_PROVIDER)
+        if (provider->id() == DEFAULT_PROVIDER)
             return provider;
     }
 
@@ -80,12 +91,12 @@ void ProviderListModel::onItemClicked(int index)
 
 ProviderData *ProviderListModel::selectedProvider()
 {
-    return m_providerList[m_selectedItem].get();
+    return  m_providerList[m_selectedItem].get();
 }
 
 int ProviderListModel::selectedProviderId()
 {
-    return selectedProvider()->id;
+    return selectedProvider()->id();
 }
 
 int ProviderListModel::size() const
@@ -95,7 +106,22 @@ int ProviderListModel::size() const
 
 QString ProviderListModel::site(int provider) const
 {
-    return this->provider(provider)->site;
+    return this->provider(provider)->site();
+}
+
+void ProviderListModel::onItemChanged()
+{
+    ProviderData* providerData = qobject_cast<ProviderData*>(sender());
+    int index = 0;
+    for (const auto& provider: m_providerList) {
+        if (provider->id() == providerData->id()) {
+            QModelIndex topLeft = this->index(index, 0);
+            QModelIndex bottomRight = this->index(index, 0);
+            dataChanged(topLeft, bottomRight);
+        }
+
+        ++index;
+    }
 }
 
 ProviderListProxyModel::ProviderListProxyModel(QObject *parent) :
@@ -107,6 +133,7 @@ ProviderListProxyModel::ProviderListProxyModel(QObject *parent) :
 void ProviderListProxyModel::bindToQml()
 {
     qmlRegisterType<ProviderListProxyModel>("ProviderListModel", 1, 0, "ProviderListProxyModel");
+    qmlRegisterType<ProviderData>("ProviderListModel", 1, 0, "Provider");
 }
 
 bool ProviderListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

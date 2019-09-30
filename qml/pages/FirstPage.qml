@@ -72,7 +72,7 @@ Page {
             anchors.rightMargin: Theme.paddingSmall
             running: true
             size: BusyIndicatorSize.Small
-            visible: nearestStationEnabled
+            visible: nearestHeader.visible
         }
 
         StationNearestItem {

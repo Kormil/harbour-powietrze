@@ -23,6 +23,7 @@ SOURCES += src/harbour-powietrze.cpp \
     Models/countrylistmodel.cpp \
     Models/providerlistmodel.cpp \
     Types/countrylist.cpp \
+    Types/provider.cpp \
     Types/stationindex.cpp \
     Types/stationlist.cpp \
     Models/stationlistmodel.cpp \
@@ -46,8 +47,13 @@ SOURCES += src/harbour-powietrze.cpp \
 
 DISTFILES += \
     qml/cover/CoverPage.qml \
+    qml/items/ProviderItem.qml \
+    qml/pages/ManageProvidersPage.qml \
+    qml/pages/ProviderLicensePage.qml \
     qml/pages/SelectCountryPage.qml \
     qml/pages/SelectProviderPage.qml \
+    qml/providers/OpenAQPage.qml \
+    qml/providers/PowietrzePage.qml \
     rpm/harbour-powietrze.changes.in \
     rpm/harbour-powietrze.changes.run.in \
     rpm/harbour-powietrze.spec \
@@ -115,6 +121,7 @@ HEADERS += \
     Models/countrylistmodel.h \
     Models/providerlistmodel.h \
     Types/countrylist.h \
+    Types/provider.h \
     Types/stationindex.h \
     Types/stationlist.h \
     Models/stationlistmodel.h \
@@ -143,6 +150,10 @@ RESOURCES += \
 license.files = LICENSE
 license.path = /usr/share/$${TARGET}
 INSTALLS += license
+
+providersLicense.files = Licenses/*
+providersLicense.path = /usr/share/$${TARGET}/Licenses
+INSTALLS += providersLicense
 
 #OTHER_FILES += nmea/*
 #nmea.files = nmea/*.nmea

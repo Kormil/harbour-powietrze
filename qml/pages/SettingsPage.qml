@@ -14,34 +14,34 @@ Page {
         Column
         {
 
-        PageHeader {
-            title: qsTr("Settings")
-        }
-
-        ComboBox {
-            width: page.width
-            label: qsTr("Units type")
-            currentIndex: Settings.unitType
-
-            menu: ContextMenu {
-                MenuItem { text: qsTr("Microgram") }
-                MenuItem { text: qsTr("Milligram") }
+            PageHeader {
+                title: qsTr("Settings")
             }
 
-            onCurrentIndexChanged: {
-                Settings.unitType = currentIndex
+            ComboBox {
+                width: page.width
+                label: qsTr("Units type")
+                currentIndex: Settings.unitType
+
+                menu: ContextMenu {
+                    MenuItem { text: qsTr("Microgram") }
+                    MenuItem { text: qsTr("Milligram") }
+                }
+
+                onCurrentIndexChanged: {
+                    Settings.unitType = currentIndex
+                }
             }
-        }
 
-        TextSwitch {
-            text: qsTr("Notifications")
-            checked: Settings.notifications
-        }
+            TextSwitch {
+                text: qsTr("Notifications")
+                checked: Settings.notifications
+            }
 
-        SectionHeader {
-            id: favouriteSection
-            text: qsTr("GPS")
-        }
+            SectionHeader {
+                id: favouriteSection
+                text: qsTr("GPS")
+            }
 
             ComboBox {
                 width: page.width
@@ -62,6 +62,49 @@ Page {
                     Settings.gpsUpdateFrequency = currentIndex
                 }
             }
-}
+
+            BackgroundItem {
+                width: parent.width
+
+                Label {
+                    id: label
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.leftMargin: Theme.horizontalPageMargin
+                    anchors.rightMargin: Theme.paddingMedium
+
+                    horizontalAlignment: Text.AlignHCenter
+                    truncationMode: TruncationMode.Fade
+                    text: qsTr("Manage providers")
+                    color: highlighted ? Theme.highlightColor : Theme.primaryColor
+                }
+
+                Image {
+                    id: image
+
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.horizontalPageMargin
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    source: "image://theme/icon-m-right?" + (label.highlighted
+                                                             ? Theme.highlightColor
+                                                             : Theme.primaryColor)
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: Theme.rgba(Theme.highlightBackgroundColor, 0.15) }
+                        GradientStop { position: 1.0; color: "transparent" }
+                    }
+                }
+
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("ManageProvidersPage.qml"))
+                }
+            }
+        }
     }
 }

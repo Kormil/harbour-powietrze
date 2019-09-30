@@ -10,7 +10,6 @@
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
 #define GPS_FREQUENCY QStringLiteral("gps/frequency")
 
-
 Settings::Settings(QObject *parent) :
     m_settings(new QSettings(parent))
 {
@@ -113,6 +112,25 @@ QString Settings::license()
     return content;
 }
 
+QString Settings::providerLicense(QString providerName)
+{
+    QString licenseFile = SailfishApp::pathTo(QString("Licenses/") + providerName).toLocalFile();
+
+    if (!QFile::exists(licenseFile)) {
+        return "License not found.";
+    }
+
+    QFile file(licenseFile);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return "Could not open: " + licenseFile;
+
+    QTextStream in(&file);
+    QString content = in.readAll();
+    file.close();
+
+    return content;
+}
+
 QString Settings::version()
 {
     return "1.0";
@@ -124,6 +142,22 @@ void Settings::setGpsUpdateFrequency(unsigned short gpsFrequency)
     {
         m_settings->setValue(GPS_FREQUENCY, gpsFrequency);
         emit gpsUpdateFrequencyChanged();
+    }
+}
+
+QVariant Settings::providerSettings(QString name, QString key)
+{
+    QString path = "providers/" + name + "/" + key;
+    return m_settings->value(path);
+}
+
+void Settings::setProviderSettings(QString name, QString key, QVariant value)
+{
+    if (providerSettings(name, key) != value)
+    {
+        QString path = "providers/" + name + "/" + key;
+        m_settings->setValue(path, value);
+        emit providerSettingsChanged(name, key);
     }
 }
 

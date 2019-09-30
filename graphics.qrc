@@ -8,5 +8,7 @@
         <file>Graphics/weatherIcons/256/5.png</file>
         <file>icons/172x172/harbour-powietrze.png</file>
         <file>Graphics/weatherIcons/256/-1.png</file>
+        <file>Graphics/providerIcons/openaq.jpeg</file>
+        <file>Graphics/providerIcons/powietrze.png</file>
     </qresource>
 </RCC>

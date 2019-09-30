@@ -32,10 +32,14 @@ public:
     Q_INVOKABLE void updateFavouriteStations(int time);
 
     Q_INVOKABLE QString license();
+    Q_INVOKABLE QString providerLicense(QString providerName);
     Q_INVOKABLE QString version();
 
     Q_INVOKABLE unsigned short gpsUpdateFrequency();
     Q_INVOKABLE void setGpsUpdateFrequency(unsigned short unitType);
+
+    Q_INVOKABLE QVariant providerSettings(QString name, QString key);
+    Q_INVOKABLE void setProviderSettings(QString name, QString key, QVariant value);
 
     bool notifications() const;
     void setNotifications(const bool &value);
@@ -48,6 +52,7 @@ signals:
     void updateFavouriteStationsChanged();
     void gpsUpdateFrequencyChanged();
     void notificationsChanged();
+    void providerSettingsChanged(QString, QString);
 
 private:
     QVariantList favouriteStationsData() const;

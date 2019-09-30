@@ -23,10 +23,16 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
     const std::vector<SensorData>& sensors = m_station->sensorList()->sensors();
     const auto& it = sensors[row];
 
+    int pollutionNameVariant = m_modelsManager->providerListModel()->provider(m_station->provider())->nameVariant();
     switch (role)
     {
-        case NAME:
-            return QVariant(it.name);
+        case NAME: {
+            if (pollutionNameVariant == 0) {
+                return QVariant(it.name);
+            } else {
+                return QVariant(it.pollutionCode);
+            }
+        }
         case VALUE:
         {
             if (it.value() == Connection::NoData) {

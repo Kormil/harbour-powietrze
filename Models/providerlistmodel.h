@@ -4,20 +4,11 @@
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <memory>
+#include "Types/provider.h"
 
 class ModelsManager;
 class Connection;
 class ProviderListModel;
-
-struct ProviderData {
-    int id;
-    Connection* connection;
-    bool enabled;
-    QString name;
-    QString shortName;
-    QString site;
-    int airQualityIndexId;
-};
 
 using ProviderDataPtr = std::shared_ptr<ProviderData>;
 
@@ -53,11 +44,13 @@ class ProviderListModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(int selectedProviderId READ selectedProviderId NOTIFY selectedProviderChanged)
+    Q_PROPERTY(ProviderData* selectedProvider READ selectedProvider NOTIFY selectedProviderChanged)
 
 public:
     enum ProviderListRole
     {
-        IsEnabledRole = Qt::UserRole + 1
+        IsEnabledRole = Qt::UserRole + 1,
+        IconRole
     };
 
     explicit ProviderListModel(QObject *parent = nullptr);
@@ -76,6 +69,9 @@ public:
     int size() const;
 
     Q_INVOKABLE QString site(int provider) const;
+public slots:
+    void onItemChanged();
+
 signals:
     void selectedProviderChanged();
     void siteChanged();

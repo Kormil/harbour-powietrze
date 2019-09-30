@@ -114,7 +114,7 @@ void ProvinceListModel::requestProvinceList()
 {
     emit provinceListRequested();
 
-    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection;
+    Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection();
     connection->provinceListRequest([this](ProvinceListPtr provinceList) {
         if (!provinceList) {
             emit provinceLoaded();

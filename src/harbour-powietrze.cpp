@@ -44,6 +44,8 @@ int main(int argc, char *argv[])
     view->show();
     int result = app->exec();
 
+    view->destroy();
+
     GPSModule::instance()->stop();
     ProvidersManager::instance()->deleteProviders();
 
