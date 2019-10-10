@@ -8,7 +8,6 @@
 namespace Utils
 {
     void simpleNotification(QString header, QString body);
-    StationIndexPtr airQualityIndex(SensorListPtr sensorList);
 }
 
 #endif // UTILS_H

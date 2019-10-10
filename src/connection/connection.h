@@ -68,7 +68,7 @@ public:
     virtual void sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler) = 0;
     virtual void sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler) = 0;
     virtual void stationIndexRequest(StationPtr station, std::function<void(StationIndexPtr)> handler) = 0;
-    virtual void findNearestStationRequest(QGeoCoordinate coordinate, int limit, std::function<void(StationListPtr)> handler) = 0;
+    virtual void findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) = 0;
 
     QNetworkAccessManager *networkAccessManager();
 

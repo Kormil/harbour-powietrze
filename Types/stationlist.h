@@ -42,7 +42,7 @@ signals:
     void itemChanged(int);
 
 private slots:
-    void onItemChanged(int id);
+    void onItemChanged(int hash);
 
 private:
     std::vector<StationPtr> m_stations;

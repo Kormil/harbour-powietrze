@@ -69,7 +69,7 @@ void ProvidersManager::createConenctions(ModelsManager *modelsManager)
     m_openAq = new OpenAQConnection(modelsManager);
 }
 
-void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int limit, std::function<void (StationListPtr)> handler)
+void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int distanceLimit, std::function<void (StationListPtr)> handler)
 {
     if (!coordinate.isValid()) {
         handler(nullptr);
@@ -80,7 +80,7 @@ void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int limit, 
         auto provider = providerListModel->provider(i);
 
         if (provider->enabled()) {
-            provider->connection()->findNearestStationRequest(coordinate, limit, handler);
+            provider->connection()->findNearestStationRequest(coordinate, distanceLimit, handler);
         }
     }
 }

@@ -44,6 +44,9 @@ public:
     bool notifications() const;
     void setNotifications(const bool &value);
 
+    QDateTime gpsLocationPaused() const;
+    void setGpsLocationPaused(const QDateTime &value);
+
     static void bindToQml();
 signals:
     void unitTypeChanged();

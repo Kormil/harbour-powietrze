@@ -1,5 +1,6 @@
 #include "stationlist.h"
 #include <list>
+#include <iostream>
 
 StationList::StationList(QObject *parent) : QObject(parent)
 {
@@ -105,8 +106,8 @@ std::vector<StationList::Hash> StationList::favourites() const
     return favouriteStations;
 }
 
-void StationList::onItemChanged(int id)
+void StationList::onItemChanged(int hash)
 {
-    auto hashAndRow = m_hashToRow.find(id);
+    auto hashAndRow = m_hashToRow.find(hash);
     emit itemChanged(hashAndRow->second);
 }

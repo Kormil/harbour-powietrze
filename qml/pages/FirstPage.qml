@@ -8,6 +8,7 @@ import "../items"
 
 Page {
     property bool nearestStationEnabled: Settings.gpsUpdateFrequency
+    property int selectedTimeBreak
     id: page
 
     Component.onCompleted: {
@@ -53,26 +54,37 @@ Page {
             }
         }
 
-        SectionHeader {
+        Row {
             id: nearestHeader
-            anchors.left: parent.left
-            width: parent.width - nearestStationBusy.widthWithMargins
-            text: qsTr("Nearest station")
-            font.pixelSize: Theme.fontSizeLarge
+            width: page.width
+            spacing: Theme.paddingMedium
             visible: nearestStationEnabled
-        }
 
-        BusyIndicator {
-            property int widthWithMargins: nearestStationBusy.width + nearestStationBusy.anchors.leftMargin + nearestStationBusy.anchors.rightMargin
+            SectionHeader {
+                id: nearestHeaderLabel
+                width: parent.width - nearestStationBusy.realWidth - stopLocating.realWidth
+                text: qsTr("Nearest station")
+                font.pixelSize: Theme.fontSizeLarge
+            }
 
-            id: nearestStationBusy
-            anchors.verticalCenter: nearestHeader.verticalCenter
-            anchors.left: nearestHeader.right
-            anchors.leftMargin: Theme.paddingSmall
-            anchors.rightMargin: Theme.paddingSmall
-            running: true
-            size: BusyIndicatorSize.Small
-            visible: nearestHeader.visible
+            BusyIndicator {
+                property int realWidth: visible ? width : 0
+                id: nearestStationBusy
+                anchors.verticalCenter: nearestHeader.verticalCenter
+                running: true
+                size: BusyIndicatorSize.Small
+                visible: nearestHeader.visible
+            }
+
+            IconButton {
+                property int realWidth: visible ? width + Theme.horizontalPageMargin : 0
+                visible: nearestStationBusy.visible
+                id: stopLocating
+                icon.source: "image://theme/icon-m-cancel?" + (pressed
+                                                               ? Theme.highlightColor
+                                                               : Theme.primaryColor)
+                onClicked: pageStack.push(stopLocatingDialog)
+            }
         }
 
         StationNearestItem {
@@ -190,7 +202,7 @@ Page {
             nearestStationBusy.visible = false
             nearestHeader.width = page.width - Theme.horizontalPageMargin
 
-            if (nearestStationEnabled)
+            if (nearestStationEnabled && stationListModel.nearestStation)
             {
                 nearestStation.visible = true
                 nearestStation.name = stationListModel.nearestStation.name
@@ -229,5 +241,59 @@ Page {
         loops: Animation.Infinite
         interactionMode: TouchInteraction.Pull
         direction: TouchInteraction.Down
+    }
+
+    Component {
+        id: stopLocatingDialog
+
+        Dialog {
+            canAccept: selector.currentIndex >= 0
+            acceptDestination: page
+            acceptDestinationAction: PageStackAction.Pop
+
+            onAccepted: {
+                if (selector.currentIndex == 0) {
+                    gps.stopLocating();
+                } else {
+                    gps.pauseLocating(selector.currentItem.value)
+                }
+            }
+
+            Flickable {
+                width: parent.width
+                height: parent.height
+                interactive: false
+
+                Column {
+                    width: parent.width
+
+                    DialogHeader {
+                        title: qsTr("Stop locating for")
+                    }
+
+                    ComboBox {
+                        id: selector
+
+                        width: parent.width
+                        currentIndex: 0
+
+                        menu: ContextMenu {
+                            Repeater {
+                                model: [ {name: qsTr('Only once'), value: 0},
+                                    {name: qsTr('4 hours'), value: 4},
+                                    {name: qsTr('8 hours'), value: 8},
+                                    {name: qsTr('24 hours'), value: 24},
+                                    {name: qsTr('Permanently'), value: -1}]
+
+                                MenuItem {
+                                    property int value: modelData.value
+                                    text: modelData.name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -190,11 +190,11 @@ void OpenAQConnection::stationIndexRequest(StationPtr, std::function<void (Stati
     handler(stationIndex);
 }
 
-void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, int limit, std::function<void (StationListPtr)> handler)
+void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
 {
     QString url = "https://" + m_host + m_port + "/v1/locations?coordinates="
             + QString::number(coordinate.latitude()) + "," + QString::number(coordinate.longitude())
-            + "&order_by=distance&limit=" + QString::number(limit) + "&radius=" + QString::number(m_radiusDistance);
+            + "&order_by=distance&limit=" + QString::number(m_recordLimits) + "&radius=" + QString::number(distanceLimit);
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
@@ -205,12 +205,11 @@ void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, int 
         {
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
 
-            if (stationList->size() < limit) {
+            if (stationList->size() >= 1) {
                 stationList->calculateDistances(coordinate);
                 handler(stationList);
             } else {
-                m_radiusDistance *= 2;
-                findNearestStationRequest(coordinate, limit, handler);
+                findNearestStationRequest(coordinate, distanceLimit * 2, handler);
             }
         }
 
@@ -225,6 +224,7 @@ CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &json
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
+        std::cout << "OpenAQ: no results in JSON" << std::endl;
         return countryList;
     }
 
@@ -248,6 +248,7 @@ ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jso
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
+        std::cout << "OpenAQ: no results in JSON" << std::endl;
         return provinceList;
     }
 
@@ -271,6 +272,7 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
+        std::cout << "OpenAQ: no results in JSON" << std::endl;
         return stationList;
     }
 
@@ -324,6 +326,7 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
             if (sensorData.name == QStringLiteral("pm25"))
                 sensorData.name = QStringLiteral("pm2.5");
 
+
             sensorList->setData(sensorData);
         }
 
@@ -351,6 +354,7 @@ SensorData OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDoc
 
     if (sensorData.name == QStringLiteral("pm25"))
         sensorData.name = QStringLiteral("pm2.5");
+
 
     std::vector<float> values;
     for (const auto& result: results)

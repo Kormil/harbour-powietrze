@@ -9,7 +9,7 @@ EuropeanAQ::EuropeanAQ()
 {
     m_id = 1;
 
-    auto PM25 = std::make_pair<QString, Pollution>("pm2.5", {24, {10, 20, 25, 50, 800}});
+    auto PM25 = std::make_pair<QString, Pollution>("pm25", {24, {10, 20, 25, 50, 800}});
     auto PM10 = std::make_pair<QString, Pollution>("pm10", {24, {20, 35, 50, 100, 1200}});
     auto NO2  = std::make_pair<QString, Pollution>("no2",  {1, {40, 100, 200, 400, 1000}});
     auto O3   = std::make_pair<QString, Pollution>("o3",   {1, {80, 120, 180, 240, 600}});
@@ -73,7 +73,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
     }
 
     StationIndexPtr stationIndex(new StationIndex);
-    if (worestIndexId > 0)
+    if (worestIndexId >= 0)
         stationIndex->setName(m_names[worestIndexId]);
     stationIndex->setId(worestIndexId);
     return stationIndex;

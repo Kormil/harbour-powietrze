@@ -9,6 +9,7 @@
 #define NOTIFICATIONS_STATIONS QStringLiteral("stations/notifications")
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
 #define GPS_FREQUENCY QStringLiteral("gps/frequency")
+#define GPS_PAUSED QStringLiteral("gps/paused")
 
 Settings::Settings(QObject *parent) :
     m_settings(new QSettings(parent))
@@ -172,6 +173,19 @@ void Settings::setNotifications(const bool &value)
     {
         m_settings->setValue(NOTIFICATIONS_STATIONS, value);
         emit notificationsChanged();
+    }
+}
+
+QDateTime Settings::gpsLocationPaused() const
+{
+    return m_settings->value(GPS_PAUSED, QDateTime::currentDateTime()).toDateTime();
+}
+
+void Settings::setGpsLocationPaused(const QDateTime &value)
+{
+    if (gpsLocationPaused() != value)
+    {
+        m_settings->setValue(GPS_PAUSED, value);
     }
 }
 

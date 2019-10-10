@@ -82,6 +82,17 @@ ProviderDataPtr ProviderListModel::provider(int providerId) const
     return nullptr;
 }
 
+ProviderData *ProviderListModel::providerPtr(int providerId) const
+{
+    auto providerPtr = provider(providerId);
+
+    if (providerPtr) {
+        return providerPtr.get();
+    }
+
+    return nullptr;
+}
+
 void ProviderListModel::onItemClicked(int index)
 {
     m_selectedItem = index;
@@ -141,7 +152,7 @@ bool ProviderListProxyModel::filterAcceptsRow(int source_row, const QModelIndex 
     Q_UNUSED(source_parent);
 
     bool isEnabled = sourceModel()->index(source_row, 0).data(ProviderListModel::IsEnabledRole).toBool();
-    if (!m_enabledFilter && !isEnabled)
+    if (m_enabledFilter && !isEnabled)
     {
         return false;
     }

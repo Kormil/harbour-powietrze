@@ -14,11 +14,16 @@ class GPSModule;
 class GPSModule : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool paused READ isPaused WRITE removePauseFlag NOTIFY pausedChanged)
 public:
     static GPSModule *instance();
     static void bindToQml(QQuickView * view);
 
     Q_INVOKABLE void requestPosition();
+    Q_INVOKABLE void stopLocating();
+    Q_INVOKABLE void pauseLocating(int hours);
+    bool isPaused();
+    void removePauseFlag(bool);
     void init();
 
     QGeoCoordinate lastKnowPosition() const;
@@ -35,6 +40,7 @@ signals:
     void positionRequested();
     void positionFounded(QGeoCoordinate coordinate);
     void positionUpdated(QGeoCoordinate coordinate);
+    void pausedChanged();
 
 private:
     explicit GPSModule(QObject *parent = nullptr);
@@ -47,6 +53,7 @@ private:
     QTimer m_timer;
 
     int m_minimumRequestIntervalInSec;
+    QDateTime m_pausedLocatingDateTime;
 };
 
 #endif // GPSMODULE_H

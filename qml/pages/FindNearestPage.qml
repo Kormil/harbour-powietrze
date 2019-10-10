@@ -8,8 +8,6 @@ import GPSModule 1.0
 import "../items"
 
 Page {
-    property int count: 5
-
     id: page
     allowedOrientations: Orientation.All
 
@@ -26,9 +24,11 @@ Page {
 
         PushUpMenu {
             MenuItem {
+                id: findMoreItem
                 text: qsTr("Find more")
+                visible: false
                 onClicked: {
-                    count = count + 5
+                    stationListModel.stationDistanceLimit = stationListModel.stationDistanceLimit * 2
                     gps.requestPosition()
                 }
             }
@@ -45,8 +45,7 @@ Page {
             id: stationListProxyModel
             stationModel: stationListModel
             sort: SortStation.ByDistance
-            limit: count
-            provider: providerListModel.selectedProviderId
+            distanceLimit: stationListModel.stationDistanceLimit
         }
 
         delegate: StationNearestItem {
@@ -57,7 +56,6 @@ Page {
                 stationListProxyModel.onItemClicked(index)
             }
         }
-
         VerticalScrollDecorator {}
     }
 
@@ -74,6 +72,7 @@ Page {
         target: gps
         onPositionRequested: {
             loading.visible = true
+            findMoreItem.visible = false
         }
     }
 
@@ -81,6 +80,7 @@ Page {
         target: gps
         onPositionFounded: {
             loading.visible = false
+            findMoreItem.visible = true
         }
     }
 

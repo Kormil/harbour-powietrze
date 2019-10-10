@@ -11,7 +11,7 @@ PowietrzeConnection::PowietrzeConnection(ModelsManager* modelsManager) :
     m_host = "api.gios.gov.pl/pjp-api/rest";
     m_port = "";
 
-//    m_host = "192.168.1.106";
+//    m_host = "192.168.1.11";
 //    m_port = ":12334";
 
     m_id = 1;
@@ -42,7 +42,7 @@ void PowietrzeConnection::stationListRequest(std::function<void(StationListPtr)>
     if (m_lastStationListRequestDate.isValid()
             && currentTime.secsTo(m_lastStationListRequestDate) < m_stationListRequestFrequency)
     {
-        handler(StationListPtr{});
+        handler(nullptr);
         return ;
     }
 
@@ -173,7 +173,7 @@ void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<
 
     if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(m_stationIndexRequestFrequency))
     {
-        handler(station->stationIndexPtr());
+        handler(StationIndexPtr(nullptr));
         return;
     }
 
@@ -199,11 +199,8 @@ void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<
     });
 }
 
-void PowietrzeConnection::findNearestStationRequest(QGeoCoordinate coordinate, int, std::function<void (StationListPtr)> handler)
+void PowietrzeConnection::findNearestStationRequest(QGeoCoordinate coordinate, float, std::function<void (StationListPtr)> handler)
 {
-    m_modelsManager->stationListModel()->calculateDistances(coordinate);
-    handler(StationListPtr());
-
     stationListRequest([=](StationListPtr stationList) {
         if (!stationList) {
             m_modelsManager->stationListModel()->calculateDistances(coordinate);
@@ -281,6 +278,10 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
         sensorData.id = sensor.toObject()["id"].toInt();
         sensorData.name = sensor.toObject()["param"].toObject()["paramName"].toString();
         sensorData.pollutionCode = sensor.toObject()["param"].toObject()["paramCode"].toString().toLower();
+
+
+        if (sensorData.pollutionCode == QStringLiteral("pm2.5"))
+            sensorData.pollutionCode = QStringLiteral("pm25");
 
         sensorList->setData(sensorData);
     }

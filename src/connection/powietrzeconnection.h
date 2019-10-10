@@ -21,7 +21,7 @@ public:
     virtual void sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler) override;
     virtual void sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler) override;
     virtual void stationIndexRequest(StationPtr station, std::function<void(StationIndexPtr)> handler) override;
-    virtual void findNearestStationRequest(QGeoCoordinate coordinate, int, std::function<void(StationListPtr)> handler) override;
+    virtual void findNearestStationRequest(QGeoCoordinate coordinate, float, std::function<void(StationListPtr)> handler) override;
 
 
 private:

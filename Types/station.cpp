@@ -85,7 +85,7 @@ void Station::setDistance(double distance)
 {
     m_distance = distance;
     emit distanceChanged();
-    emit dataChanged(id());
+    emit dataChanged(hash());
 }
 
 StationIndex *Station::stationIndex() const

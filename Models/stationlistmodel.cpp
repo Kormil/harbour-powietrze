@@ -16,25 +16,10 @@ StationListModel::StationListModel(QObject *parent)
       m_beforeNearestStation(nullptr),
       m_stationList(nullptr)
 {
+    setStationDistanceLimit(8000);
+
     QObject::connect(GPSModule::instance(), &GPSModule::shouldRequest, this, &StationListModel::findNearestStation);
-    QObject::connect(GPSModule::instance(), &GPSModule::positionUpdated, this, [this](QGeoCoordinate coordinate) {
-        ProvidersManager::instance()->findNearestStation(coordinate, 1, [this](StationListPtr stationList) {
-            if (m_stationList) {
-                std::lock_guard<std::mutex> guard(m_setStationListMutex);
-
-                if (stationList) {
-                    m_stationList->appendList(stationList);
-                }
-            }
-            else {
-                setStationList(stationList);
-            }
-
-            if (m_stationList) {
-                setNearestStation(m_stationList->findNearest());
-            }
-        });
-    });
+    QObject::connect(GPSModule::instance(), &GPSModule::positionUpdated, this, &StationListModel::onGPSPositionUpdate);
 }
 
 int StationListModel::rowCount(const QModelIndex &parent) const
@@ -310,6 +295,42 @@ void StationListModel::getIndexForFavourites()
     }
 }
 
+void StationListModel::onGPSPositionUpdate(QGeoCoordinate coordinate)
+{
+    if (!coordinate.isValid()) {
+        emit nearestStationFounded();
+        return ;
+    }
+
+    ProvidersManager::instance()->findNearestStation(coordinate, m_stationDistanceLimit, [this](StationListPtr stationList) {
+        std::lock_guard<std::mutex> guard(m_findNearestStationMutex);
+        if (m_stationList) {
+
+            if (stationList) {
+                m_stationList->appendList(stationList);
+            }
+        }
+        else {
+            setStationList(stationList);
+        }
+
+        if (m_stationList) {
+            setNearestStation(m_stationList->findNearest());
+        }
+    });
+}
+
+float StationListModel::stationDistanceLimit() const
+{
+    return m_stationDistanceLimit;
+}
+
+void StationListModel::setStationDistanceLimit(float stationDistanceLimit)
+{
+    m_stationDistanceLimit = stationDistanceLimit;
+    emit stationDistanceLimitChanged();
+}
+
 void StationListModel::setModelsManager(ModelsManager *modelsManager)
 {
     m_modelsManager = modelsManager;
@@ -351,7 +372,6 @@ void StationListModel::setSelectedStation(StationPtr selected)
 StationListProxyModel::StationListProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
 {
-
 }
 
 void StationListProxyModel::setProvinceNameFilter(const QString &provinceNameFilter)
@@ -378,10 +398,13 @@ bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
         }
     }
 
-    if (m_sortedBy == SortStation::ByDistance && sourceModel()->index(source_row, 0).data(StationListModel::DistanceRole).toDouble() == 0)
+    if (m_sortedBy == SortStation::ByDistance && sourceModel()->index(source_row, 0).data(StationListModel::DistanceRole).toDouble() == 0) {
         return false;
+    }
 
-    QString provinceName = sourceModel()->index(source_row, 0).data(StationListModel::ProvinceNameRole).toString();
+    if (m_distanceLimitFilter && sourceModel()->index(source_row, 0).data(StationListModel::DistanceRole).toDouble() * 1000 > m_distanceLimit) {
+        return false;
+    }
 
     if (m_favourites)
     {
@@ -389,8 +412,8 @@ bool StationListProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
             return false;
     }
 
-    if (!m_provinceNameFilter.isEmpty() && provinceName != m_provinceNameFilter)
-    {
+    QString provinceName = sourceModel()->index(source_row, 0).data(StationListModel::ProvinceNameRole).toString();
+    if (!m_provinceNameFilter.isEmpty() && provinceName != m_provinceNameFilter) {
         return false;
     }
 
@@ -428,10 +451,23 @@ bool StationListProxyModel::lessThan(const QModelIndex &source_left, const QMode
 
 int StationListProxyModel::rowCount(const QModelIndex &parent) const
 {
-    if (m_limit)
-        return std::min(m_limit, QSortFilterProxyModel::rowCount(parent));
+    if (parent.isValid() || m_stationListModel == nullptr) {
+        return 0;
+    }
 
     return QSortFilterProxyModel::rowCount(parent);
+}
+
+float StationListProxyModel::distanceLimit() const
+{
+    return m_distanceLimit;
+}
+
+void StationListProxyModel::setDistanceLimit(float distanceLimit)
+{
+    m_distanceLimit = distanceLimit;
+    m_distanceLimitFilter = true;
+    invalidateFilter();
 }
 
 SortStation::EnSortStation StationListProxyModel::sortedBy() const
@@ -442,8 +478,7 @@ SortStation::EnSortStation StationListProxyModel::sortedBy() const
 void StationListProxyModel::setSortedBy(const SortStation::EnSortStation &sortedBy)
 {
     m_sortedBy = sortedBy;
-    invalidateFilter();
-    sort(0);
+    invalidate();
 }
 
 int StationListProxyModel::provider() const
@@ -454,17 +489,6 @@ int StationListProxyModel::provider() const
 void StationListProxyModel::setProvider(const int &providerID)
 {
     m_providerFilter = providerID;
-    invalidateFilter();
-}
-
-int StationListProxyModel::limit() const
-{
-    return m_limit;
-}
-
-void StationListProxyModel::setLimit(int value)
-{
-    m_limit = value;
     invalidateFilter();
 }
 

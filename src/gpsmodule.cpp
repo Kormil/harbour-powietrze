@@ -39,6 +39,45 @@ void GPSModule::requestPosition()
     }
 }
 
+void GPSModule::stopLocating()
+{
+    if (m_positionSource) {
+        m_positionSource->stopUpdates();
+    }
+
+    m_timeLastKnowPosition = QDateTime::currentDateTime();
+    emit positionUpdated(m_lastKnowPosition);
+    emit positionFounded(m_lastKnowPosition);
+}
+
+void GPSModule::pauseLocating(int hours)
+{
+    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+
+    if (hours == -1) {
+        settings->setGpsUpdateFrequency(0);
+        return;
+    }
+
+    m_pausedLocatingDateTime = QDateTime::currentDateTime().addSecs(hours * 60 * 60);
+    stopLocating();
+
+    settings->setGpsLocationPaused(m_pausedLocatingDateTime);
+    emit pausedChanged();
+}
+
+bool GPSModule::isPaused()
+{
+    return QDateTime::currentDateTime() < m_pausedLocatingDateTime;
+}
+
+void GPSModule::removePauseFlag(bool)
+{
+    m_pausedLocatingDateTime = QDateTime::currentDateTime();
+    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+    settings->setGpsLocationPaused(m_pausedLocatingDateTime);
+}
+
 void GPSModule::onPositionUpdate(const QGeoPositionInfo &positionInfo)
 {
     std::cout << "GPS position: " << positionInfo.coordinate().latitude() << " : " << positionInfo.coordinate().longitude() << std::endl;
@@ -104,7 +143,8 @@ GPSModule::GPSModule(QObject *parent) :
     init();
 
     QObject::connect(&m_timer, &QTimer::timeout, [this]() {
-        if (QDateTime::currentDateTime() >= m_timeLastKnowPosition.addSecs(m_minimumRequestIntervalInSec))
+        if (!isPaused() &&
+            QDateTime::currentDateTime() >= m_timeLastKnowPosition.addSecs(m_minimumRequestIntervalInSec))
             emit shouldRequest();
     });
 }
@@ -154,5 +194,6 @@ void GPSModule::init()
     Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
     QObject::connect(settings, &Settings::gpsUpdateFrequencyChanged, this, &GPSModule::onGpsUpdateFrequencyChanged);
 
+    m_pausedLocatingDateTime = settings->gpsLocationPaused();
     onGpsUpdateFrequencyChanged();
 }

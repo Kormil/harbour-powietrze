@@ -19,7 +19,7 @@ public:
     Connection* connection(int providerId) const;
 
     void createConenctions(ModelsManager *modelsManager);
-    void findNearestStation(QGeoCoordinate coordinate, int limit, std::function<void(StationListPtr)> handler);
+    void findNearestStation(QGeoCoordinate coordinate, int distanceLimit, std::function<void(StationListPtr)> handler);
 
 private:
     ProvidersManager();

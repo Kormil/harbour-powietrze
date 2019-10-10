@@ -66,10 +66,6 @@
         <translation></translation>
     </message>
     <message>
-        <source>Stop locating the device for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Only once</source>
         <translation type="unfinished"></translation>
     </message>
@@ -82,11 +78,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Today</source>
+        <source>Permanently</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Permanently</source>
+        <source>Stop locating for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>24 hours</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -208,6 +208,10 @@
         <source>Manage providers</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Find nearest stations</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SelectProvincePage</name>
@@ -287,6 +291,10 @@
     </message>
     <message>
         <source>Manage providers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paused</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

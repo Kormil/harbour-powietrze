@@ -24,7 +24,7 @@ public:
     virtual void sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler) override;
     virtual void sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler) override;
     virtual void stationIndexRequest(StationPtr, std::function<void(StationIndexPtr)> handler) override;
-    virtual void findNearestStationRequest(QGeoCoordinate coordinate, int limit, std::function<void(StationListPtr)> handler) override;
+    virtual void findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
 private:
     //JSON
@@ -37,7 +37,6 @@ private:
     std::set<QString> m_requestedProvince;
     std::set<QString> m_requestedStation;
 
-    int m_radiusDistance = 8000; //in meters
     int m_recordLimits = 1000;
 };
 

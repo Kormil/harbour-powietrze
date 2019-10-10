@@ -34,11 +34,10 @@ class StationListProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(QStringList stationNameFilter READ stationNameFilter WRITE setStationNameFilter)
     Q_PROPERTY(StationListModel* stationModel READ stationListModel WRITE setStationListModel)
     Q_PROPERTY(SortStation::EnSortStation sort READ sortedBy WRITE setSortedBy)
-    Q_PROPERTY(int limit READ limit WRITE setLimit)
+    Q_PROPERTY(int distanceLimit READ distanceLimit WRITE setDistanceLimit)
     Q_PROPERTY(int provider READ provider WRITE setProvider)
 
 public:
-
     StationListProxyModel(QObject *parent = nullptr);
     QString provinceNameFilter() const;
     void setProvinceNameFilter(const QString &provinceNameFilter);
@@ -48,16 +47,17 @@ public:
     void setStationListModel(StationListModel *stationListModel);
     QStringList stationNameFilter() const;
     void setStationNameFilter(const QStringList &stationNameFilter);
-    int limit() const;
-    void setLimit(int value);
     SortStation::EnSortStation sortedBy() const;
     void setSortedBy(const SortStation::EnSortStation &sortedBy);
     int provider() const;
     void setProvider(const int &providerID);
+    float distanceLimit() const;
+    void setDistanceLimit(float distanceLimit);
 
     static void bindToQml();
 
     Q_INVOKABLE void onItemClicked(int index);
+
 
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
@@ -70,7 +70,8 @@ private:
     QStringList m_stationNameFilter;
     bool m_favourites = false;
     StationListModel * m_stationListModel;
-    int m_limit = 0;
+    float m_distanceLimit = 2500.0f;
+    bool m_distanceLimitFilter = false;
     SortStation::EnSortStation m_sortedBy = SortStation::EnSortStation::ByName;
 };
 
@@ -79,6 +80,7 @@ class StationListModel : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(Station* nearestStation READ nearestStation NOTIFY nearestStationFounded)
     Q_PROPERTY(Station* selectedStation READ selectedStation NOTIFY selectedStationChanged)
+    Q_PROPERTY(float stationDistanceLimit READ stationDistanceLimit WRITE setStationDistanceLimit NOTIFY stationDistanceLimitChanged)
 
 public:
     enum StationListRole
@@ -121,9 +123,13 @@ public:
 
     void setModelsManager(ModelsManager *modelsManager);
 
+    float stationDistanceLimit() const;
+    void setStationDistanceLimit(float stationDistanceLimit);
+
 public slots:
     void findNearestStation();
     void getIndexForFavourites();
+    void onGPSPositionUpdate(QGeoCoordinate coordinate);
 
 signals:
     void stationListRequested();
@@ -134,6 +140,7 @@ signals:
     void favourtiesUpdatingStarted();
     void nearestStationRequested();
     void nearestStationFounded();
+    void stationDistanceLimitChanged();
 
 private:
     StationPtr m_selectedItem;
@@ -141,9 +148,12 @@ private:
     StationPtr m_beforeNearestStation;
     StationListPtr m_stationList;
 
+    int m_stationDistanceLimit;
+
     ModelsManager* m_modelsManager;
     std::atomic_int m_indexesToDownload;
     std::mutex m_setStationListMutex;
+    std::mutex m_findNearestStationMutex;
 };
 
 #endif // STATIONLISTMODEL_H

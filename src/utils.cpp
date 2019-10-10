@@ -9,10 +9,3 @@ void Utils::simpleNotification(QString header, QString body)
     notification.setPreviewBody(body);
     notification.publish();
 }
-
-StationIndexPtr Utils::airQualityIndex(SensorListPtr sensorList)
-{
-    StationIndexPtr stationIndex(new StationIndex);
-
-
-}

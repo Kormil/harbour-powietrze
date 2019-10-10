@@ -61,6 +61,7 @@ public:
 
     void addProvider(ProviderDataPtr provider);
     ProviderDataPtr provider(int providerId) const;
+    Q_INVOKABLE ProviderData* providerPtr(int providerId) const;
 
     Q_INVOKABLE void onItemClicked(int index);
     ProviderData *selectedProvider();

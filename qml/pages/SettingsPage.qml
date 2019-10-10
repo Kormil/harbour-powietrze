@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Settings 1.0
+import GPSModule 1.0
 
 Page {
     id: page
@@ -36,11 +37,29 @@ Page {
             TextSwitch {
                 text: qsTr("Notifications")
                 checked: Settings.notifications
+
+                onCheckedChanged: {
+                    if (Settings.notifications !== checked) {
+                        Settings.notifications = checked
+                    }
+                }
             }
 
             SectionHeader {
                 id: favouriteSection
                 text: qsTr("GPS")
+            }
+
+            TextSwitch {
+                text: qsTr("Paused")
+                checked: gps.paused
+                visible: gps.paused
+
+                onCheckedChanged: {
+                    if (checked != gps.paused) {
+                        gps.paused = checked
+                    }
+                }
             }
 
             ComboBox {
