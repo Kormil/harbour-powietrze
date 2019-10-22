@@ -1,0 +1,189 @@
+﻿Terms of Service
+
+§ 1.General provisions
+
+1.For the purposes of these Terms of Service, the following terms (written with initial capital letter)mean: 
+a.Terms of Service: the Terms of Service available on the Platform at https://airly.eu/docs/tos-en.pdf, being the regulations referred to in article 8 of the Act of 18 July 2002 onthe Electronic Provision of Services (Journal of Laws of 2002 No 144 item 1204 with amendments).
+b.Service Provider or Airly: Airly Sp. z o.o. with its registered office in Kraków, ul. Mogilska 43, 31-545Kraków, entered in the Register of Entrepreneurs run by Sąd Rejonowy dla Krakowa –Śródmieście in Kraków, XI Wydział Gospodarczy Krajowego Rejestru Sądowego under the KRS number 0000639797, having NIP 676-251-42-90, REGON 365524039, being the Provider of the services available on the Platform.
+c.Platform:a website available atwww.airly.eu, owned by Airly sp. o.o. and the Airly mobile application;
+d.Sensor: a device created by the Service Provider, used for measuring and reading air pollution rates, gathering following data: •air temperature expressed in degrees Celsius,•humidity,•air quality parameters (i.e. PM1, PM2.5, PM10 and other version dependent)
+e.User: every person using the Platform and having an ability to use the Airly API Service and Data Read Service.
+
+2.The Terms of Service govern: 
+a.Functioning of the Platformat www.airly.eu;
+b.Terms of the Data Read Service;
+c.Terms of the AirlyAPI Service;
+d.Terms of the iframe;
+e.Terms of processing personal data by the Service Provider and using Cookies within the Platform.
+
+
+§ 2.Using the Platform
+
+1.The Platform is brought to the Users with the aim of providing a modern, reliable map of air pollution. The method used by Airly is based on advanced algorithms, machine-learning and crowd sourcing. 
+
+2.Access to the Platform and using it are free of charge and as a rule do not require providing personal data. 
+
+3.The Users possessing a Sensor share the information about air pollution in the area of the localization of the Sensor via a commonly available map. 
+
+4.Airly sends push notifications about air quality in the location chosen by the User or in the location of the User’s device to Users who agreed to receive notifications or requested notifications.
+
+5.If you wish to purchase a Sensor, get to know the air quality in your nearest surroundings, contact us at www.airly.eu/en/contact/.
+
+6.Sale offer of Sensors and the Data Read Service is directed at local governments and professional entities.
+
+
+§ 3.Rights and obligations
+
+1.The Service Provider reserves the right to: 
+a.temporary unavailability of the Service, due to renovation or upgrading the Platform, 
+b.sending e-mails and making phone calls to the Users of the Data Read and the Airly API Service Users, in cases related to the Services, which do not constitute commercial or marketing information.
+2.The User is obliged to:
+a.use the Platform in accordance with its purpose; 
+b.refrain from actions which could negatively affect the Platform or computer systems of the Service Provider or making any interference in the Platform;
+c.refrain from conducting hacker attacks.
+
+
+§ 4.Data Read Service
+
+1.Data Read Service consists in reading, analyzing and processing the data collected by the Sensor and uploading it to the Platform.
+
+2.Data Read Service is activated on business days, within 24 hours of the User’s fulfillment of the technical requirements specified in §5of the Terms of Service and in the agreement, to which the Terms of Service constitute an annex. 
+
+3.The User possessing the Sensor allows the Service Provider to publish his or her geographical coordinates and the Sensor’s address (street name and number of the building) in the Service, available via maps.google.com(or other similar geographical data provider). Airly ensures that publishing the Sensor’s address does not involve processing or publishing any data enabling to identify the User directly or indirectly (personal data).
+
+4.Temporary unavailability of the Service resulting from circumstances independent from the User, especially from making necessary repairs or improving its operation, force majeure, natural disasters or hacker attacks entitles the User to use the Platform for an additional number of days, equal to the number of days in which the User lost the ability to use the Data Read Service.
+
+5.To ensure correct functioning of the Service, the User is obliged to
+a.provide the Sensor with electric power (230 V); 
+b.provide access to WiFi (2,4 GHz, WPA/WPA2 protected)or GSM network(depending on the sensor model);
+c.informing the Service Provider about intention to change the Sensor’s location. 
+
+
+§ 5. Using the Platform on other websites, platforms and applications (the so-called iframe)
+
+1.Airly allows the use of the Platform on other websites, platforms and mobile applications, through the so-called iFrame.
+
+2.Before using the Platform on other services and mobile applications, please contact Airly by e-mail at the following address: contact@airly.eu in order to receive an explicit consent to the iframe.
+
+3.Airly reserves that permission to use the iframe may be with drawn at any time, without providing any reason.
+
+4.Airly reserves that the use of the iframe creates an obligation on the side of the User i.a.:
+a.to present the Platform, integrated into the User’s website, in a reliable way, that is not misleading with regard to the origin of the data presented;
+b.not to interfere in the shape of the Platform and inits visual identification;
+c.to achieve integration in accordance with the technical requirements established by Airly;
+d.to place the logo of Airly near the iframe, according to the conditions specified in § 12, if the logo is not included within the iframe.
+e.to comply with the terms of use established with Airly.
+
+
+§ 6. Airly API Service
+
+1.The Airly API Service consists in free of charge or paid access to the API (application program interface) and to the archived data regarding last 24 hours, current data and predictions for the next 24 hours from Sensors and data received by Airly from other entities on the basis of the separate agreements.
+
+2.The Service is provided generally free of charge, with the aim of increasing Users’ innovative possibilities and so as to facilitate achieving our common goal -eliminating air pollution.
+
+3.Airly does not allow the use of the Airly API Service on websites, platforms or mobile applications that conduct competitive (commercial or non-commercial) or commercial activities, unless the use of the AirlyAPI Service has become the subject of a separate agreement between Airly and the User.
+
+4.The User is obliged each time:
+a.to provide the source of the Airly API data that they use;
+b.to place a link to the Platform www.map.airly.eu;
+c.put the logo of Airly near the data, in a way that does not raise any doubts as to the origin of the data, according to the conditions indicated in § 12.
+
+5.The AirlyAPI as a database, as well as each of the data contained therein, is the property of Airly sp. z o.o. Data collected in the Airly API are protected by the law under the Act of 27 July 2001 on the protection of databases (Journal of Lawsof 2001 No. 128, item 1402). The use of Airly API contrary to the provisions of the Terms of Service and the will of Airly may be the basis for suing the person, who is unlawfully using the data, for compensation for the damage caused,in accordance with the general rules or by paying a sum of money equivalent to twice, and in case of culpable violation-three times the appropriate remuneration, which at the time of claiming it, would be due for granting permission to use the database.
+
+6.The User has no right to resell the data or databases obtained from the Airly API, or to make them available to third parties free of charge or for a fee.
+
+
+§ 7. Using the Airly API Service for non-commercial purposes
+
+1.The Airly API Service is available to natural persons who are at least 16 years old at the time of account registration.
+
+2.To use the AirlyAPI Service and the User’s account, the User has to:
+a.register the User’s account using an electronic form, available at https://developer.airly.eu/;
+b.agree to the Terms of servic eof the Platform;
+c.generate an individual Token (access code);
+d.confirm, by marking a proper checkbox, that the data gathered by the Platform will only be used by the User for non-commercial purposes.
+
+3.The conclusion of the agreement concerning the provision of the Airly API Service and account maintenance begins after clicking on the activation link.
+
+4.The Token is generated individually for each User. The User agrees not to share the Token with third parties. Sharing the Token is a violation of the Terms of Service and will result in a deletion of the User’s account and disabling User’s access to the data shared via Airly API.
+
+5.The User may use only one token.
+
+6.The Users agrees not to exceed a daily number of requests sent to the Airly API server, i.e. 1000requests per day and 50requests per minute. The number of requests remaining to be used is visible to the User in the in the x-ratelimit-remaining-day header of the server response.
+
+7.In case of exceeding the above-mentioned number of requests, the User’s Token will be temporarily suspended and the User will be informed about violating the terms of the Airly API Service.
+
+8.In case of repeated violations of the terms of the Airly API Service, the User will be banned from further use of Airly APIService. The User may appeal from the decision via e-mail sent to apisupport@airly.eu.
+
+9.Airly reserves the right to block the access code without any explanation. The User may appeal from the decision via e-mail sent to apisupport@airly.eu. The appeal will be considered within 7 business days.
+
+10.The Users, who generated a Token are responsible for using it in compliance with the law, principles of social coexistence, in a way that refrains from violating third parties’ rights,in accordance with the Terms of Service and with a due care for the reliability of the information presented. The User is fully responsible for hisor heractions within the Platform and outside of it, while using the data shared via Airly API and for the actions of people, who gained access to his or her Token as a result of the negligence of the User.
+
+11.The Service Provider reserves the right to refuse giving access to the data if there is a justified assumption, that the AirlyAPI Service could be used in a way that violates the law, principles of social coexistence, the goal of the Platform or the interests of the Service Provider and third parties.
+
+12.The User may give up the Airly API Service and maintaing the User's account atany time by sending a message to the following e-mail address: apisupport@airly.eu. The User's account and the User's personal data provided during registration will be deleted within 7 days of requesting to delete them.
+
+
+§ 8. Commercial use and increasing the access limit
+
+1.In order to increase the basic access limit to Airly API, the User should contact the Service Provider by sending a message to the following e-mail address: apisupport@airly.eu. The limit is increased free of charge or for a fee, depending on the purpose for which the data will be used. Airly reserves the right to withdraw the increased limit.
+
+2.In order to use the data provided by Airly APIfor commercial purposes, the User should contact the Service Provider by sending a message to the following e-mail address: apisupport@airly.eu, so as to negotiate the terms of cooperation.
+
+
+§ 9. Minimum technical requirements
+
+1. To use the Platform, the User has to possess: 
+a.a PC, a smartphone with the latest software updates installed (iOS ver. 9.3 or newer and Android ver. 4.1 or newer), a tablet or other mobile devices used for browsing the websites; 
+b.an active internet connection; 
+c.an up-to-date version of Firefox, Chrome, Safari or Microsoft Edge; 
+d.enabled Java script, frames and CSS styles.
+
+
+§ 10. Service Provider’s liability
+
+1.The Service is of only informational and educational nature. The data provided aim to increase the social awareness concerning the dangers of air pollution, through localizing the sources of pollution and predicting the air quality, basing on the artificial intelligence algorithms. The data provided within the Platform cannot form grounds for deciding on using or abstaining from using air pollution masks and on staying or leaving the house,especially for children, elderly people or people suffering from respiratory or cardiac diseases. The Platform’s algorithms cannot match up to human intelligence and for that reason, common sense must be applied.
+
+2.The Service Provider is not liable for the results of any decisions made by the Users basing on the data provided by the Service.
+
+3.The Service Provider is not liable for the User’s gross negligence causing insufficient protection of the WiFi or GSM network to which the Sensor is connected, resulting in the Sensor’s malfunctions.
+
+4.Even though highest standards of security were applied in securing the Airly’s server, the Service Provider is not liable for temporary and unexpected mal functions of the Service caused by hacker attack, random circumstances,natural disasters or force majeure.
+
+
+§ 11.The complaint handling policy
+
+1.The User may contact Airly using e-mail or the contact form 24 hours a day, seven days a week. Airly responds during working hours from Monday to Friday, with the exception of days that are statutorily considered as public holidays.
+
+2.The User may submit a complaint by sending a message to the following e-mail addresscontact@airly.eu.
+
+3.A complaint should contain:
+a.login details for the Airly API system or the date of the contract conclusion and the indication of the party;
+b.a description of the defect in the operation of the service and the possibly exact time of its occurrence.
+
+1.The complaint will be considered by Airly within 7 working days of its submission. In the event of an inaccurate description of the defect, Airly may request clarification of the complaint and the course of a time limit starts on the day of the completion of missing information.
+
+2.The lack of response on the Airly’s side within 14 days is considered as an acceptance of the complaint.
+
+
+§12.Using the logo
+
+1.Airly grants to the User of the iframe and the Airly API Service an unlimited territorially non-exclusive  license  to  use  the  Airly  logo, which  is  available  for  download  at: http://airly.eu/pl/presskit/.
+
+2.The license,referred to in point 1of this paragraph,authorizes the User who uses the services described in § 4 to place the Airly logo in a direct vicinity of the air pollution map, in such a way that it is visible to any potential visitor of the website or application and clearly indicates the relationship between the air pollution map or Airly API and Airly.
+
+
+§13. Dispute resolution
+
+1.In the event of disputes, Airly encourages amicable solutions, in particular by means of the platform https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home.show&lng=PL
+
+2.Potential litigations will be subject to the jurisdiction of the court of the User.
+
+
+§ 14. Final provisions
+
+1.The Terms of Service will come into force on 25.05.2018.
+
+2.The Service Provider reserves the right to make changes in the Terms of Service, after informing the Users via the Platform’s website and e-mail, not later than 14 days before coming into force of planned changes. 
+
+3.The User of the Data Read Service or the Airly API Service might object tothe proposed changes and terminate the Data Read Service agreement (subscription agreement).
