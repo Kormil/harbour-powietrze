@@ -13,7 +13,7 @@ Name:       harbour-powietrze
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Application for checking the current state of air quality in Poland.
-Version:    1.1.0
+Version:    1.2.0
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
