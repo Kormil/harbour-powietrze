@@ -85,5 +85,11 @@ Page {
             text: qsTr("Source code")
             onClicked: Qt.openUrlExternally("https://github.com/Kormil/harbour-powietrze")
         }
+
+        Button {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("Buy me a beer")
+            onClicked: Qt.openUrlExternally("https://paypal.me/kormil")
+        }
     }
 }

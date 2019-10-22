@@ -23,6 +23,10 @@
         <source>version</source>
         <translation></translation>
     </message>
+    <message>
+        <source>Buy me a beer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AirlyPage</name>

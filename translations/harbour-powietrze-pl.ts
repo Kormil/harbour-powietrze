@@ -23,6 +23,10 @@
         <source>version</source>
         <translation>Wersja</translation>
     </message>
+    <message>
+        <source>Buy me a beer</source>
+        <translation>Postaw mi piwo</translation>
+    </message>
 </context>
 <context>
     <name>AirlyPage</name>
