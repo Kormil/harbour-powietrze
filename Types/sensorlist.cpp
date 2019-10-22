@@ -91,7 +91,7 @@ void SensorList::waitForAll()
     }
 }
 
-void SensorData::setValues(int value)
+void SensorData::setValues(float value)
 {
     values.push_back(value);
     initialized = true;

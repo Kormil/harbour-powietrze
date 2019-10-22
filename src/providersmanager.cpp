@@ -47,6 +47,19 @@ void ProvidersManager::createProviders()
     enabled = settings->providerSettings(openaq->name(), "enabled");
     openaq->setEnabled(enabled.isValid() ? enabled.toBool() : true);
 
+    ProviderDataPtr airly(new ProviderData);
+    airly->setId(m_airly->id());
+    airly->setName("Airly");
+    airly->setShortName("Airly");
+    airly->setSite("airapi.airly.eu\nmap.airly.eu");
+    airly->setIcon("airly.jpg");
+    airly->setConnection(m_airly);
+    airly->setAirQualityIndexId(0);
+    enabled = settings->providerSettings(airly->name(), "enabled");
+    airly->setEnabled(enabled.isValid() ? enabled.toBool() : false);
+    QVariant apiKey = settings->providerSettings(airly->name(), "apiKey");
+    airly->setApiKey(apiKey.isValid() ? apiKey.toString() : QStringLiteral(""));
+
     ProviderListModel* providerListModel = m_modelsManager->providerListModel();
 
     if (!providerListModel)
@@ -54,6 +67,7 @@ void ProvidersManager::createProviders()
 
     providerListModel->addProvider(powietrze);
     providerListModel->addProvider(openaq);
+    providerListModel->addProvider(airly);
 }
 
 Connection *ProvidersManager::connection(int providerId) const
@@ -67,6 +81,7 @@ void ProvidersManager::createConenctions(ModelsManager *modelsManager)
 
     m_powietrze = new PowietrzeConnection(modelsManager);
     m_openAq = new OpenAQConnection(modelsManager);
+    m_airly = new AirlyConnection(modelsManager);
 }
 
 void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int distanceLimit, std::function<void (StationListPtr)> handler)
@@ -80,7 +95,7 @@ void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int distanc
         auto provider = providerListModel->provider(i);
 
         if (provider->enabled()) {
-            provider->connection()->findNearestStationRequest(coordinate, distanceLimit, handler);
+            provider->connection()->getNearestStations(coordinate, distanceLimit, handler);
         }
     }
 }

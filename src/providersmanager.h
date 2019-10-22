@@ -5,6 +5,7 @@
 #include "connection/connection.h"
 #include "connection/powietrzeconnection.h"
 #include "connection/openaqconnection.h"
+#include "connection/airlyconnection.h"
 #include "modelsmanager.h"
 
 class ProvidersManager //Singleton
@@ -26,6 +27,7 @@ private:
 
     OpenAQConnection* m_openAq;
     PowietrzeConnection* m_powietrze;
+    AirlyConnection* m_airly;
 
     ModelsManager* m_modelsManager;
 };

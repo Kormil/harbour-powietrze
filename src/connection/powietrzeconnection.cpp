@@ -22,7 +22,7 @@ PowietrzeConnection::~PowietrzeConnection()
 
 }
 
-void PowietrzeConnection::countryListRequest(std::function<void (CountryListPtr)> handler)
+void PowietrzeConnection::getCountryList(std::function<void (CountryListPtr)> handler)
 {
     CountryListPtr countryList(new CountryList());
 
@@ -32,32 +32,40 @@ void PowietrzeConnection::countryListRequest(std::function<void (CountryListPtr)
     poland->provider = id();
 
     countryList->append(poland);
+
+    m_cashedCountries = countryList;
     handler(std::move(countryList));
 }
 
-void PowietrzeConnection::stationListRequest(std::function<void(StationListPtr)> handler)
+void PowietrzeConnection::getStationList(std::function<void(StationListPtr)> handler)
 {
     QDateTime currentTime = QDateTime::currentDateTime();
 
     if (m_lastStationListRequestDate.isValid()
-            && currentTime.secsTo(m_lastStationListRequestDate) < m_stationListRequestFrequency)
+            && currentTime.secsTo(m_lastStationListRequestDate) < m_getStationListFrequency)
     {
-        handler(nullptr);
+        handler(m_cashedStations);
         return ;
     }
 
-    QString url = "http://" + m_host + m_port + "/station/findAll";
-    QUrl stationListURL(url);
-
     m_lastStationListRequestDate = currentTime;
+    stationListRequest(handler);
+}
 
-    Request* requestRaw = request(stationListURL);
+void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)> handler)
+{
+    QString url = "http://" + m_host + m_port + "/station/findAll";
+
+    Request* requestRaw = request(url);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(StationListPtr(nullptr));
         else
         {
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
+            m_cashedStations = stationList;
             handler(stationList);
         }
 
@@ -65,53 +73,46 @@ void PowietrzeConnection::stationListRequest(std::function<void(StationListPtr)>
     });
 }
 
-void PowietrzeConnection::provinceListRequest(std::function<void(ProvinceListPtr)> handler)
+void PowietrzeConnection::getProvinceList(std::function<void(ProvinceListPtr)> handler)
 {
-    QDateTime currentTime = QDateTime::currentDateTime();
-
-    if (m_lastProvinceListRequestDate.isValid()
-            && currentTime.secsTo(m_lastProvinceListRequestDate) < m_provinceListRequestFrequency)
-    {
-        handler(ProvinceListPtr{});
-        return ;
-    }
-
-    m_lastProvinceListRequestDate = currentTime;
-
-    stationListRequest([this, handler](StationListPtr stationList) {
-        if (stationList == nullptr) {
-            stationList = m_modelsManager->stationListModel()->stationList();
-        } else {
-            m_lastStationListRequestDate = QDateTime();
-        }
-
-        auto cmp = [](const QString& a, const QString& b) {
-            return QString::localeAwareCompare(a, b) < 0;
-        };
-
-        std::set<QString, decltype(cmp)> names(cmp);
-        for (unsigned int i = 0; i < stationList->size(); ++i)
-        {
-            StationPtr station = stationList->station(i);
-            QString name = station->province();
-            names.insert(name);
-        }
-
-        ProvinceListPtr provinceList(new ProvinceList());
-        for (const auto value: names)
-        {
-            ProvinceItemPtr province(new ProvinceItem());
-            province->name = value;
-            province->countryCode = countryCode();
-            province->provider = id();
-            provinceList->append(province);
-        }
-
-        handler(provinceList);
+    getStationList([this, handler](StationListPtr stationList) {
+        provinceListRequest(stationList, handler);
     });
 }
 
-void PowietrzeConnection::sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler)
+void PowietrzeConnection::provinceListRequest(StationListPtr stationList, std::function<void(ProvinceListPtr)> handler)
+{
+    if (stationList == nullptr) {
+        return;
+    }
+
+    auto cmp = [](const QString& a, const QString& b) {
+        return QString::localeAwareCompare(a, b) < 0;
+    };
+
+    std::set<QString, decltype(cmp)> names(cmp);
+    for (unsigned int i = 0; i < stationList->size(); ++i)
+    {
+        StationPtr station = stationList->station(i);
+        QString name = station->province();
+        names.insert(name);
+    }
+
+    ProvinceListPtr provinceList(new ProvinceList());
+    for (const auto value: names)
+    {
+        ProvinceItemPtr province(new ProvinceItem());
+        province->name = value;
+        province->countryCode = countryCode();
+        province->provider = id();
+        provinceList->append(province);
+    }
+
+    m_cashedProvinces = provinceList;
+    handler(provinceList);
+}
+
+void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler)
 {
     if (station == nullptr)
     {
@@ -119,7 +120,7 @@ void PowietrzeConnection::sensorListRequest(StationPtr station, std::function<vo
         return;
     }
 
-    if (station->sensorList() && !station->sensorList()->shouldGetNewData(m_sensorListRequestFrequency))
+    if (station->sensorList() && !station->sensorList()->shouldGetNewData(m_getSensorListFrequency))
     {
         handler(SensorListPtr{});
         return;
@@ -129,6 +130,8 @@ void PowietrzeConnection::sensorListRequest(StationPtr station, std::function<vo
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
             handler( SensorListPtr{} );
@@ -142,12 +145,14 @@ void PowietrzeConnection::sensorListRequest(StationPtr station, std::function<vo
     });
 }
 
-void PowietrzeConnection::sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler)
+void PowietrzeConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
 {
     QString url = "http://" + m_host + m_port + "/data/getData/" + QString::number(sensor.id.toInt());
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
         SensorData data;
         if (status != Request::ERROR) {
@@ -163,7 +168,7 @@ void PowietrzeConnection::sensorDataRequest(SensorData sensor, std::function<voi
     });
 }
 
-void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<void (StationIndexPtr)> handler)
+void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void (StationIndexPtr)> handler)
 {
     if (station == nullptr)
     {
@@ -171,7 +176,7 @@ void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<
         return;
     }
 
-    if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(m_stationIndexRequestFrequency))
+    if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(m_getStationIndexFrequency))
     {
         handler(StationIndexPtr(nullptr));
         return;
@@ -181,6 +186,8 @@ void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<
     QUrl stationIndexURL(url);
 
     Request* requestRaw = request(stationIndexURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
             StationIndexPtr stationIndex(new StationIndex);
@@ -199,9 +206,9 @@ void PowietrzeConnection::stationIndexRequest(StationPtr station, std::function<
     });
 }
 
-void PowietrzeConnection::findNearestStationRequest(QGeoCoordinate coordinate, float, std::function<void (StationListPtr)> handler)
+void PowietrzeConnection::getNearestStations(QGeoCoordinate coordinate, float, std::function<void (StationListPtr)> handler)
 {
-    stationListRequest([=](StationListPtr stationList) {
+    getStationList([=](StationListPtr stationList) {
         if (!stationList) {
             m_modelsManager->stationListModel()->calculateDistances(coordinate);
         } else {
@@ -245,6 +252,7 @@ StationListPtr PowietrzeConnection::readStationsFromJson(const QJsonDocument &js
         stationData.cityName = station.toObject()["city"].toObject()["name"].toString();
         stationData.street = station.toObject()["addressStreet"].toString();
         stationData.provider = id();
+        stationData.country = countryCode();
 
         double lat = station.toObject()["gegrLat"].toString().toDouble();
         double lon = station.toObject()["gegrLon"].toString().toDouble();

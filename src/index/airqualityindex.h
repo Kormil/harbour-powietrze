@@ -21,7 +21,6 @@ class AirQualityIndex
 {
 public:
     virtual void calculate(StationPtr station, std::function<void(StationIndexPtr)> handler) = 0;
-    virtual QString findWorestPollution(SensorListPtr sensorList) = 0;
     virtual QString name() = 0;
 
     int id() const;

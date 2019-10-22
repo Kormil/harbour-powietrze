@@ -21,12 +21,12 @@ OpenAQConnection::~OpenAQConnection()
 
 }
 
-void OpenAQConnection::countryListRequest(std::function<void(CountryListPtr)> handler)
+void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handler)
 {
     QDateTime currentTime = QDateTime::currentDateTime();
 
     if (m_lastCountryListRequestDate.isValid()
-            && currentTime.secsTo(m_lastCountryListRequestDate) < m_countryListRequestFrequency)
+            && currentTime.secsTo(m_lastCountryListRequestDate) < m_getCountryListFrequency)
     {
         handler(CountryListPtr{});
         return ;
@@ -38,6 +38,8 @@ void OpenAQConnection::countryListRequest(std::function<void(CountryListPtr)> ha
     QUrl countryListURL(url);
 
     Request* requestRaw = request(countryListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(CountryListPtr{});
@@ -51,14 +53,14 @@ void OpenAQConnection::countryListRequest(std::function<void(CountryListPtr)> ha
     });
 }
 
-void OpenAQConnection::stationListRequest(std::function<void(StationListPtr)> handler)
+void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handler)
 {
     QString province = m_modelsManager->provinceListModel()->selectedProvinceName();
     QDateTime currentTime = QDateTime::currentDateTime();
 
     if (m_lastStationListRequestDate.isValid())
     {
-        if (currentTime.secsTo(m_lastStationListRequestDate) < m_stationListRequestFrequency) {
+        if (currentTime.secsTo(m_lastStationListRequestDate) < m_getStationListFrequency) {
             if (m_requestedStation.find(province) != m_requestedStation.end()) {
                 handler(StationListPtr{});
                 return ;
@@ -77,6 +79,8 @@ void OpenAQConnection::stationListRequest(std::function<void(StationListPtr)> ha
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(StationListPtr{});
@@ -90,14 +94,14 @@ void OpenAQConnection::stationListRequest(std::function<void(StationListPtr)> ha
     });
 }
 
-void OpenAQConnection::provinceListRequest(std::function<void(ProvinceListPtr)> handler)
+void OpenAQConnection::getProvinceList(std::function<void(ProvinceListPtr)> handler)
 {
     QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
     QDateTime currentTime = QDateTime::currentDateTime();
 
     if (m_lastProvinceListRequestDate.isValid())
     {
-        if (currentTime.secsTo(m_lastProvinceListRequestDate) < m_provinceListRequestFrequency) {
+        if (currentTime.secsTo(m_lastProvinceListRequestDate) < m_getProvinceListFrequency) {
             if (m_requestedProvince.find(countryCode) != m_requestedProvince.end()) {
                 handler(ProvinceListPtr{});
                 return ;
@@ -116,6 +120,8 @@ void OpenAQConnection::provinceListRequest(std::function<void(ProvinceListPtr)> 
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(ProvinceListPtr{});
@@ -129,7 +135,7 @@ void OpenAQConnection::provinceListRequest(std::function<void(ProvinceListPtr)> 
     });
 }
 
-void OpenAQConnection::sensorListRequest(StationPtr station, std::function<void (SensorListPtr)> handler)
+void OpenAQConnection::getSensorList(StationPtr station, std::function<void (SensorListPtr)> handler)
 {
     if (station == nullptr)
     {
@@ -137,7 +143,7 @@ void OpenAQConnection::sensorListRequest(StationPtr station, std::function<void 
         return;
     }
 
-    if (station->sensorList() && !station->sensorList()->shouldGetNewData(m_sensorListRequestFrequency))
+    if (station->sensorList() && !station->sensorList()->shouldGetNewData(m_getSensorListFrequency))
     {
         handler(SensorListPtr{});
         return;
@@ -148,6 +154,8 @@ void OpenAQConnection::sensorListRequest(StationPtr station, std::function<void 
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler( SensorListPtr() );
@@ -162,17 +170,24 @@ void OpenAQConnection::sensorListRequest(StationPtr station, std::function<void 
     });
 }
 
-void OpenAQConnection::sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler)
+void OpenAQConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
 {
     QString url = "https://" + m_host + m_port + "/v1/measurements?location=" + sensor.id.toString() + "&parameter=" + sensor.pollutionCode
             + "&limit=" + QString::number(m_recordLimits);
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
-        SensorData data;
+        SensorData data = sensor;
         if (status != Request::ERROR) {
             data = readSensorDataFromJson(QJsonDocument::fromJson(responseArray));
+
+            if (data.name.isEmpty()) {
+                data.name = sensor.name;
+                data.id = sensor.id;
+            }
         }
 
         handler(data);
@@ -180,7 +195,7 @@ void OpenAQConnection::sensorDataRequest(SensorData sensor, std::function<void (
     });
 }
 
-void OpenAQConnection::stationIndexRequest(StationPtr, std::function<void (StationIndexPtr)> handler)
+void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIndexPtr)> handler)
 {
     StationIndexPtr stationIndex(new StationIndex);
 
@@ -190,7 +205,7 @@ void OpenAQConnection::stationIndexRequest(StationPtr, std::function<void (Stati
     handler(stationIndex);
 }
 
-void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
+void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
 {
     QString url = "https://" + m_host + m_port + "/v1/locations?coordinates="
             + QString::number(coordinate.latitude()) + "," + QString::number(coordinate.longitude())
@@ -198,6 +213,8 @@ void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, floa
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
+    requestRaw->run();
+
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(StationListPtr{});
@@ -209,7 +226,7 @@ void OpenAQConnection::findNearestStationRequest(QGeoCoordinate coordinate, floa
                 stationList->calculateDistances(coordinate);
                 handler(stationList);
             } else {
-                findNearestStationRequest(coordinate, distanceLimit * 2, handler);
+                getNearestStations(coordinate, distanceLimit * 2, handler);
             }
         }
 
@@ -290,6 +307,7 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
         stationData.coordinate = QGeoCoordinate(lat, lon);
 
         stationData.province = station.toObject()["city"].toString();
+        stationData.country = station.toObject()["country"].toString();
 
         item->setStationData(stationData);
         stationList->append(item);
@@ -342,6 +360,7 @@ SensorData OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDoc
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
+        sensorData.setValues(static_cast<int>(Errors::NoData));
         return sensorData;
     }
 

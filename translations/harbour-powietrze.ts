@@ -25,6 +25,30 @@
     </message>
 </context>
 <context>
+    <name>AirlyPage</name>
+    <message>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Air quality index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Api key for Airly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To get access to Airly api you must generate key. You can get your own api key from
+https://developer.airly.eu</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FindNearestPage</name>
     <message>
         <source>Find more</source>
@@ -118,6 +142,10 @@
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Air quality index</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PowietrzeConnection</name>
@@ -150,6 +178,17 @@
     </message>
     <message>
         <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ProviderItem</name>
+    <message>
+        <source>Name </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Site </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -228,7 +267,7 @@
     <name>SensorListModel</name>
     <message>
         <source>brak danych</source>
-        <translation>brak danych</translation>
+        <translation type="vanished">brak danych</translation>
     </message>
     <message>
         <source>No data</source>

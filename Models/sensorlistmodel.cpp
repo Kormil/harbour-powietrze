@@ -24,6 +24,8 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
     const auto& it = sensors[row];
 
     int pollutionNameVariant = m_modelsManager->providerListModel()->provider(m_station->provider())->nameVariant();
+
+    QString noData = tr("No data");
     switch (role)
     {
         case NAME: {
@@ -36,7 +38,7 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
         case VALUE:
         {
             if (it.value() == Connection::NoData) {
-                return QVariant(tr("No data"));
+                return QVariant(noData);
             }
 
             Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
@@ -45,7 +47,7 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    return QVariant(tr("brak danych"));
+    return QVariant(noData);
 }
 
 QHash<int, QByteArray> SensorListModel::roleNames() const
@@ -63,7 +65,7 @@ void SensorListModel::requestData()
 
     auto station = m_station;
     Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
-    connection->sensorListRequest(station, [=](SensorListPtr sensorList) {
+    connection->getSensorList(station, [=](SensorListPtr sensorList) {
         setSensorList(sensorList, station);
         requestSensorData(station);
     });
@@ -87,7 +89,7 @@ void SensorListModel::requestSensorData(StationPtr station)
     Connection* connection = ProvidersManager::instance()->connection(station->provider());
     for (const auto& sensor:  station->sensorList()->sensors())
     {
-        connection->sensorDataRequest(sensor, [station](SensorData sensorData) {
+        connection->getSensorData(sensor, [station](SensorData sensorData) {
              station->sensorList()->setData(sensorData);
         });
     }

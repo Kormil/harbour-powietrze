@@ -43,7 +43,7 @@ void StationList::append(StationPtr station)
 
         connect(station.get(), &Station::dataChanged, this, &StationList::onItemChanged);
         emit postItemAppended();
-    } else {
+    } else if (station->distance()) {
         m_stations[hashAndRow->second]->setDistance(station->distance());
     }
 }

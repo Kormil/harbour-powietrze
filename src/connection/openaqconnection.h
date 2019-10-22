@@ -18,13 +18,13 @@ public:
     virtual ~OpenAQConnection();
 
     //Requests
-    virtual void countryListRequest(std::function<void(CountryListPtr)> handler) override;
-    virtual void stationListRequest(std::function<void(StationListPtr)> handler) override;
-    virtual void provinceListRequest(std::function<void(ProvinceListPtr)> handler) override;
-    virtual void sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler) override;
-    virtual void sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler) override;
-    virtual void stationIndexRequest(StationPtr, std::function<void(StationIndexPtr)> handler) override;
-    virtual void findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
+    virtual void getCountryList(std::function<void(CountryListPtr)> handler) override;
+    virtual void getStationList(std::function<void(StationListPtr)> handler) override;
+    virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) override;
+    virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) override;
+    virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) override;
+    virtual void getStationIndex(StationPtr, std::function<void(StationIndexPtr)> handler) override;
+    virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
 private:
     //JSON

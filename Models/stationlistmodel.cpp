@@ -112,7 +112,7 @@ void StationListModel::requestStationListData()
 
     Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection();
 
-    connection->stationListRequest([this](StationListPtr stationList) {
+    connection->getStationList([this](StationListPtr stationList) {
         if (!stationList) {
             stationListLoaded();
             return;
@@ -133,7 +133,13 @@ void StationListModel::requestStationIndexData(StationPtr station)
     if (!station)
         return;
 
+    emit stationDataRequested();
     auto provider = m_modelsManager->providerListModel()->provider(station->provider());
+
+    if (!provider->enabled()) {
+        return;
+    }
+
     auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId());
     airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
@@ -196,9 +202,11 @@ void StationListModel::onItemClicked(int index)
         return;
 
     StationPtr station = m_stationList->station(index);
+    auto provider = m_modelsManager->providerListModel()->provider(station->provider());
 
-    if (station == nullptr)
+    if (station == nullptr || !provider->enabled()) {
         return;
+    }
 
     m_modelsManager->sensorListModel()->setStation(station);
     setSelectedStation(station);

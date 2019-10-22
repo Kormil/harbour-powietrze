@@ -29,6 +29,7 @@ SOURCES += src/harbour-powietrze.cpp \
     Models/stationlistmodel.cpp \
     Models/provincelistmodel.cpp \
     Types/provincelist.cpp \
+    src/connection/airlyconnection.cpp \
     src/index/airindexfromserver.cpp \
     src/index/airqualityindex.cpp \
     src/connection/powietrzeconnection.cpp \
@@ -52,6 +53,7 @@ DISTFILES += \
     qml/pages/ProviderLicensePage.qml \
     qml/pages/SelectCountryPage.qml \
     qml/pages/SelectProviderPage.qml \
+    qml/providers/AirlyPage.qml \
     qml/providers/OpenAQPage.qml \
     qml/providers/PowietrzePage.qml \
     rpm/harbour-powietrze.changes.in \
@@ -127,6 +129,7 @@ HEADERS += \
     Models/stationlistmodel.h \
     Models/provincelistmodel.h \
     Types/provincelist.h \
+    src/connection/airlyconnection.h \
     src/index/airindexfromserver.h \
     src/index/airqualityindex.h \
     src/connection/powietrzeconnection.h \

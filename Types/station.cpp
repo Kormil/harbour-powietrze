@@ -38,6 +38,11 @@ QString Station::province() const
     return m_stationData.province;
 }
 
+QString Station::country() const
+{
+    return m_stationData.country;
+}
+
 QGeoCoordinate Station::coordinate() const
 {
     return m_stationData.coordinate;

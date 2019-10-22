@@ -3,9 +3,15 @@
 #include <notification.h>
 #include "../modelsmanager.h"
 
-Request::Request(const QUrl &url, Connection *connection)
+Request::Request(const QUrl &url, Connection *connection) :
+    m_networkRequest(url),
+    m_connection(connection)
 {
-    networkReply = connection->networkAccessManager()->get(QNetworkRequest(url));
+}
+
+void Request::run()
+{
+    networkReply = m_connection->networkAccessManager()->get(m_networkRequest);
 
     QObject::connect(networkReply, &QIODevice::readyRead, [this]() {
         responseArray.append(networkReply->readAll());
@@ -24,6 +30,11 @@ Request::Request(const QUrl &url, Connection *connection)
 
         emit finished(SUCCESS, responseArray);
     });
+}
+
+void Request::addHeader(const QByteArray &key, const QByteArray &value)
+{
+    m_networkRequest.setRawHeader(key, value);
 }
 
 int Request::serial() const
@@ -59,6 +70,11 @@ int Connection::nextSerial()
     return m_serial;
 }
 
+int Connection::getStationIndexFrequency() const
+{
+    return m_getStationIndexFrequency;
+}
+
 int Connection::id() const
 {
     return m_id;
@@ -69,24 +85,24 @@ void Connection::clearRequests()
     m_networkAccessManager->deleteLater();
 }
 
-int Connection::sensorListRequestFrequency() const
+int Connection::getSensorListFrequency() const
 {
-    return m_sensorListRequestFrequency;
+    return m_getSensorListFrequency;
 }
 
-int Connection::provinceListRequestFrequency() const
+int Connection::getProvinceListFrequency() const
 {
-    return m_provinceListRequestFrequency;
+    return m_getProvinceListFrequency;
 }
 
-int Connection::stationListRequestFrequency() const
+int Connection::getStationListFrequency() const
 {
-    return m_stationListRequestFrequency;
+    return m_getStationListFrequency;
 }
 
-int Connection::countryListRequestFrequency() const
+int Connection::getCountryListFrequency() const
 {
-    return m_countryListRequestFrequency;
+    return m_getCountryListFrequency;
 }
 
 Request* Connection::request(const QUrl &requestUrl)

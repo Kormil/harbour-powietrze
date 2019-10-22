@@ -14,12 +14,7 @@ void AirIndexFromServer::calculate(StationPtr station, std::function<void(Statio
     }
 
     Connection* connection = m_modelsManager->providerListModel()->provider(station->provider())->connection();
-    connection->stationIndexRequest(station, handler);
-}
-
-QString AirIndexFromServer::findWorestPollution(SensorListPtr sensorList)
-{
-
+    connection->getStationIndex(station, handler);
 }
 
 QString AirIndexFromServer::name()

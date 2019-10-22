@@ -85,21 +85,6 @@ Page {
             BackgroundItem {
                 width: parent.width
 
-                Label {
-                    id: label
-
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: Theme.horizontalPageMargin
-                    anchors.rightMargin: Theme.paddingMedium
-
-                    horizontalAlignment: Text.AlignHCenter
-                    truncationMode: TruncationMode.Fade
-                    text: qsTr("Manage providers")
-                    color: highlighted ? Theme.highlightColor : Theme.primaryColor
-                }
-
                 Image {
                     id: image
 
@@ -110,6 +95,20 @@ Page {
                     source: "image://theme/icon-m-right?" + (label.highlighted
                                                              ? Theme.highlightColor
                                                              : Theme.primaryColor)
+                }
+
+                Label {
+                    id: label
+
+                    anchors.right: image.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.leftMargin: Theme.horizontalPageMargin
+                    anchors.rightMargin: Theme.paddingMedium
+
+                    horizontalAlignment: Text.AlignRight
+                    truncationMode: TruncationMode.Fade
+                    text: qsTr("Manage providers")
+                    color: highlighted ? Theme.highlightColor : Theme.primaryColor
                 }
 
                 Rectangle {

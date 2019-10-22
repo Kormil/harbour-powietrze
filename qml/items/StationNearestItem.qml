@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 BackgroundItem {
     property string name: ""
     property string distance: ""
-    property string index: ""
+    property string airQualityIndex: ""
 
     id: delegate
     contentHeight: Theme.itemSizeSmall
@@ -35,7 +35,7 @@ BackgroundItem {
         id: valueLabel
         x: Theme.horizontalPageMargin
         anchors.top: nameLabel.bottom
-        text: index
+        text: airQualityIndex
         font.pixelSize: Theme.fontSizeExtraSmall
         color: delegate.highlighted ? Theme.highlightColor : Theme.secondaryColor
     }

@@ -6,7 +6,7 @@ namespace {
 
 QDataStream& operator<<(QDataStream& out, const StationData& v)
 {
-    out << v.id << v.province << v.cityName << v.street << v.coordinate.latitude() << v.coordinate.longitude() << v.provider;
+    out << v.id << v.province << v.cityName << v.street << v.coordinate.latitude() << v.coordinate.longitude() << v.country << v.provider;
     return out;
 }
 
@@ -24,6 +24,8 @@ QDataStream& operator>>(QDataStream& in, StationData& v)
 
     v.coordinate.setLatitude(latitude);
     v.coordinate.setLongitude(longitude);
+
+    in >> v.country;
 
     if (!in.atEnd()) {
         in >> v.provider;

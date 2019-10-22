@@ -31,6 +31,9 @@ public:
     };
 
     Request(const QUrl& url, Connection *connection);
+    void run();
+
+    void addHeader(const QByteArray& key, const QByteArray& value);
 
     ~Request()
     {
@@ -41,6 +44,8 @@ public:
     void setSerial(int serial);
 
 private:
+    QNetworkRequest m_networkRequest;
+    Connection *m_connection;
     QNetworkReply* networkReply;
     QByteArray responseArray;
     int m_serial;
@@ -62,27 +67,29 @@ public:
     Connection(ModelsManager* modelsManager);
     virtual ~Connection() {}
 
-    virtual void countryListRequest(std::function<void(CountryListPtr)> handler) = 0;
-    virtual void stationListRequest(std::function<void(StationListPtr)> handler) = 0;
-    virtual void provinceListRequest(std::function<void(ProvinceListPtr)> handler) = 0;
-    virtual void sensorListRequest(StationPtr station, std::function<void(SensorListPtr)> handler) = 0;
-    virtual void sensorDataRequest(SensorData sensor, std::function<void (SensorData)> handler) = 0;
-    virtual void stationIndexRequest(StationPtr station, std::function<void(StationIndexPtr)> handler) = 0;
-    virtual void findNearestStationRequest(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) = 0;
+    virtual void getCountryList(std::function<void(CountryListPtr)> handler) = 0;
+    virtual void getStationList(std::function<void(StationListPtr)> handler) = 0;
+    virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) = 0;
+    virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) = 0;
+    virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) = 0;
+    virtual void getStationIndex(StationPtr station, std::function<void(StationIndexPtr)> handler) = 0;
+    virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) = 0;
 
     QNetworkAccessManager *networkAccessManager();
 
     Request* request(const QUrl &requestUrl);
     void deleteRequest(int serial);
 
-    int countryListRequestFrequency() const;
-    int stationListRequestFrequency() const;
-    int provinceListRequestFrequency() const;
-    int sensorListRequestFrequency() const;
+    int getCountryListFrequency() const;
+    int getStationListFrequency() const;
+    int getProvinceListFrequency() const;
+    int getSensorListFrequency() const;
+    int getStationIndexFrequency() const;
 
     int id() const;
 
     void clearRequests();
+
 protected:
     int nextSerial();
 
@@ -94,19 +101,22 @@ protected:
     ModelsManager* m_modelsManager;
 
     //Request frequency
-    int m_countryListRequestFrequency = 60 * 60 * 24; //one day
-    int m_stationListRequestFrequency = 60 * 60 * 24; //one day
-    int m_provinceListRequestFrequency = 60 * 60 * 24; //one day
-    int m_sensorListRequestFrequency  = 30 * 60; //30 minutes
-    int m_stationIndexRequestFrequency  = 30 * 60; //30 minutes
+    int m_getCountryListFrequency = 60 * 60 * 24; //one day
+    int m_getStationListFrequency = 60 * 60 * 24; //one day
+    int m_getProvinceListFrequency = 60 * 60 * 24; //one day
+    int m_getSensorListFrequency  = 30 * 60; //30 minutes
+    int m_getStationIndexFrequency  = 30 * 60; //30 minutes
 
     QDateTime m_lastCountryListRequestDate;
     QDateTime m_lastStationListRequestDate;
     QDateTime m_lastProvinceListRequestDate;
-    QDateTime m_lastSensorListRequestDate;
 
-    std::mutex m_stationListRequestMutex;
+    std::mutex m_getStationListMutex;
 
+    //Cach
+    CountryListPtr m_cashedCountries;
+    ProvinceListPtr m_cashedProvinces;
+    StationListPtr m_cashedStations;
 private:
     QNetworkAccessManager* m_networkAccessManager;
     std::map<int, RequestPtr> m_networkRequests;

@@ -1,44 +1,41 @@
-#ifndef PowietrzeConnection_H
-#define PowietrzeConnection_H
+#ifndef AIRLYCONNECTION_H
+#define AIRLYCONNECTION_H
 
+#include <set>
 #include "connection.h"
+#include "powietrzeconnection.h"
 #include "Types/stationlist.h"
 #include "Types/provincelist.h"
 #include "Types/sensorlist.h"
 #include "Types/countrylist.h"
 
-class ModelsManager;
-
-class PowietrzeConnection : public Connection
+class AirlyConnection : public Connection
 {
 public:
-    PowietrzeConnection(ModelsManager* modelsManager);
-    virtual ~PowietrzeConnection();
+    AirlyConnection(ModelsManager* modelsManager);
+    virtual ~AirlyConnection();
 
+    //Requests
     virtual void getCountryList(std::function<void(CountryListPtr)> handler) override;
     virtual void getStationList(std::function<void(StationListPtr)> handler) override;
     virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) override;
     virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) override;
     virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) override;
     virtual void getStationIndex(StationPtr station, std::function<void(StationIndexPtr)> handler) override;
-    virtual void getNearestStations(QGeoCoordinate coordinate, float, std::function<void(StationListPtr)> handler) override;
-
+    virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
 private:
-    inline QString countryCode() const {
-        return QStringLiteral("PL");
-    }
-
     //Requests
-    void stationListRequest(std::function<void(StationListPtr)> handler);
-    void provinceListRequest(StationListPtr stationList, std::function<void(ProvinceListPtr)> handler);
+    void countryListRequest(ProvinceListPtr provinceList, std::function<void (CountryListPtr)> handler);
+    void stationListRequest(std::function<void (StationListPtr)> handler);
+    void provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler);
 
     //JSON
-    ProvinceListPtr readProvincesFromJson(const QJsonDocument &jsonDocument);
     StationListPtr readStationsFromJson(const QJsonDocument &jsonDocument);
     SensorListPtr readSensorsFromJson(const QJsonDocument &jsonDocument);
-    SensorData readSensorDataFromJson(const QJsonDocument &jsonDocument);
     StationIndexPtr readStationIndexFromJson(const QJsonDocument &jsonDocument);
+
+    int m_recordLimits = -1;
 };
 
-#endif // PowietrzeConnection_H
+#endif // AIRLYCONNECTION_H

@@ -212,7 +212,7 @@ Page {
                 favouriteSection.anchors.top = nearestStation.bottom
 
                 if (stationListModel.nearestStation.stationIndex)
-                    nearestStation.index = stationListModel.nearestStation.stationIndex.name
+                    nearestStation.airQualityIndex = stationListModel.nearestStation.stationIndex.name
             }
         }
     }
@@ -222,7 +222,7 @@ Page {
         target: stationListModel.nearestStation
         onStationIndexChanged: {
             if (stationListModel.nearestStation.stationIndex)
-                nearestStation.index = stationListModel.nearestStation.stationIndex.name
+                nearestStation.airQualityIndex = stationListModel.nearestStation.stationIndex.name
         }
     }
 

@@ -49,12 +49,13 @@ Page {
             running: true
             size: BusyIndicatorSize.Large
             anchors.verticalCenter: parent.verticalCenter
+            visible: false
         }
 
         Item {
             id: station
-            enabled: false
-            visible: false
+            enabled: true
+            visible: true
             width: parent.width
             height: parent.height
             anchors.top: pageHeader.bottom
@@ -123,6 +124,16 @@ Page {
             color: Theme.secondaryColor
             anchors.bottomMargin: Theme.paddingSmall
             horizontalAlignment: Text.AlignHCenter
+        }
+
+        Connections {
+            target: stationListModel
+            onStationDataRequested: {
+                loading.enabled = true
+                loading.visible = true
+                station.enabled = false
+                station.visible = false
+            }
         }
 
         Connections {

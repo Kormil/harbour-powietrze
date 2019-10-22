@@ -10,5 +10,6 @@
         <file>Graphics/weatherIcons/256/-1.png</file>
         <file>Graphics/providerIcons/openaq.jpeg</file>
         <file>Graphics/providerIcons/powietrze.png</file>
+        <file>Graphics/providerIcons/airly.jpg</file>
     </qresource>
 </RCC>

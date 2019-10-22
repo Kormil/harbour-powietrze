@@ -68,7 +68,7 @@ struct SensorData
 
 
 public:
-    void setValues(int value);
+    void setValues(float value);
     void setValues(const std::vector<float> &value);
 
 private:

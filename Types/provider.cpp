@@ -22,8 +22,7 @@ void ProviderData::setEnabled(bool value)
     emit enabledChanged();
     emit dataChanged();
 
-    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-    settings->setProviderSettings(m_name, "enabled", value);
+    m_settings->setProviderSettings(m_name, "enabled", value);
 }
 
 QString ProviderData::name() const
@@ -80,8 +79,7 @@ void ProviderData::setAirQualityIndexId(int value)
     emit airQualityIndexIdChanged();
     emit dataChanged();
 
-    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-    settings->setProviderSettings(m_name, "aqi", value);
+    m_settings->setProviderSettings(m_name, "aqi", value);
 }
 
 int ProviderData::nameVariant() const
@@ -94,8 +92,27 @@ void ProviderData::setNameVariant(int value)
     m_nameVariant = value;
     emit dataChanged();
 
-    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-    settings->setProviderSettings(m_name, "nameVariant", value);
+    m_settings->setProviderSettings(m_name, "nameVariant", value);
+}
+
+QString ProviderData::apiKey() const
+{
+    return m_apiKey;
+}
+
+void ProviderData::setApiKey(const QString &apiKey)
+{
+    if (apiKey != m_apiKey) {
+        m_apiKey = apiKey;
+        emit apiKeyChanged();
+
+        m_settings->setProviderSettings(m_name, "apiKey", m_apiKey);
+    }
+}
+
+ProviderData::ProviderData(QObject *parent) : QObject(parent)
+{
+    m_settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
 }
 
 int ProviderData::id() const

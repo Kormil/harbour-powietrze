@@ -56,6 +56,7 @@ Page {
                 stationListProxyModel.onItemClicked(index)
             }
         }
+
         VerticalScrollDecorator {}
     }
 

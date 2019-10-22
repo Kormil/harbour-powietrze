@@ -41,6 +41,7 @@ public:
     QString cityName() const;
     QString streetName() const;
     QString province() const;
+    QString country() const;
     QGeoCoordinate coordinate() const;
 
     bool favourite() const;

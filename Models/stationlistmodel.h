@@ -70,7 +70,7 @@ private:
     QStringList m_stationNameFilter;
     bool m_favourites = false;
     StationListModel * m_stationListModel;
-    float m_distanceLimit = 2500.0f;
+    float m_distanceLimit = 8000.0f;
     bool m_distanceLimitFilter = false;
     SortStation::EnSortStation m_sortedBy = SortStation::EnSortStation::ByName;
 };
@@ -134,6 +134,7 @@ public slots:
 signals:
     void stationListRequested();
     void stationListLoaded();
+    void stationDataRequested();
     void stationDataLoaded();
     void selectedStationChanged();
     void favourtiesUpdated();

@@ -9,7 +9,6 @@ public:
     AirIndexFromServer();
 
     virtual void calculate(StationPtr station, std::function<void(StationIndexPtr)> handler) override;
-    virtual QString findWorestPollution(SensorListPtr sensorList) override;
     virtual QString name() override;
 
 };

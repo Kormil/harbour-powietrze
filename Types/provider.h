@@ -5,6 +5,7 @@
 #include <memory>
 
 class Connection;
+class Settings;
 
 class ProviderData : public QObject
 {
@@ -15,9 +16,10 @@ class ProviderData : public QObject
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(QString site READ site NOTIFY siteChanged)
     Q_PROPERTY(int nameVariant READ nameVariant WRITE setNameVariant NOTIFY dataChanged)
+    Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged)
 
 public:
-    explicit ProviderData(QObject* parent = nullptr) : QObject(parent) {}
+    explicit ProviderData(QObject* parent = nullptr);
     virtual ~ProviderData() {}
 
     int id() const;
@@ -38,6 +40,8 @@ public:
     void setAirQualityIndexId(int value);
     int nameVariant() const;
     void setNameVariant(int value);
+    QString apiKey() const;
+    void setApiKey(const QString &apiKey);
 
 signals:
     void dataChanged();
@@ -46,6 +50,7 @@ signals:
     void iconChanged();
     void siteChanged();
     void airQualityIndexIdChanged();
+    void apiKeyChanged();
 
 private:
     int m_id;
@@ -55,8 +60,11 @@ private:
     QString m_shortName;
     QString m_site;
     QString m_icon;
-    int m_nameVariant;
+    int m_nameVariant = 0;
     int m_airQualityIndexId;
+    QString m_apiKey;
+
+    Settings * m_settings;
 };
 
 #endif // PROVIDER_H

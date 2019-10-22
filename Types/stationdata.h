@@ -10,6 +10,7 @@ struct StationData
 {
     int id;
     QString province;
+    QString country;
     QString cityName;
     QString street;
     QGeoCoordinate coordinate;

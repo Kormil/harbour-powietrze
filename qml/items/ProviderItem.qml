@@ -21,7 +21,7 @@ Item {
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             Label {
-                text: "Name "
+                text: qsTr("Name ")
                 color: Theme.secondaryHighlightColor
                 horizontalAlignment: Text.AlignRight
                 fontSizeMode: Theme.fontSizeSmall
@@ -37,7 +37,7 @@ Item {
         Row {
             anchors.horizontalCenter: parent.horizontalCenter
             Label {
-                text: "Site "
+                text: qsTr("Site ")
                 color: Theme.secondaryHighlightColor
                 horizontalAlignment: Text.AlignRight
                 fontSizeMode: Theme.fontSizeSmall

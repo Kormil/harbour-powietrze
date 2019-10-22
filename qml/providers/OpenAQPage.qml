@@ -47,6 +47,17 @@ Page {
                     }
                 }
             }
+
+            ComboBox {
+                width: page.width
+                label: qsTr("Air quality index")
+                currentIndex: 0
+                enabled: false
+
+                menu: ContextMenu {
+                    MenuItem { text: "European air quality index" }
+                }
+            }
         }
     }
 }

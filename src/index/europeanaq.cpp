@@ -31,7 +31,18 @@ EuropeanAQ::EuropeanAQ()
 void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexPtr)> handler)
 {
     Connection* connection = m_modelsManager->providerListModel()->provider(station->provider())->connection();
-    connection->sensorListRequest(station, [=](SensorListPtr sensorList) {
+    connection->getSensorList(station, [=](SensorListPtr sensorList) {
+        if(!sensorList && !station->sensorList()) {
+            StationIndexPtr stationIndex(new StationIndex);
+            handler(stationIndex);
+        }
+
+        if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(connection->getStationIndexFrequency()))
+        {
+            handler(nullptr);
+            return;
+        }
+
         if (!sensorList) {
             if (station->sensorList()->isAll()) {
                 handler(recalculate(station->sensorList()));
@@ -41,7 +52,7 @@ void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexP
         m_modelsManager->sensorListModel()->setSensorList(sensorList, station);
         for (const auto& sensor: station->sensorList()->sensors())
         {
-            connection->sensorDataRequest(sensor, [handler, station, this](SensorData sensorData) {
+            connection->getSensorData(sensor, [handler, station, this](SensorData sensorData) {
                 station->sensorList()->setData(sensorData);
 
                 if (station->sensorList()->isAll()) {
@@ -77,20 +88,6 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
         stationIndex->setName(m_names[worestIndexId]);
     stationIndex->setId(worestIndexId);
     return stationIndex;
-}
-
-QString EuropeanAQ::findWorestPollution(SensorListPtr sensorList)
-{
-    int worestId = 0;
-    auto sensors = sensorList->sensors();
-
-    for (int i = 0; i < sensors.size(); ++i) {
-        if (sensors[i].value() > sensors[worestId].value()) {
-            worestId = i;
-        }
-    }
-
-    return sensors[worestId].name;
 }
 
 QString EuropeanAQ::name()
