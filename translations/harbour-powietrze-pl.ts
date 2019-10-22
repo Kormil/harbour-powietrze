@@ -28,24 +28,25 @@
     <name>AirlyPage</name>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licencja</translation>
+        <translation>Licencja</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączony</translation>
     </message>
     <message>
         <source>Air quality index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks jakości powietrza</translation>
     </message>
     <message>
         <source>Api key for Airly</source>
-        <translation type="unfinished"></translation>
+        <translation>Klucz Airly API</translation>
     </message>
     <message>
         <source>To get access to Airly api you must generate key. You can get your own api key from
 https://developer.airly.eu</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby korzystać z Airly musisz posiadać klucz. Możesz uzyskać własny klucz z
+https://developer.airly.eu</translation>
     </message>
 </context>
 <context>
@@ -91,27 +92,31 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Only once</source>
-        <translation type="unfinished"></translation>
+        <translation>Tylko raz</translation>
     </message>
     <message>
         <source>4 hours</source>
-        <translation type="unfinished">4 godziny</translation>
+        <translation>4 godziny</translation>
     </message>
     <message>
         <source>8 hours</source>
-        <translation type="unfinished">4 godziny {8 ?}</translation>
+        <translation>8 godzin</translation>
     </message>
     <message>
         <source>Permanently</source>
-        <translation type="unfinished"></translation>
+        <translation>Do ponownego włączenia</translation>
     </message>
     <message>
         <source>Stop locating for</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Wyłącz lokalizację</translation>
     </message>
     <message>
         <source>24 hours</source>
-        <translation type="unfinished">4 godziny {24 ?}</translation>
+        <translation>24 godziny</translation>
+    </message>
+    <message>
+        <source>Stop locating</source>
+        <translation>Wyłącz lokalizację</translation>
     </message>
 </context>
 <context>
@@ -125,26 +130,26 @@ https://developer.airly.eu</source>
     <name>ManageProvidersPage</name>
     <message>
         <source>Providers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostawcy</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłączony</translation>
     </message>
 </context>
 <context>
     <name>OpenAQPage</name>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączony</translation>
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licencja</translation>
+        <translation>Licencja</translation>
     </message>
     <message>
         <source>Air quality index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks jakości powietrza</translation>
     </message>
 </context>
 <context>
@@ -158,83 +163,83 @@ https://developer.airly.eu</source>
     <name>PowietrzePage</name>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Włączony</translation>
     </message>
     <message>
         <source>Air quality index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks jakości powietrza</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normalne</translation>
     </message>
     <message>
         <source>Pollution names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwy zanieczyszczeń</translation>
     </message>
     <message>
         <source>Short</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrócone</translation>
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licencja</translation>
+        <translation>Licencja</translation>
     </message>
 </context>
 <context>
     <name>ProviderItem</name>
     <message>
         <source>Name </source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa </translation>
     </message>
     <message>
         <source>Site </source>
-        <translation type="unfinished"></translation>
+        <translation>Strona </translation>
     </message>
 </context>
 <context>
     <name>ProviderLicensePage</name>
     <message>
         <source>License</source>
-        <translation type="unfinished">Licencja</translation>
+        <translation>Licencja</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Poland</source>
-        <translation type="unfinished"></translation>
+        <translation>Polska</translation>
     </message>
     <message>
         <source>OTHER</source>
-        <translation type="unfinished">INNE</translation>
+        <translation>INNE</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"></translation>
+        <translation>Dobry</translation>
     </message>
     <message>
         <source>Fair</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostateczny</translation>
     </message>
     <message>
         <source>Moderate</source>
-        <translation type="unfinished"></translation>
+        <translation>Umiarkowany</translation>
     </message>
     <message>
         <source>Poor</source>
-        <translation type="unfinished"></translation>
+        <translation>Zły</translation>
     </message>
     <message>
         <source>Very poor</source>
-        <translation type="unfinished"></translation>
+        <translation>Bardzo zły</translation>
     </message>
 </context>
 <context>
     <name>SelectCountryPage</name>
     <message>
         <source>Select country</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz kraj</translation>
     </message>
     <message>
         <source>Find nearest</source>
@@ -245,15 +250,15 @@ https://developer.airly.eu</source>
     <name>SelectProviderPage</name>
     <message>
         <source>Select provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz dostawcę</translation>
     </message>
     <message>
         <source>Manage providers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj dostawcami</translation>
     </message>
     <message>
         <source>Find nearest stations</source>
-        <translation type="unfinished"></translation>
+        <translation>Znajdź najbliższą stację</translation>
     </message>
 </context>
 <context>
@@ -286,7 +291,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>No data</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak danych</translation>
     </message>
 </context>
 <context>
@@ -345,11 +350,11 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Manage providers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zarządzaj dostawcami</translation>
     </message>
     <message>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
+        <translation>Wstrzymany</translation>
     </message>
 </context>
 <context>
@@ -368,7 +373,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Data by </source>
-        <translation type="unfinished"></translation>
+        <translation>Dane od </translation>
     </message>
 </context>
 <context>

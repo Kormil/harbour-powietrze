@@ -106,11 +106,11 @@ https://developer.airly.eu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stop locating for</source>
+        <source>24 hours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>24 hours</source>
+        <source>Stop locating</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

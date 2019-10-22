@@ -268,7 +268,7 @@ Page {
                     width: parent.width
 
                     DialogHeader {
-                        title: qsTr("Stop locating for")
+                        title: qsTr("Stop locating")
                     }
 
                     ComboBox {
