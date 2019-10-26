@@ -44,12 +44,12 @@
     </message>
     <message>
         <source>Api key for Airly</source>
-        <translation空气 API</translation>
+        <translation>空气 API</translation>
     </message>
     <message>
         <source>To get access to Airly api you must generate key. You can get your own api key from
 https://developer.airly.eu</source>
-        <translation>你必须生成密钥以访问Airly API, 你可以从下方网站获取你的 API https://developer.airly.eu<</translation>
+        <translation>你必须生成密钥以访问Airly API, 你可以从下方网站获取你的 API https://developer.airly.eu</translation>
     </message>
 </context>
 <context>
@@ -140,7 +140,7 @@ https://developer.airly.eu</source>
     <name>OpenAQPage</name>
     <message>
         <source>Enabled</source>
-        <translation><已启用/translation>
+        <translation>已启用</translation>
     </message>
     <message>
         <source>License</source>
@@ -326,7 +326,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Notifications</source>
-        <translation><通知/translation>
+        <translation>通知</translation>
     </message>
     <message>
         <source>Works only with the screen on. If the screen is off, the program will automatically look for the nearest station after turning the screen on.</source>
