@@ -12,6 +12,12 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Oct 26 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.2.1-1
+- Trimming api key
+- Added minimum value to OpenAQ
+- Make pages more scrollable
+- Added Chinese translates (thanks to dashinfantry)
+
 * Sat Oct 22 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.2.0-1
 - Added new data provider: OpenAQ
 - Added new data provider: Airly

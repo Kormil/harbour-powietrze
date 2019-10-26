@@ -8,3 +8,6 @@ Takes pollution data from:
 * airly.eu
 
 openaq.org doesn't deliver the air quality index so application calculate European Air Quality index (eea.europa.eu).
+
+Translators:
+* Chinese: dashinfantry

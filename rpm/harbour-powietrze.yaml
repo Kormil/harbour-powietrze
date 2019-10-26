@@ -1,6 +1,6 @@
 ﻿Name: harbour-powietrze
-Summary: Application for checking the current state of air quality in Poland.
-Version: 1.2.0
+Summary: Application for checking the current state of air quality.
+Version: 1.2.1
 Release: 1
 # The contents of the Group field should be one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
@@ -12,7 +12,7 @@ License: LICENSE
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |
-  Application for checking the current state of air quality in Poland.
+  Application for checking the current state of air quality.
 Configure: none
 # The qtc5 builder inserts macros to allow QtCreator to have fine
 # control over qmake/make execution

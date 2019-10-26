@@ -89,7 +89,8 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/harbour-powietrze.ts \
-                translations/harbour-powietrze-pl.ts
+                translations/harbour-powietrze-pl.ts \
+                translations/harbour-powietrze-zh_CN.ts
 
 # translations
 TS_FILE = $$OUT_PWD/translations/$${TARGET}*.ts
@@ -157,8 +158,3 @@ INSTALLS += license
 providersLicense.files = Licenses/*
 providersLicense.path = /usr/share/$${TARGET}/Licenses
 INSTALLS += providersLicense
-
-#OTHER_FILES += nmea/*
-#nmea.files = nmea/*.nmea
-#nmea.path = /usr/share/$$TARGET/nmea
-#INSTALLS += nmea
