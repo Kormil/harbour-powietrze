@@ -11,16 +11,23 @@ Page {
 
     SilicaFlickable{
         anchors.fill: parent
+        anchors.leftMargin: Theme.paddingMedium
+        anchors.rightMargin: Theme.paddingMedium
+        contentHeight: column.height
+
+        VerticalScrollDecorator {}
 
         Column
         {
+            id: column
+            width: parent.width
 
             PageHeader {
                 title: qsTr("Settings")
             }
 
             ComboBox {
-                width: page.width
+                width: parent.width
                 label: qsTr("Units type")
                 currentIndex: Settings.unitType
 
@@ -63,7 +70,7 @@ Page {
             }
 
             ComboBox {
-                width: page.width
+                width: parent.width
                 label: qsTr("Update frequency")
                 currentIndex: Settings.gpsUpdateFrequency
 

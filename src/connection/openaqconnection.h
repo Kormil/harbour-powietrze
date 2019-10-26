@@ -38,6 +38,7 @@ private:
     std::set<QString> m_requestedStation;
 
     int m_recordLimits = 1000;
+    float m_minimumValue = 0.01f;
 };
 
 #endif // OpenAQConnection_H

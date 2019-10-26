@@ -12,8 +12,12 @@ Page {
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
+
     SilicaFlickable{
         anchors.fill: parent
+        anchors.leftMargin: Theme.paddingMedium
+        anchors.rightMargin: Theme.paddingMedium
+        contentHeight: column.height
 
         PullDownMenu {
             MenuItem {
@@ -24,9 +28,12 @@ Page {
             }
         }
 
+        VerticalScrollDecorator {}
+
         Column
         {
-            anchors.fill: parent
+            id: column
+            width: parent.width
 
             PageHeader {
                 id: header
@@ -64,7 +71,7 @@ Page {
 
                 onTextChanged: {
                     if (provider) {
-                        provider.apiKey = text
+                        provider.apiKey = text.trim()
                     }
                 }
             }

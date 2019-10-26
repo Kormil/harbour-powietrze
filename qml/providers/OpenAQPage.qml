@@ -12,8 +12,11 @@ Page {
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
-    SilicaFlickable{
+    SilicaFlickable {
         anchors.fill: parent
+        anchors.leftMargin: Theme.paddingMedium
+        anchors.rightMargin: Theme.paddingMedium
+        contentHeight: column.height
 
         PullDownMenu {
             MenuItem {
@@ -24,9 +27,11 @@ Page {
             }
         }
 
-        Column
-        {
-            anchors.fill: parent
+        VerticalScrollDecorator {}
+
+        Column {
+            id: column
+            width: parent.width
 
             PageHeader {
                 id: header

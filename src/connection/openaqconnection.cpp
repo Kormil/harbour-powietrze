@@ -34,7 +34,8 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 
     m_lastCountryListRequestDate = currentTime;
 
-    QString url = "https://" + m_host + m_port + "/v1/countries" + "?limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v1/countries"
+            + "?limit=" + QString::number(m_recordLimits);
     QUrl countryListURL(url);
 
     Request* requestRaw = request(countryListURL);
@@ -75,7 +76,8 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
 
     m_requestedStation.insert(province);
 
-    QString url = "https://" + m_host + m_port + "/v1/locations?city=" + province + "&limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v1/locations?city=" + province
+            + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
@@ -116,7 +118,8 @@ void OpenAQConnection::getProvinceList(std::function<void(ProvinceListPtr)> hand
 
     m_requestedProvince.insert(countryCode);
 
-    QString url = "https://" + m_host + m_port + "/v1/cities?country=" + countryCode + "&limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v1/cities?country=" + countryCode
+            + "&limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
@@ -150,7 +153,8 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
     }
 
     QString location = station->cityName();
-    QString url = "https://" + m_host + m_port + "/v1/locations?location=" + location + "&limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v1/locations?location=" + location
+            + "&limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
@@ -172,8 +176,10 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
 
 void OpenAQConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
 {
-    QString url = "https://" + m_host + m_port + "/v1/measurements?location=" + sensor.id.toString() + "&parameter=" + sensor.pollutionCode
-            + "&limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v1/measurements?location=" + sensor.id.toString()
+            + "&parameter=" + sensor.pollutionCode
+            + "&limit=" + QString::number(m_recordLimits)
+            + "&value_from=" + QString::number(m_minimumValue);
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
@@ -209,7 +215,8 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
 {
     QString url = "https://" + m_host + m_port + "/v1/locations?coordinates="
             + QString::number(coordinate.latitude()) + "," + QString::number(coordinate.longitude())
-            + "&order_by=distance&limit=" + QString::number(m_recordLimits) + "&radius=" + QString::number(distanceLimit);
+            + "&order_by=distance&limit=" + QString::number(m_recordLimits)
+            + "&radius=" + QString::number(distanceLimit);
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);

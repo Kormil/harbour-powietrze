@@ -11,13 +11,16 @@ Page {
     allowedOrientations: Orientation.All
 
     onStatusChanged: {
-            if (status === PageStatus.Deactivating) {
-                changeCoverPage(Qt.resolvedUrl("../cover/CoverPage.qml"));
-            }
+        if (status === PageStatus.Deactivating) {
+            changeCoverPage(Qt.resolvedUrl("../cover/CoverPage.qml"));
+        }
     }
 
     SilicaFlickable {
         anchors.fill: parent
+        anchors.leftMargin: Theme.paddingMedium
+        anchors.rightMargin: Theme.paddingMedium
+        contentHeight: station.height
 
         PullDownMenu {
             MenuItem {
@@ -39,26 +42,24 @@ Page {
             }
         }
 
-        PageHeader {
-            id: pageHeader
-        }
+        VerticalScrollDecorator {}
 
-        BusyIndicator {
-            id: loading
-            anchors.centerIn: parent
-            running: true
-            size: BusyIndicatorSize.Large
-            anchors.verticalCenter: parent.verticalCenter
-            visible: false
-        }
-
-        Item {
+        Column {
             id: station
-            enabled: true
-            visible: true
             width: parent.width
-            height: parent.height
-            anchors.top: pageHeader.bottom
+
+            PageHeader {
+                id: pageHeader
+            }
+
+            BusyIndicator {
+                id: loading
+                anchors.centerIn: parent
+                running: true
+                size: BusyIndicatorSize.Large
+                anchors.verticalCenter: parent.verticalCenter
+                visible: false
+            }
 
             Item {
                 id: index
@@ -67,6 +68,7 @@ Page {
 
                 Image {
                     id: image
+                    height: 256
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -80,7 +82,6 @@ Page {
 
             SectionHeader {
                 id: dataSection
-                anchors.top: index.bottom
                 textFormat: Text.RichText
                 text: qsTr("data (" + Settings.unitName() + ")")
             }
@@ -89,41 +90,30 @@ Page {
                 id: listView
                 model: sensorListModel
 
-                width: parent.width
-                height: parent.height
-                anchors.top: dataSection.bottom
+                width: page.width
+                height: count * Theme.itemSizeExtraSmall
 
                 delegate: Row {
                     id: delegate
 
-                    spacing: Theme.paddingMedium
                     anchors.horizontalCenter: parent.horizontalLeft
+                    spacing: Theme.paddingMedium
 
                     Label {
                         width: page.width / 2
                         text: model.name
                         color: Theme.secondaryHighlightColor
                         horizontalAlignment: Text.AlignRight
+                        fontSizeMode: Theme.itemSizeExtraSmall
                     }
                     Label {
                         horizontalAlignment: Text.AlignLeft
                         text: model.value
-                        fontSizeMode: Theme.fontSizeSmall
+                        fontSizeMode: Theme.itemSizeExtraSmall
                         color: Theme.highlightColor
                     }
-                    VerticalScrollDecorator {}
                 }
             }
-        }
-
-        Label {
-            id: prviderLabel
-            width: parent.width
-            anchors.bottom: parent.bottom
-            font.pixelSize: Theme.fontSizeExtraSmall
-            color: Theme.secondaryColor
-            anchors.bottomMargin: Theme.paddingSmall
-            horizontalAlignment: Text.AlignHCenter
         }
 
         Connections {
@@ -168,5 +158,15 @@ Page {
                 removeFevourite.visible = stationListModel.selectedStation.favourite
             }
         }
+    }
+
+    Label {
+        id: prviderLabel
+        width: parent.width
+        anchors.bottom: page.bottom
+        font.pixelSize: Theme.fontSizeExtraSmall
+        color: Theme.secondaryColor
+        anchors.bottomMargin: Theme.paddingSmall
+        horizontalAlignment: Text.AlignHCenter
     }
 }

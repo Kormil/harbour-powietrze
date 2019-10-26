@@ -5,23 +5,23 @@
     <name>AboutPage</name>
     <message>
         <source>About</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>License</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Source code</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Application for checking the current state of air quality.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>version</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application for checking the current state of air quality.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source code</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Buy me a beer</source>
