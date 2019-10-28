@@ -11,3 +11,4 @@ openaq.org doesn't deliver the air quality index so application calculate Europe
 
 Translators:
 * Chinese: dashinfantry
+* Swedish: eson57

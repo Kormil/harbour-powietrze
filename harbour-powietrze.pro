@@ -90,7 +90,8 @@ SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/harbour-powietrze.ts \
                 translations/harbour-powietrze-pl.ts \
-                translations/harbour-powietrze-zh_CN.ts
+                translations/harbour-powietrze-zh_CN.ts \
+                translations/harbour-powietrze-sv.ts
 
 # translations
 TS_FILE = $$OUT_PWD/translations/$${TARGET}*.ts

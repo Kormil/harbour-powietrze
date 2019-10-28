@@ -12,11 +12,16 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Oct 26 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.2.2-1
+- Fix gps bug
+- Fix station result page
+- Added Swedish translate (thanks to eson57)
+
 * Sat Oct 26 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.2.1-1
 - Trimming api key
 - Added minimum value to OpenAQ
 - Make pages more scrollable
-- Added Chinese translates (thanks to dashinfantry)
+- Added Chinese translate (thanks to dashinfantry)
 
 * Sat Oct 22 2019 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.2.0-1
 - Added new data provider: OpenAQ
