@@ -11,9 +11,6 @@ PowietrzeConnection::PowietrzeConnection(ModelsManager* modelsManager) :
     m_host = "api.gios.gov.pl/pjp-api/rest";
     m_port = "";
 
-//    m_host = "192.168.1.11";
-//    m_port = ":12334";
-
     m_id = 1;
 }
 

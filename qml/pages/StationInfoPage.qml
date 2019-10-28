@@ -52,15 +52,6 @@ Page {
                 id: pageHeader
             }
 
-            BusyIndicator {
-                id: loading
-                anchors.centerIn: parent
-                running: true
-                size: BusyIndicatorSize.Large
-                anchors.verticalCenter: parent.verticalCenter
-                visible: false
-            }
-
             Item {
                 id: index
                 width: parent.width
@@ -158,6 +149,15 @@ Page {
                 removeFevourite.visible = stationListModel.selectedStation.favourite
             }
         }
+    }
+
+    BusyIndicator {
+        id: loading
+        anchors.centerIn: parent
+        running: true
+        size: BusyIndicatorSize.Large
+        anchors.verticalCenter: parent.verticalCenter
+        visible: false
     }
 
     Label {

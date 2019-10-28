@@ -10,9 +10,6 @@ OpenAQConnection::OpenAQConnection(ModelsManager* modelsManager) :
     m_host = "api.openaq.org";
     m_port = "";
 
-//    m_host = "192.168.1.106";
-//    m_port = ":12335";
-
     m_id = 2;
 }
 

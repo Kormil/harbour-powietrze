@@ -182,18 +182,18 @@ void GPSModule::stop()
 
 void GPSModule::init()
 {
-//    m_minimumRequestIntervalInSec = frequencyFromSettings() * 60;
+    m_minimumRequestIntervalInSec = frequencyFromSettings() * 60;
 
-//    m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
+    m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
 
-//    QObject::connect(m_positionSource, &QGeoPositionInfoSource::positionUpdated, this, &GPSModule::onPositionUpdate);
-//    QObject::connect(m_positionSource, &QGeoPositionInfoSource::updateTimeout, this, &GPSModule::onUpdateTimeout);
+    QObject::connect(m_positionSource, &QGeoPositionInfoSource::positionUpdated, this, &GPSModule::onPositionUpdate);
+    QObject::connect(m_positionSource, &QGeoPositionInfoSource::updateTimeout, this, &GPSModule::onUpdateTimeout);
 
-//    m_positionSource->setUpdateInterval(1000);
+    m_positionSource->setUpdateInterval(1000);
 
-//    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-//    QObject::connect(settings, &Settings::gpsUpdateFrequencyChanged, this, &GPSModule::onGpsUpdateFrequencyChanged);
+    Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+    QObject::connect(settings, &Settings::gpsUpdateFrequencyChanged, this, &GPSModule::onGpsUpdateFrequencyChanged);
 
-//    m_pausedLocatingDateTime = settings->gpsLocationPaused();
-//    onGpsUpdateFrequencyChanged();
+    m_pausedLocatingDateTime = settings->gpsLocationPaused();
+    onGpsUpdateFrequencyChanged();
 }
