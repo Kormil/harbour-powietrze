@@ -67,7 +67,6 @@ Page {
                 placeholderText: label
                 width: parent.width
                 EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                EnterKey.onClicked: passwordField.focus = true
 
                 onTextChanged: {
                     if (provider) {
@@ -142,7 +141,6 @@ Page {
                         placeholderText: label
                         width: parent.width
                         EnterKey.iconSource: "image://theme/icon-m-enter-next"
-                        EnterKey.onClicked: passwordField.focus = true
                     }
                 }
             }

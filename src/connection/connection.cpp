@@ -80,6 +80,11 @@ int Connection::id() const
     return m_id;
 }
 
+QString Connection::indexName() const
+{
+    return m_indexName;
+}
+
 void Connection::clearRequests()
 {
     m_networkAccessManager->deleteLater();

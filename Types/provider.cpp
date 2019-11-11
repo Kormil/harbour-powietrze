@@ -1,5 +1,6 @@
 #include "provider.h"
 #include "src/settings.h"
+#include "src/modelsmanager.h"
 
 Connection *ProviderData::connection() const
 {
@@ -76,7 +77,7 @@ int ProviderData::airQualityIndexId() const
 void ProviderData::setAirQualityIndexId(int value)
 {
     m_airQualityIndexId = value;
-    emit airQualityIndexIdChanged();
+    emit airQualityIndexChanged();
     emit dataChanged();
 
     m_settings->setProviderSettings(m_name, "aqi", value);
@@ -108,6 +109,11 @@ void ProviderData::setApiKey(const QString &apiKey)
 
         m_settings->setProviderSettings(m_name, "apiKey", m_apiKey);
     }
+}
+
+void ProviderData::setModelsManager(ModelsManager *modelsManager)
+{
+    m_modelsManager = modelsManager;
 }
 
 ProviderData::ProviderData(QObject *parent) : QObject(parent)

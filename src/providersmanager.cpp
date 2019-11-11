@@ -25,6 +25,7 @@ void ProvidersManager::createProviders()
     Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
 
     ProviderDataPtr powietrze(new ProviderData);
+    powietrze->setModelsManager(m_modelsManager);
     powietrze->setId(m_powietrze->id());
     powietrze->setName("Powietrze");
     powietrze->setShortName("Powietrze");
@@ -37,6 +38,7 @@ void ProvidersManager::createProviders()
     powietrze->setNameVariant(settings->providerSettings(powietrze->name(), "nameVariant").toInt());
 
     ProviderDataPtr openaq(new ProviderData);
+    openaq->setModelsManager(m_modelsManager);
     openaq->setId(m_openAq->id());
     openaq->setName("OpenAQ");
     openaq->setShortName("OpenAQ");
@@ -48,6 +50,7 @@ void ProvidersManager::createProviders()
     openaq->setEnabled(enabled.isValid() ? enabled.toBool() : true);
 
     ProviderDataPtr airly(new ProviderData);
+    airly->setModelsManager(m_modelsManager);
     airly->setId(m_airly->id());
     airly->setName("Airly");
     airly->setShortName("Airly");

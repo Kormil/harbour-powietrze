@@ -87,6 +87,7 @@ public:
     int getStationIndexFrequency() const;
 
     int id() const;
+    QString indexName() const;
 
     void clearRequests();
 
@@ -97,6 +98,7 @@ protected:
     QString m_port;
 
     int m_id;
+    QString m_indexName;
 
     ModelsManager* m_modelsManager;
 

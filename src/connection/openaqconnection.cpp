@@ -11,6 +11,7 @@ OpenAQConnection::OpenAQConnection(ModelsManager* modelsManager) :
     m_port = "";
 
     m_id = 2;
+    m_indexName = "";
 }
 
 OpenAQConnection::~OpenAQConnection()
@@ -200,11 +201,13 @@ void OpenAQConnection::getSensorData(SensorData sensor, std::function<void (Sens
 
 void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIndexPtr)> handler)
 {
+    StationIndexData stationIndexData;
+
+    stationIndexData.m_id = -1;
+    stationIndexData.m_name = "No index";
+
     StationIndexPtr stationIndex(new StationIndex);
-
-    stationIndex->setId(-1);
-    stationIndex->setName("No index");
-
+    stationIndex->setData(stationIndexData);
     handler(stationIndex);
 }
 

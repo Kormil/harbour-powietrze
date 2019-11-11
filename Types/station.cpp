@@ -7,8 +7,8 @@
 
 Station::Station(QObject *parent) :
     QObject(parent),
-    m_favourite(false),
-    m_sensorList(nullptr)
+    m_sensorList(nullptr),
+    m_favourite(false)
 {
 
 }
@@ -78,6 +78,9 @@ double Station::distance() const
 
 QString Station::distanceString() const
 {
+    if (std::abs(distance()) < 0.000000001)
+        return QString();
+
     return QString::number(distance() / 1000, 'f', 2);
 }
 

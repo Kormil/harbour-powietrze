@@ -12,6 +12,7 @@ PowietrzeConnection::PowietrzeConnection(ModelsManager* modelsManager) :
     m_port = "";
 
     m_id = 1;
+    m_indexName = "PIJP";
 }
 
 PowietrzeConnection::~PowietrzeConnection()
@@ -187,11 +188,13 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
+            StationIndexData stationIndexData;
+
+            stationIndexData.m_id = -1;
+            stationIndexData.m_name = "No index";
+
             StationIndexPtr stationIndex(new StationIndex);
-
-            stationIndex->setId(-1);
-            stationIndex->setName("No index");
-
+            stationIndex->setData(stationIndexData);
             handler(stationIndex);
         } else {
             StationIndexPtr stationIndex = readStationIndexFromJson(QJsonDocument::fromJson(responseArray));
@@ -321,11 +324,20 @@ StationIndexPtr PowietrzeConnection::readStationIndexFromJson(const QJsonDocumen
 
     float id = object["id"].toInt();
     QString name = object["indexLevelName"].toString();
+    QString dateString = jsonDocument.object()["stSourceDataDate"].toString();
 
-    StationIndex* stationIndex = new StationIndex;
+    StationIndexData stationIndexData;
 
     if (!name.isEmpty())
-        stationIndex->setId(id);
-    stationIndex->setName(name);
-    return StationIndexPtr( stationIndex );
+        stationIndexData.m_id = id;
+    stationIndexData.m_name = name;
+
+    QString dateFormat = "yyyy-MM-dd HH:mm:ss";
+    QDateTime date = QDateTime::fromString(dateString, dateFormat);
+    stationIndexData.m_date = date;
+    stationIndexData.m_calculationModeName = m_indexName;
+
+    StationIndexPtr stationIndex( new StationIndex );
+    stationIndex->setData(stationIndexData);
+    return stationIndex;
 }

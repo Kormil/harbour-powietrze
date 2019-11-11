@@ -12,22 +12,20 @@ QString StationIndex::name() const
     return m_data.m_name;
 }
 
+QString StationIndex::indexCalculateDate() const
+{
+    return m_data.m_date.toString("HH:mm");
+}
+
+QString StationIndex::calculationModeName() const
+{
+    return m_data.m_calculationModeName;
+}
+
 void StationIndex::bindToQml(QQuickView * view)
 {
     Q_UNUSED(view);
     qmlRegisterType<Station>("StationListModel", 1, 0, "StationIndex");
-}
-
-void StationIndex::setId(int id)
-{
-    m_data.m_id = id;
-    emit idChanged();
-}
-
-void StationIndex::setName(const QString &name)
-{
-    m_data.m_name = name;
-    emit nameChanged();
 }
 
 bool StationIndex::shouldGetNewData(int frequency)
@@ -37,10 +35,10 @@ bool StationIndex::shouldGetNewData(int frequency)
 
     QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (currentTime.time().hour() < m_data.m_date.time().hour())
+    if (currentTime.time().hour() < m_date.time().hour())
         return true;
 
-    QDateTime nextDataTime = m_data.m_date.addSecs( frequency * 60 );
+    QDateTime nextDataTime = m_date.addSecs( frequency * 60 );
     return currentTime > nextDataTime;
 }
 
@@ -52,9 +50,10 @@ void StationIndex::setStation(Station *station)
 void StationIndex::setData(const StationIndexData &data)
 {
     m_data = data;
+    emit dateChanged();
 }
 
 void StationIndex::setDateToCurent()
 {
-    m_data.m_date = QDateTime::currentDateTime();
+    m_date = QDateTime::currentDateTime();
 }

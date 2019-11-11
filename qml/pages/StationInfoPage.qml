@@ -6,6 +6,8 @@ import SensorListModel 1.0
 import ProviderListModel 1.0
 import Settings 1.0
 
+import "../items"
+
 Page {
     id: page
     allowedOrientations: Orientation.All
@@ -48,33 +50,9 @@ Page {
             id: station
             width: parent.width
 
-            PageHeader {
-                id: pageHeader
-            }
-
-            Item {
-                id: index
-                width: parent.width
-                height: image.height + label.height
-
-                Image {
-                    id: image
-                    height: 256
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-
-                Label {
-                    id: label
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.topMargin: Theme.paddingSmall
-                    anchors.top: image.bottom
-                }
-            }
-
-            SectionHeader {
-                id: dataSection
-                textFormat: Text.RichText
-                text: qsTr("data (" + Settings.unitName() + ")")
+            StationInfoItem {
+                station: stationListModel.selectedStation
+                enabled: false
             }
 
             SilicaListView {
@@ -125,10 +103,6 @@ Page {
                 station.enabled = true
                 station.visible = true
 
-                pageHeader.title = stationListModel.selectedStation.name
-                label.text = stationListModel.selectedStation.stationIndex.name
-                image.source = "qrc:///Graphics/weatherIcons/256/" + stationListModel.selectedStation.stationIndex.id + ".png"
-
                 addFevourite.visible = !stationListModel.selectedStation.favourite
                 removeFevourite.visible = stationListModel.selectedStation.favourite
 
@@ -141,10 +115,6 @@ Page {
         Connections {
             target: stationListModel
             onDataChanged: {
-                pageHeader.title = stationListModel.selectedStation.name
-                label.text = stationListModel.selectedStation.stationIndex.name
-                image.source = "qrc:///Graphics/weatherIcons/256/" + stationListModel.selectedStation.stationIndex.id + ".png"
-
                 addFevourite.visible = !stationListModel.selectedStation.favourite
                 removeFevourite.visible = stationListModel.selectedStation.favourite
             }

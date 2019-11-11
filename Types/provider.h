@@ -6,13 +6,14 @@
 
 class Connection;
 class Settings;
+class ModelsManager;
 
 class ProviderData : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(int airQualityIndex READ airQualityIndexId WRITE setAirQualityIndexId NOTIFY airQualityIndexIdChanged)
+    Q_PROPERTY(int airQualityIndex READ airQualityIndexId WRITE setAirQualityIndexId NOTIFY airQualityIndexChanged)
     Q_PROPERTY(QString icon READ icon NOTIFY iconChanged)
     Q_PROPERTY(QString site READ site NOTIFY siteChanged)
     Q_PROPERTY(int nameVariant READ nameVariant WRITE setNameVariant NOTIFY dataChanged)
@@ -43,13 +44,15 @@ public:
     QString apiKey() const;
     void setApiKey(const QString &apiKey);
 
+    void setModelsManager(ModelsManager *modelsManager);
+
 signals:
     void dataChanged();
     void nameChanged();
     void enabledChanged();
     void iconChanged();
     void siteChanged();
-    void airQualityIndexIdChanged();
+    void airQualityIndexChanged();
     void apiKeyChanged();
 
 private:
@@ -65,6 +68,7 @@ private:
     QString m_apiKey;
 
     Settings * m_settings;
+    ModelsManager * m_modelsManager;
 };
 
 #endif // PROVIDER_H

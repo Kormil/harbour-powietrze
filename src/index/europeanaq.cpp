@@ -83,14 +83,24 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
         }
     }
 
-    StationIndexPtr stationIndex(new StationIndex);
+    StationIndexData stationIndexData;
     if (worestIndexId >= 0)
-        stationIndex->setName(m_names[worestIndexId]);
-    stationIndex->setId(worestIndexId);
+        stationIndexData.m_name = m_names[worestIndexId];
+    stationIndexData.m_id = worestIndexId;
+    stationIndexData.m_date = QDateTime::currentDateTime();
+    stationIndexData.m_calculationModeName = shortName();
+
+    StationIndexPtr stationIndex( new StationIndex );
+    stationIndex->setData(stationIndexData);
     return stationIndex;
 }
 
 QString EuropeanAQ::name()
 {
     return "EuropeanAQ";
+}
+
+QString EuropeanAQ::shortName() const
+{
+    return "EAQI";
 }

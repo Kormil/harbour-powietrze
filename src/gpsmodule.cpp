@@ -186,6 +186,10 @@ void GPSModule::init()
 
     m_positionSource = QGeoPositionInfoSource::createDefaultSource(this);
 
+    if (!m_positionSource) {
+        return;
+    }
+
     QObject::connect(m_positionSource, &QGeoPositionInfoSource::positionUpdated, this, &GPSModule::onPositionUpdate);
     QObject::connect(m_positionSource, &QGeoPositionInfoSource::updateTimeout, this, &GPSModule::onUpdateTimeout);
 

@@ -14,6 +14,7 @@ AirlyConnection::AirlyConnection(ModelsManager *modelsManager) :
     m_port = "";
 
     m_id = 3;
+    m_indexName = "CAQI";
 }
 
 AirlyConnection::~AirlyConnection()
@@ -210,11 +211,13 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
+            StationIndexData stationIndexData;
+
+            stationIndexData.m_id = -1;
+            stationIndexData.m_name = "No index";
+
             StationIndexPtr stationIndex(new StationIndex);
-
-            stationIndex->setId(-1);
-            stationIndex->setName("No index");
-
+            stationIndex->setData(stationIndexData);
             handler(stationIndex);
         } else {
             StationIndexPtr stationIndex = readStationIndexFromJson(QJsonDocument::fromJson(responseArray));
@@ -358,9 +361,12 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
 
     auto current = jsonDocument.object()["current"];
     if (current.isUndefined()) {
+        std::cout << "Error in Airly Index json" << std::endl;
         return StationIndexPtr(nullptr);
     }
 
+    QString dateString = current.toObject()["tillDateTime"].toString();
+    //dateString = dateString.replace('T', ' ');
     QJsonArray results = current.toObject()["indexes"].toArray();
 
     float value;
@@ -385,10 +391,16 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
         id = 5;
     }
 
-    StationIndex* stationIndex = new StationIndex;
+    QDateTime date = QDateTime::fromString(dateString, Qt::ISODate);
+    StationIndexData stationIndexData;
 
     if (!name.isEmpty())
-        stationIndex->setId(id);
-    stationIndex->setName(name);
-    return StationIndexPtr( stationIndex );
+        stationIndexData.m_id = id;
+    stationIndexData.m_name = name;
+    stationIndexData.m_date = date;
+    stationIndexData.m_calculationModeName = m_indexName;
+
+    StationIndexPtr stationIndex( new StationIndex );
+    stationIndex->setData(stationIndexData);
+    return stationIndex;
 }

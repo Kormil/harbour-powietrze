@@ -17,22 +17,24 @@ struct StationIndexData
     QString m_name;
     Station* m_station = nullptr;
     QDateTime m_date;
+    QString m_calculationModeName;
 };
 
 struct StationIndex : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int id READ id NOTIFY idChanged)
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(int id READ id NOTIFY dateChanged)
+    Q_PROPERTY(QString name READ name NOTIFY dateChanged)
+    Q_PROPERTY(QString calculationModeName READ calculationModeName NOTIFY dateChanged)
+    Q_PROPERTY(QString date READ indexCalculateDate NOTIFY dateChanged)
 public:
 
     int id() const;
     QString name() const;
+    QString indexCalculateDate() const;
+    QString calculationModeName() const;
 
     static void bindToQml(QQuickView * view);
-
-    void setId(int id);
-    void setName(const QString &name);
 
     bool shouldGetNewData(int frequency);
     void setDateToCurent();
@@ -41,10 +43,10 @@ public:
     void setData(const StationIndexData &data);
 
 signals:
-    void idChanged();
-    void nameChanged();
+    void dateChanged();
 
 private:
     StationIndexData m_data;
+    QDateTime m_date;
 };
 #endif // STATIONINDEX_H
