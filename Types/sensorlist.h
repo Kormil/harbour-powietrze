@@ -7,74 +7,9 @@
 #include <QJsonDocument>
 #include <QVariant>
 #include <vector>
-#include <memory>
-#include <numeric>
-#include <atomic>
+#include "pollution.h"
 
 class Station;
-class SensorList;
-
-using SensorListPtr = std::shared_ptr<SensorList>;
-
-struct SensorData
-{
-    QVariant id;
-    QString name;
-    QString pollutionCode;
-
-    SensorData() {
-        initialized = false;
-    }
-
-    SensorData(const SensorData& second) {
-        id = second.id;
-        name = second.name;
-        pollutionCode = second.pollutionCode;
-        values = second.values;
-        initialized = second.isInitialized();
-    }
-
-    SensorData& operator=(const SensorData& second) {
-        id = second.id;
-        name = second.name;
-        pollutionCode = second.pollutionCode;
-        values = second.values;
-        initialized = second.isInitialized();
-
-        return *this;
-    }
-
-    float value() const {
-        if (values.size())
-            return values.front();
-
-        return 0.0f;
-    }
-
-    float avg(size_t hours) const {
-        hours = std::min(values.size(), hours);
-        float sum = 0;
-
-        for (size_t i = 0; i < hours; ++i) {
-            sum += values[i];
-        }
-
-        return sum / hours;
-    }
-
-    bool isInitialized() const {
-        return initialized;
-    }
-
-
-public:
-    void setValues(float value);
-    void setValues(const std::vector<float> &value);
-
-private:
-    std::atomic_bool initialized;
-    std::vector<float> values;
-};
 
 class SensorList : public QObject
 {
@@ -83,10 +18,10 @@ class SensorList : public QObject
 public:
     explicit SensorList(QObject *parent = nullptr);
 
-    std::vector<SensorData> sensors() const;
+    std::vector<Pollution> sensors() const;
 
     size_t size() const;
-    void setData(SensorData sensorData);
+    void setData(Pollution sensorData);
     void setStation(Station *value);
 
     bool shouldGetNewData(int frequency);
@@ -103,9 +38,11 @@ signals:
 
 private:
     QDateTime m_createTime;
-    std::vector<SensorData> m_sensors;
+    std::vector<Pollution> m_sensors;
     QDateTime m_date;
     Station* m_station;
 };
+
+using SensorListPtr = std::shared_ptr<SensorList>;
 
 #endif // SENSORLIST_H

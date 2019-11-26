@@ -11,7 +11,7 @@ class AirQualityIndex;
 class ModelsManager;
 using AirQualityIndexPtr = std::shared_ptr<AirQualityIndex>;
 
-struct Pollution
+struct PollutionThresholds
 {
     int hours;
     std::vector<float> thresholds;

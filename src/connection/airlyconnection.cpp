@@ -1,7 +1,8 @@
 #include "airlyconnection.h"
 #include <QStringBuilder>
 #include <utility>
-#include <notification.h>
+#include <iostream>
+#include "notification.h"
 #include "../modelsmanager.h"
 
 namespace {
@@ -143,6 +144,33 @@ void AirlyConnection::provinceListRequest(StationListPtr stationList, std::funct
     handler(provinceList);
 }
 
+void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
+{
+    if (!m_parametersUnits.empty()) {
+        handler();
+        return ;
+    }
+
+    QString apiKey = m_modelsManager->providerListModel()->provider(id())->apiKey();
+    QString url = "https://" + m_host + m_port + "/v2/meta/measurements?apikey=" + apiKey;
+    QUrl provinceListURL(url);
+
+    Request* requestRaw = request(provinceListURL);
+    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    requestRaw->run();
+
+    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+        if (status == Request::ERROR) {
+            handler();
+        } else {
+            m_parametersUnits = readParametersUnitsFromJson(QJsonDocument::fromJson(responseArray));
+            handler();
+        }
+
+        deleteRequest(requestRaw->serial());
+    });
+}
+
 void AirlyConnection::getSensorList(StationPtr station, std::function<void (SensorListPtr)> handler)
 {
     if (station == nullptr)
@@ -171,18 +199,28 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
             handler( SensorListPtr() );
         else
         {
-            SensorListPtr sensorList = readSensorsFromJson(QJsonDocument::fromJson(responseArray));
-            sensorList->setDateToCurrent();
-            handler(std::move(sensorList));
+            parameterUnitsRequest([this, responseArray, handler]() {
+                SensorListPtr sensorList = readSensorsFromJson(QJsonDocument::fromJson(responseArray));
+                sensorList->setDateToCurrent();
+                handler(std::move(sensorList));
+            });
         }
 
         deleteRequest(requestRaw->serial());
     });
 }
 
-void AirlyConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
+void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
 {
     sensor.id = DEFAULT_SENSOR_ID;
+
+    for (auto& pollution: m_parametersUnits) {
+        if (pollution.pollutionCode == sensor.code) {
+            sensor.unit = pollution.unit;
+            break ;
+        }
+    }
+
     handler(sensor);
 }
 
@@ -306,16 +344,20 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
     QJsonArray results = current.toObject()["values"].toArray();
 
-    std::map<QString, SensorData> nameToSensorData;
+    std::map<QString, Pollution> nameToSensorData;
     for (const auto& result: results) {
         QString name = result.toObject()["name"].toString();
         float value = result.toObject()["value"].toDouble();
 
-        SensorData sensorData;
+        QString dateString = current.toObject()["tillDateTime"].toString();
+        QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
+
+        Pollution sensorData;
         sensorData.id = DEFAULT_SENSOR_ID;
         sensorData.name = name;
+        sensorData.date = date;
 
-        sensorData.setValues(value);
+        sensorData.setValues(PollutionValue{value, date});
         nameToSensorData[sensorData.name] = sensorData;
     }
 
@@ -331,9 +373,12 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
             QString name = result.toObject()["name"].toString();
             float value = result.toObject()["value"].toDouble();
 
+            QString dateString = current.toObject()["tillDateTime"].toString();
+            QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
+
             auto sensorDataIt = nameToSensorData.find(name);
             if (sensorDataIt != nameToSensorData.end()) {
-                sensorDataIt->second.setValues(value);
+                sensorDataIt->second.setValues({value, date});
             }
         }
     }
@@ -341,11 +386,11 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
     for (auto& sensorDataPair: nameToSensorData) {
         auto sensorData = sensorDataPair.second;
         sensorData.name = sensorData.name.toLower();
+        sensorData.code = sensorData.name;
 
         if (sensorData.name == QStringLiteral("pm25"))
             sensorData.name = QStringLiteral("pm2.5");
 
-        sensorData.pollutionCode = sensorData.name;
         sensorData.name.replace(0, 1, sensorData.name[0].toUpper());
 
         sensorList->setData(sensorData);
@@ -366,10 +411,9 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     }
 
     QString dateString = current.toObject()["tillDateTime"].toString();
-    //dateString = dateString.replace('T', ' ');
     QJsonArray results = current.toObject()["indexes"].toArray();
 
-    float value;
+    float value = 100.f;
     float id;
     QString name;
 
@@ -391,7 +435,7 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
         id = 5;
     }
 
-    QDateTime date = QDateTime::fromString(dateString, Qt::ISODate);
+    QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
     StationIndexData stationIndexData;
 
     if (!name.isEmpty())
@@ -403,4 +447,21 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     StationIndexPtr stationIndex( new StationIndex );
     stationIndex->setData(stationIndexData);
     return stationIndex;
+}
+
+PollutionUnitList AirlyConnection::readParametersUnitsFromJson(const QJsonDocument &jsonDocument)
+{
+    PollutionUnitList pollutionUnitList;
+
+    QJsonArray array = jsonDocument.array();
+
+    for (const auto& station: array)
+    {
+        QString name = station.toObject()["name"].toString().toLower();
+        QString unit = station.toObject()["unit"].toString();
+
+        pollutionUnitList.push_back({name, unit});
+    }
+
+    return pollutionUnitList;
 }

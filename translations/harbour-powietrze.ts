@@ -86,10 +86,6 @@ https://developer.airly.eu</source>
         <translation></translation>
     </message>
     <message>
-        <source>Nearest station</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Favourite</source>
         <translation></translation>
     </message>
@@ -268,6 +264,21 @@ https://developer.airly.eu</source>
     </message>
 </context>
 <context>
+    <name>SensorItem</name>
+    <message>
+        <source>date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SensorListModel</name>
     <message>
         <source>brak danych</source>
@@ -345,11 +356,11 @@ https://developer.airly.eu</source>
     <name>StationInfoPage</name>
     <message>
         <source>Add to favourite</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove from favourite</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Data by </source>

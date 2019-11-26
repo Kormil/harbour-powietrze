@@ -22,7 +22,7 @@ public:
     virtual void getStationList(std::function<void(StationListPtr)> handler) override;
     virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) override;
     virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) override;
-    virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) override;
+    virtual void getSensorData(Pollution sensor, std::function<void (Pollution)> handler) override;
     virtual void getStationIndex(StationPtr, std::function<void(StationIndexPtr)> handler) override;
     virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
@@ -32,7 +32,7 @@ private:
     ProvinceListPtr readProvincesFromJson(const QJsonDocument &jsonDocument);
     StationListPtr readStationsFromJson(const QJsonDocument &jsonDocument);
     SensorListPtr readSensorsFromJson(const QJsonDocument &jsonDocument);
-    SensorData readSensorDataFromJson(const QJsonDocument &jsonDocument);
+    Pollution readSensorDataFromJson(const QJsonDocument &jsonDocument);
 
     std::set<QString> m_requestedProvince;
     std::set<QString> m_requestedStation;

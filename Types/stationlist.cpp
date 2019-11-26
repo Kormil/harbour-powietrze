@@ -67,7 +67,7 @@ StationPtr StationList::findNearest()
     StationPtr nearest = m_stations.front();
     for (auto& station: m_stations)
     {
-        if (station->distance() && station->distance() < nearest->distance()) {
+        if (station->distance() > 0 && station->distance() < nearest->distance()) {
             nearest = station;
         }
     }

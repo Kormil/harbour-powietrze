@@ -5,9 +5,16 @@
 #include "Types/sensorlist.h"
 #include "Types/station.h"
 
+struct WHONorm {
+    QString name;
+    float value;
+    int hours;
+};
+
 namespace Utils
 {
     void simpleNotification(QString header, QString body);
+    float calculateWHONorms(const Pollution& sensorData);
 }
 
 #endif // UTILS_H

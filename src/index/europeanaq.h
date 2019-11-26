@@ -17,7 +17,7 @@ private:
     QString shortName() const;
     StationIndexPtr recalculate(SensorListPtr sensorList);
 
-    std::map<QString, Pollution> m_parametersThreshold;
+    std::map<QString, PollutionThresholds> m_parametersThreshold;
     std::vector<QString> m_names;
 };
 

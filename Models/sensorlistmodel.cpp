@@ -4,6 +4,7 @@
 #include "src/providersmanager.h"
 #include "Types/station.h"
 #include "src/settings.h"
+#include "src/utils.h"
 #include <iostream>
 
 SensorListModel::SensorListModel(QObject *parent)
@@ -20,7 +21,7 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
     if (m_station == nullptr || m_station->sensorList() == nullptr || role < SensorsListRole::NAME)
         return QVariant();
 
-    const std::vector<SensorData>& sensors = m_station->sensorList()->sensors();
+    const std::vector<Pollution>& sensors = m_station->sensorList()->sensors();
     const auto& it = sensors[row];
 
     int pollutionNameVariant = m_modelsManager->providerListModel()->provider(m_station->provider())->nameVariant();
@@ -32,7 +33,7 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
             if (pollutionNameVariant == 0) {
                 return QVariant(it.name);
             } else {
-                return QVariant(it.pollutionCode);
+                return QVariant(it.code);
             }
         }
         case VALUE:
@@ -45,6 +46,23 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
             float value = unitsConverter(UnitsType::MICROGRAM, static_cast<UnitsType>(settings->unitType()), it.value());
             return QVariant(QString::number(value, 'G', 5));
         }
+        case DATE:
+        {
+            if (QDate::currentDate() > it.date.date()) {
+                return QVariant(it.date.toString("HH:mm dd-MM-yy"));
+            } else {
+                return QVariant(it.date.toString("HH:mm"));
+            }
+        }
+        case NORM:
+        {
+            float value = Utils::calculateWHONorms(it);
+            return QVariant(QString::number(value, 'f', 0));
+        }
+        case UNIT:
+        {
+            return QVariant(it.unit);
+        }
     }
 
     return QVariant(noData);
@@ -55,6 +73,9 @@ QHash<int, QByteArray> SensorListModel::roleNames() const
     QHash<int, QByteArray> names;
     names[NAME] = "name";
     names[VALUE] = "value";
+    names[DATE] = "date";
+    names[NORM] = "norm";
+    names[UNIT] = "unit";
     return names;
 }
 
@@ -89,7 +110,7 @@ void SensorListModel::requestSensorData(StationPtr station)
     Connection* connection = ProvidersManager::instance()->connection(station->provider());
     for (const auto& sensor:  station->sensorList()->sensors())
     {
-        connection->getSensorData(sensor, [station](SensorData sensorData) {
+        connection->getSensorData(sensor, [station](Pollution sensorData) {
              station->sensorList()->setData(sensorData);
         });
     }
@@ -113,7 +134,10 @@ void SensorListModel::connectModel()
 
         connect(m_station->sensorList().get(), &SensorList::valueChanged, this, [this](int index) {
             QModelIndex modelIndex = this->index(index);
-            dataChanged(modelIndex, modelIndex, {SensorsListRole::VALUE});
+            dataChanged(modelIndex, modelIndex, {SensorsListRole::VALUE,
+                                                 SensorsListRole::DATE,
+                                                 SensorsListRole::NORM,
+                                                 SensorsListRole::UNIT});
         });
     }
 }
@@ -170,8 +194,9 @@ void SensorListModel::setStation(StationPtr station)
 
     m_station = station;
 
-    if (m_modelsManager)
+    if (m_modelsManager) {
         requestData();
+    }
 
     endResetModel();
 }

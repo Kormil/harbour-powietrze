@@ -88,7 +88,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Nearest station</source>
-        <translation>Närmaste station</translation>
+        <translation type="vanished">Närmaste station</translation>
     </message>
     <message>
         <source>Favourite</source>
@@ -266,6 +266,21 @@ https://developer.airly.eu</translation>
     <message>
         <source>Find nearest</source>
         <translation>Hitta närmaste</translation>
+    </message>
+</context>
+<context>
+    <name>SensorItem</name>
+    <message>
+        <source>date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

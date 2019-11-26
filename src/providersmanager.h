@@ -18,6 +18,7 @@ public:
     void deleteProviders();
 
     Connection* connection(int providerId) const;
+    ProviderDataPtr provider(int providerId) const;
 
     void createConenctions(ModelsManager *modelsManager);
     void findNearestStation(QGeoCoordinate coordinate, int distanceLimit, std::function<void(StationListPtr)> handler);

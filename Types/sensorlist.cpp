@@ -9,7 +9,7 @@ SensorList::SensorList(QObject *parent) :
 {
 }
 
-std::vector<SensorData> SensorList::sensors() const
+std::vector<Pollution> SensorList::sensors() const
 {
     return m_sensors;
 }
@@ -32,12 +32,12 @@ bool SensorList::isAll()
     return allDone;
 }
 
-void SensorList::setData(SensorData sensorData)
+void SensorList::setData(Pollution sensorData)
 {
     if (sensorData.id.isNull() || sensorData.name.isEmpty())
         return;
 
-    auto sensorIt = std::find_if(m_sensors.begin(), m_sensors.end(), [&sensorData](const SensorData& b) {
+    auto sensorIt = std::find_if(m_sensors.begin(), m_sensors.end(), [&sensorData](const Pollution& b) {
         if (sensorData.name == b.name)
             return true;
 
@@ -75,7 +75,7 @@ bool SensorList::shouldGetNewData(int frequency)
     if (currentTime.time().hour() < m_date.time().hour())
         return true;
 
-    QDateTime nextDataTime = m_date.addSecs(frequency * 60);
+    QDateTime nextDataTime = m_date.addSecs(frequency);
     return currentTime > nextDataTime;
 }
 
@@ -89,16 +89,4 @@ void SensorList::waitForAll()
     for (const auto& sensor: m_sensors) {
         while (!sensor.isInitialized()) {}
     }
-}
-
-void SensorData::setValues(float value)
-{
-    values.push_back(value);
-    initialized = true;
-}
-
-void SensorData::setValues(const std::vector<float> &value)
-{
-    values = value;
-    initialized = true;
 }

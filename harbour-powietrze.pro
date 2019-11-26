@@ -23,6 +23,7 @@ SOURCES += src/harbour-powietrze.cpp \
     Models/countrylistmodel.cpp \
     Models/providerlistmodel.cpp \
     Types/countrylist.cpp \
+    Types/pollution.cpp \
     Types/provider.cpp \
     Types/stationindex.cpp \
     Types/stationlist.cpp \
@@ -49,6 +50,7 @@ SOURCES += src/harbour-powietrze.cpp \
 DISTFILES += \
     qml/cover/CoverPage.qml \
     qml/items/ProviderItem.qml \
+    qml/items/SensorItem.qml \
     qml/items/StationInfoItem.qml \
     qml/pages/ManageProvidersPage.qml \
     qml/pages/ProviderLicensePage.qml \
@@ -126,6 +128,7 @@ HEADERS += \
     Models/countrylistmodel.h \
     Models/providerlistmodel.h \
     Types/countrylist.h \
+    Types/pollution.h \
     Types/provider.h \
     Types/stationindex.h \
     Types/stationlist.h \

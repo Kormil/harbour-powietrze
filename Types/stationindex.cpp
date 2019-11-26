@@ -38,7 +38,7 @@ bool StationIndex::shouldGetNewData(int frequency)
     if (currentTime.time().hour() < m_date.time().hour())
         return true;
 
-    QDateTime nextDataTime = m_date.addSecs( frequency * 60 );
+    QDateTime nextDataTime = m_date.addSecs(frequency);
     return currentTime > nextDataTime;
 }
 

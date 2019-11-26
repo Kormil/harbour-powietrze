@@ -143,7 +143,7 @@ void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(S
     });
 }
 
-void PowietrzeConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
+void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
 {
     QString url = "http://" + m_host + m_port + "/data/getData/" + QString::number(sensor.id.toInt());
     QUrl sensorDataURL(url);
@@ -152,14 +152,14 @@ void PowietrzeConnection::getSensorData(SensorData sensor, std::function<void (S
     requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
-        SensorData data;
+        Pollution data;
         if (status != Request::ERROR) {
             data = readSensorDataFromJson(QJsonDocument::fromJson(responseArray));
         }
 
         data.id = sensor.id.toInt();
         data.name = sensor.name;
-        data.pollutionCode = sensor.pollutionCode;
+        data.code = sensor.code;
 
         handler(data);
         deleteRequest(requestRaw->serial());
@@ -281,15 +281,15 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
 
     for (const auto& sensor: array)
     {
-        SensorData sensorData;
+        Pollution sensorData;
 
         sensorData.id = sensor.toObject()["id"].toInt();
         sensorData.name = sensor.toObject()["param"].toObject()["paramName"].toString();
-        sensorData.pollutionCode = sensor.toObject()["param"].toObject()["paramCode"].toString().toLower();
+        sensorData.code = sensor.toObject()["param"].toObject()["paramCode"].toString().toLower();
 
 
-        if (sensorData.pollutionCode == QStringLiteral("pm2.5"))
-            sensorData.pollutionCode = QStringLiteral("pm25");
+        if (sensorData.code == QStringLiteral("pm2.5"))
+            sensorData.code = QStringLiteral("pm25");
 
         sensorList->setData(sensorData);
     }
@@ -297,20 +297,31 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
     return std::move(sensorList);
 }
 
-SensorData PowietrzeConnection::readSensorDataFromJson(const QJsonDocument &jsonDocument)
+Pollution PowietrzeConnection::readSensorDataFromJson(const QJsonDocument &jsonDocument)
 {
     QJsonArray array = jsonDocument.object()["values"].toArray();
 
-    SensorData sensorData;
-    std::vector<float> values;
+    Pollution sensorData;
+    QDateTime mainDate;
+    std::vector<PollutionValue> values;
     for (const auto& sensor: array)
     {
         if (sensor.toObject()["value"].isNull())
             continue;
 
-        values.push_back(sensor.toObject()["value"].toDouble());
+        float value = sensor.toObject()["value"].toDouble();
+        QString dateString = sensor.toObject()["date"].toString();
+        auto date = QDateTime::fromString(dateString, dateFormat());
+
+        values.push_back(PollutionValue{value, date});
+
+        if (mainDate.isNull()) {
+            mainDate = date;
+        }
     }
     sensorData.setValues(values);
+    sensorData.date = mainDate;
+    sensorData.unit = "µg/m³";
 
     return sensorData;
 }
@@ -332,8 +343,7 @@ StationIndexPtr PowietrzeConnection::readStationIndexFromJson(const QJsonDocumen
         stationIndexData.m_id = id;
     stationIndexData.m_name = name;
 
-    QString dateFormat = "yyyy-MM-dd HH:mm:ss";
-    QDateTime date = QDateTime::fromString(dateString, dateFormat);
+    QDateTime date = QDateTime::fromString(dateString, dateFormat());
     stationIndexData.m_date = date;
     stationIndexData.m_calculationModeName = m_indexName;
 

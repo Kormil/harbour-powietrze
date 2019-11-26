@@ -9,11 +9,11 @@ EuropeanAQ::EuropeanAQ()
 {
     m_id = 1;
 
-    auto PM25 = std::make_pair<QString, Pollution>("pm25", {24, {10, 20, 25, 50, 800}});
-    auto PM10 = std::make_pair<QString, Pollution>("pm10", {24, {20, 35, 50, 100, 1200}});
-    auto NO2  = std::make_pair<QString, Pollution>("no2",  {1, {40, 100, 200, 400, 1000}});
-    auto O3   = std::make_pair<QString, Pollution>("o3",   {1, {80, 120, 180, 240, 600}});
-    auto SO2  = std::make_pair<QString, Pollution>("so2",  {1, {100, 200, 350, 500, 1250}});
+    auto PM25 = std::make_pair<QString, PollutionThresholds>("pm25", {24, {10, 20, 25, 50, 800}});
+    auto PM10 = std::make_pair<QString, PollutionThresholds>("pm10", {24, {20, 35, 50, 100, 1200}});
+    auto NO2  = std::make_pair<QString, PollutionThresholds>("no2",  {1, {40, 100, 200, 400, 1000}});
+    auto O3   = std::make_pair<QString, PollutionThresholds>("o3",   {1, {80, 120, 180, 240, 600}});
+    auto SO2  = std::make_pair<QString, PollutionThresholds>("so2",  {1, {100, 200, 350, 500, 1250}});
 
     m_parametersThreshold.insert(PM25);
     m_parametersThreshold.insert(PM10);
@@ -52,7 +52,7 @@ void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexP
         m_modelsManager->sensorListModel()->setSensorList(sensorList, station);
         for (const auto& sensor: station->sensorList()->sensors())
         {
-            connection->getSensorData(sensor, [handler, station, this](SensorData sensorData) {
+            connection->getSensorData(sensor, [handler, station, this](Pollution sensorData) {
                 station->sensorList()->setData(sensorData);
 
                 if (station->sensorList()->isAll()) {
@@ -69,7 +69,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
     QString worestPollutionCode;
 
     for (const auto& sensor: sensorList->sensors()) {
-        auto parameter = m_parametersThreshold.find(sensor.pollutionCode);
+        auto parameter = m_parametersThreshold.find(sensor.code);
 
         if (parameter != m_parametersThreshold.end()) {
             auto thresholds = parameter->second.thresholds;
@@ -78,7 +78,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
 
             if (indexId > worestIndexId) {
                 worestIndexId = indexId;
-                worestPollutionCode = sensor.pollutionCode;
+                worestPollutionCode = sensor.code;
             }
         }
     }

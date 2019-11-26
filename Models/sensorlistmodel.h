@@ -24,6 +24,9 @@ public:
     {
         NAME = Qt::UserRole + 1,
         VALUE,
+        DATE,
+        NORM,
+        UNIT,
 
         LAST_COLUMN
     };

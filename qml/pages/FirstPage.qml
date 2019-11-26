@@ -54,43 +54,28 @@ Page {
             }
         }
 
-        Row {
+        BackgroundItem {
             id: nearestHeader
             width: page.width
-            spacing: Theme.paddingMedium
+            height: nearestStation.height
             visible: nearestStationEnabled
 
-            SectionHeader {
-                id: nearestHeaderLabel
-                width: parent.width - nearestStationBusy.realWidth - stopLocating.realWidth
-                text: qsTr("Nearest station")
-                font.pixelSize: Theme.fontSizeLarge
-            }
-
             BusyIndicator {
-                property int realWidth: visible ? width : 0
-                id: nearestStationBusy
-                anchors.verticalCenter: nearestHeader.verticalCenter
+                anchors.centerIn: parent
                 running: true
-                size: BusyIndicatorSize.Small
-                visible: nearestHeader.visible
+                size: BusyIndicatorSize.Large
             }
 
-            IconButton {
-                property int realWidth: visible ? width + Theme.horizontalPageMargin : 0
-                visible: nearestStationBusy.visible
-                id: stopLocating
-                icon.source: "image://theme/icon-m-cancel?" + (pressed
-                                                               ? Theme.highlightColor
-                                                               : Theme.primaryColor)
-                onClicked: pageStack.push(stopLocatingDialog)
+            onClicked: {
+                pageStack.push(stopLocatingDialog)
             }
         }
 
-        StationNearestItem {
+        StationInfoItem {
             id: nearestStation
-            anchors.top: nearestHeader.bottom
             visible: nearestStationEnabled
+            anchors.margins: Theme.horizontalPageMargin
+            station: stationListModel.nearestStation
 
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
@@ -179,6 +164,9 @@ Page {
             if (!Settings.gpsUpdateFrequency)
             {
                 favouriteSection.anchors.top = favouriteSection.parent.top
+                nearestStation.visible = false
+                nearestStation.enabled = false
+                nearestHeader.visible = false
             }
         }
     }
@@ -188,8 +176,7 @@ Page {
         onPositionRequested: {
             if (nearestStationEnabled)
             {
-                nearestStationBusy.visible = true
-                nearestHeader.width = page.width - nearestStationBusy.widthWithMargins
+                nearestHeader.visible = true
                 nearestStation.visible = false
                 favouriteSection.anchors.top = nearestHeader.bottom
             }
@@ -199,30 +186,9 @@ Page {
     Connections {
         target: stationListModel
         onNearestStationFounded: {
-            nearestStationBusy.visible = false
-            nearestHeader.width = page.width - Theme.horizontalPageMargin
-
-            if (nearestStationEnabled && stationListModel.nearestStation)
-            {
-                nearestStation.visible = true
-                nearestStation.name = stationListModel.nearestStation.name
-                nearestStation.distance = stationListModel.nearestStation.distance + " km"
-                nearestIndexChangedConnetion.target = stationListModel.nearestStation
-
-                favouriteSection.anchors.top = nearestStation.bottom
-
-                if (stationListModel.nearestStation.stationIndex)
-                    nearestStation.airQualityIndex = stationListModel.nearestStation.stationIndex.name
-            }
-        }
-    }
-
-    Connections {
-        id: nearestIndexChangedConnetion
-        target: stationListModel.nearestStation
-        onStationIndexChanged: {
-            if (stationListModel.nearestStation.stationIndex)
-                nearestStation.airQualityIndex = stationListModel.nearestStation.stationIndex.name
+            nearestHeader.visible = false
+            nearestStation.visible = true
+            nearestStation.enabled = true
         }
     }
 

@@ -211,8 +211,9 @@ void StationListModel::onItemClicked(int index)
     m_modelsManager->sensorListModel()->setStation(station);
     setSelectedStation(station);
 
-    if (m_modelsManager)
+    if (m_modelsManager) {
         requestStationIndexData(m_selectedItem);
+    }
 }
 
 void StationListModel::bindToQml(QQuickView * view)
@@ -223,7 +224,11 @@ void StationListModel::bindToQml(QQuickView * view)
 
 Station *StationListModel::nearestStation() const
 {
-    return m_nearestStation.get();
+    if (m_nearestStation) {
+        return m_nearestStation.get();
+    } else {
+        return nullptr;
+    }
 }
 
 Station *StationListModel::selectedStation() const

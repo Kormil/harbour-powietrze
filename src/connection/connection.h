@@ -71,7 +71,7 @@ public:
     virtual void getStationList(std::function<void(StationListPtr)> handler) = 0;
     virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) = 0;
     virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) = 0;
-    virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) = 0;
+    virtual void getSensorData(Pollution sensor, std::function<void (Pollution)> handler) = 0;
     virtual void getStationIndex(StationPtr station, std::function<void(StationIndexPtr)> handler) = 0;
     virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) = 0;
 

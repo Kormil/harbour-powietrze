@@ -20,7 +20,7 @@ public:
     virtual void getStationList(std::function<void(StationListPtr)> handler) override;
     virtual void getProvinceList(std::function<void(ProvinceListPtr)> handler) override;
     virtual void getSensorList(StationPtr station, std::function<void(SensorListPtr)> handler) override;
-    virtual void getSensorData(SensorData sensor, std::function<void (SensorData)> handler) override;
+    virtual void getSensorData(Pollution sensor, std::function<void (Pollution)> handler) override;
     virtual void getStationIndex(StationPtr station, std::function<void(StationIndexPtr)> handler) override;
     virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
@@ -29,13 +29,16 @@ private:
     void countryListRequest(ProvinceListPtr provinceList, std::function<void (CountryListPtr)> handler);
     void stationListRequest(std::function<void (StationListPtr)> handler);
     void provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler);
+    void parameterUnitsRequest(std::function<void(void)> handler);
 
     //JSON
     StationListPtr readStationsFromJson(const QJsonDocument &jsonDocument);
     SensorListPtr readSensorsFromJson(const QJsonDocument &jsonDocument);
     StationIndexPtr readStationIndexFromJson(const QJsonDocument &jsonDocument);
+    PollutionUnitList readParametersUnitsFromJson(const QJsonDocument &jsonDocument);
 
     int m_recordLimits = -1;
+    std::vector<PollutionUnit> m_parametersUnits;
 };
 
 #endif // AIRLYCONNECTION_H

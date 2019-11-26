@@ -20,8 +20,6 @@ Page {
 
     SilicaFlickable {
         anchors.fill: parent
-        anchors.leftMargin: Theme.paddingMedium
-        anchors.rightMargin: Theme.paddingMedium
         contentHeight: station.height
 
         PullDownMenu {
@@ -51,8 +49,10 @@ Page {
             width: parent.width
 
             StationInfoItem {
+                id: stationInfo
                 station: stationListModel.selectedStation
                 enabled: false
+                anchors.margins: Theme.horizontalPageMargin
             }
 
             SilicaListView {
@@ -60,27 +60,10 @@ Page {
                 model: sensorListModel
 
                 width: page.width
-                height: count * Theme.itemSizeExtraSmall
+                height: contentHeight - prviderLabel.height
 
-                delegate: Row {
-                    id: delegate
-
-                    anchors.horizontalCenter: parent.horizontalLeft
-                    spacing: Theme.paddingMedium
-
-                    Label {
-                        width: page.width / 2
-                        text: model.name
-                        color: Theme.secondaryHighlightColor
-                        horizontalAlignment: Text.AlignRight
-                        fontSizeMode: Theme.itemSizeExtraSmall
-                    }
-                    Label {
-                        horizontalAlignment: Text.AlignLeft
-                        text: model.value
-                        fontSizeMode: Theme.itemSizeExtraSmall
-                        color: Theme.highlightColor
-                    }
+                delegate: SensorItem {
+                    sensor: model;
                 }
             }
         }

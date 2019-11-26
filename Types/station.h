@@ -9,9 +9,6 @@
 
 class QQuickView;
 
-class Station;
-using StationPtr = std::shared_ptr<Station>;
-
 class Station : public QObject
 {
     Q_OBJECT
@@ -24,6 +21,7 @@ class Station : public QObject
     Q_PROPERTY(StationIndex* stationIndex READ stationIndex NOTIFY stationIndexChanged)
     Q_PROPERTY(StationData stationData READ stationData NOTIFY stationDataChanged)
     Q_PROPERTY(int provider READ provider NOTIFY dataChanged)
+    Q_PROPERTY(QString providerName READ providerName NOTIFY dataChanged)
 public:
     explicit Station(QObject *parent = nullptr);
     virtual ~Station() = default;
@@ -55,6 +53,7 @@ public:
     QString distanceString() const;
 
     int provider() const;
+    QString providerName() const;
 
     unsigned int hash() const {
         return qHash(name() % QString(m_stationData.provider));
@@ -76,5 +75,7 @@ private:
     bool m_favourite;
     double m_distance = 0.f;
 };
+
+using StationPtr = std::shared_ptr<Station>;
 
 #endif // STATION_H

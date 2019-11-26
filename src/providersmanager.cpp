@@ -78,6 +78,12 @@ Connection *ProvidersManager::connection(int providerId) const
     return m_modelsManager->providerListModel()->provider(providerId)->connection();
 }
 
+ProviderDataPtr ProvidersManager::provider(int providerId) const
+{
+    auto provider = m_modelsManager->providerListModel()->provider(providerId);
+    return provider;
+}
+
 void ProvidersManager::createConenctions(ModelsManager *modelsManager)
 {
     m_modelsManager = modelsManager;
@@ -115,5 +121,11 @@ void ProvidersManager::deleteProviders()
         m_openAq->clearRequests();
         delete m_openAq;
         m_openAq = nullptr;
+    }
+
+    if (m_airly) {
+        m_airly->clearRequests();
+        delete m_airly;
+        m_airly = nullptr;
     }
 }

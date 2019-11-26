@@ -87,7 +87,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Nearest station</source>
-        <translation>最近站点</translation>
+        <translation type="vanished">最近站点</translation>
     </message>
     <message>
         <source>Favourite</source>
@@ -265,6 +265,21 @@ https://developer.airly.eu</source>
     <message>
         <source>Find nearest</source>
         <translation>找到最近</translation>
+    </message>
+</context>
+<context>
+    <name>SensorItem</name>
+    <message>
+        <source>date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -172,10 +172,10 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
     });
 }
 
-void OpenAQConnection::getSensorData(SensorData sensor, std::function<void (SensorData)> handler)
+void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
 {
     QString url = "https://" + m_host + m_port + "/v1/measurements?location=" + sensor.id.toString()
-            + "&parameter=" + sensor.pollutionCode
+            + "&parameter=" + sensor.code
             + "&limit=" + QString::number(m_recordLimits)
             + "&value_from=" + QString::number(m_minimumValue);
     QUrl sensorDataURL(url);
@@ -184,7 +184,7 @@ void OpenAQConnection::getSensorData(SensorData sensor, std::function<void (Sens
     requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
-        SensorData data = sensor;
+        Pollution data = sensor;
         if (status != Request::ERROR) {
             data = readSensorDataFromJson(QJsonDocument::fromJson(responseArray));
 
@@ -343,10 +343,10 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
         QJsonArray sensors = result.toObject()["parameters"].toArray();
         for (const auto& sensor: sensors)
         {
-            SensorData sensorData;
+            Pollution sensorData;
             sensorData.id = location;
             sensorData.name = sensor.toString();
-            sensorData.pollutionCode = sensorData.name;
+            sensorData.code = sensorData.name;
 
             if (sensorData.name == QStringLiteral("pm25"))
                 sensorData.name = QStringLiteral("pm2.5");
@@ -361,38 +361,45 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
     return std::move(sensorList);
 }
 
-SensorData OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocument)
+Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocument)
 {
-    SensorData sensorData;
+    Pollution sensorData;
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
-        sensorData.setValues(static_cast<int>(Errors::NoData));
+        sensorData.setValues(PollutionValue{static_cast<int>(Errors::NoData), QDateTime::currentDateTime()});
         return sensorData;
     }
 
     QJsonArray results = response.toArray();
 
+    QString dateString = results[0].toObject()["date"].toObject()["utc"].toString();
 
     sensorData.id = results[0].toObject()["location"].toString();
     sensorData.name = results[0].toObject()["parameter"].toString();
-    sensorData.pollutionCode = sensorData.name;
+    sensorData.unit = results[0].toObject()["unit"].toString();
+    sensorData.code = sensorData.name;
+    sensorData.date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
     if (sensorData.name == QStringLiteral("pm25"))
         sensorData.name = QStringLiteral("pm2.5");
 
 
-    std::vector<float> values;
+    std::vector<PollutionValue> values;
     for (const auto& result: results)
     {
-        double value = result.toObject()["value"].toDouble();
-        values.push_back(value);
+        float value = result.toObject()["value"].toDouble();
+
+        QString dateString = result.toObject()["date"].toObject()["utc"].toString();
+        QDateTime sensorDate = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
+
+        values.push_back(PollutionValue{value, sensorDate});
     }
     sensorData.setValues(values);
 
+
     if (results.empty())
-        sensorData.setValues(static_cast<int>(Errors::NoData));
+        sensorData.setValues(PollutionValue{static_cast<int>(Errors::NoData), QDateTime::currentDateTime()});
 
     return sensorData;
 }
-

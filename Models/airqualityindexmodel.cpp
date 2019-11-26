@@ -1,6 +1,7 @@
 #include "airqualityindexmodel.h"
 
-AirQualityIndexModel::AirQualityIndexModel(QObject *parent)
+AirQualityIndexModel::AirQualityIndexModel(QObject *parent) :
+    QAbstractListModel(parent)
 {
     AirQualityIndexPtr european(new EuropeanAQ);
     AirQualityIndexPtr fromServer(new AirIndexFromServer);

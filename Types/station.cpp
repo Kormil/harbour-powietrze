@@ -4,6 +4,7 @@
 #include <QJsonValue>
 #include <QtQml>
 #include <QQuickView>
+#include "src/providersmanager.h"
 
 Station::Station(QObject *parent) :
     QObject(parent),
@@ -87,6 +88,14 @@ QString Station::distanceString() const
 int Station::provider() const
 {
     return m_stationData.provider;
+}
+
+QString Station::providerName() const
+{
+    ProvidersManager* providersManager = ProvidersManager::instance();
+    auto providerData = providersManager->provider(provider());
+
+    return providerData->shortName();
 }
 
 void Station::setDistance(double distance)

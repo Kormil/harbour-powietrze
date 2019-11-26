@@ -5,7 +5,6 @@ import StationListModel 1.0
 
 BackgroundItem {
     property var station : undefined
-    property var provider: undefined
 
     id: index
     height: mainColumn.height
@@ -15,23 +14,29 @@ BackgroundItem {
         width: parent.width
         spacing: Theme.paddingMedium
 
-        Label {
-            id: cityLabel
-            text: station.cityName
-            horizontalAlignment: Text.AlignRight
-            color: Theme.highlightColor
-            font.pixelSize: Theme.fontSizeLarge
-            anchors.right: parent.right
-            truncationMode: TruncationMode.Fade
-        }
+        Column {
+            width: parent.width
+            Label {
+                id: cityLabel
+                text: station ? station.cityName : " "
+                horizontalAlignment: Text.AlignRight
+                color: Theme.highlightColor
+                font.pixelSize: Theme.fontSizeLarge
+                anchors.right: parent.right
+                truncationMode: TruncationMode.Fade
+                anchors.rightMargin: Theme.horizontalPageMargin
+            }
 
-        Label {
-            id: streetLabel
-            text: station.streetName
-            horizontalAlignment: Text.AlignRight
-            color: Theme.highlightColor
-            anchors.right: parent.right
-            truncationMode: TruncationMode.Fade
+            Label {
+                id: streetLabel
+                text: station ? station.streetName : " "
+                horizontalAlignment: Text.AlignRight
+                color: Theme.highlightColor
+                anchors.right: parent.right
+                truncationMode: TruncationMode.Fade
+                anchors.rightMargin: Theme.horizontalPageMargin
+                font.pixelSize: Theme.fontSizeMedium
+            }
         }
 
         Item {
@@ -52,6 +57,8 @@ BackgroundItem {
                 id: dataColumn
                 anchors.right: parent.right
                 anchors.bottom: image.bottom
+                anchors.rightMargin: Theme.horizontalPageMargin
+
 
                 Label {
                     id: distanceLabel
@@ -60,6 +67,7 @@ BackgroundItem {
                     color: Theme.secondaryColor
                     anchors.right: parent.right
                     visible: station.distance
+                    font.pixelSize: Theme.fontSizeMedium
                 }
 
                 Label {
@@ -68,6 +76,7 @@ BackgroundItem {
                     horizontalAlignment: Text.AlignRight
                     color: Theme.secondaryColor
                     anchors.right: parent.right
+                    font.pixelSize: Theme.fontSizeMedium
                 }
 
                 Label {
@@ -76,6 +85,15 @@ BackgroundItem {
                     horizontalAlignment: Text.AlignRight
                     color: Theme.secondaryColor
                     anchors.right: parent.right
+                    font.pixelSize: Theme.fontSizeMedium
+                }
+                Label {
+                    id: providerLabel
+                    text: station.providerName
+                    horizontalAlignment: Text.AlignRight
+                    color: Theme.secondaryColor
+                    anchors.right: parent.right
+                    font.pixelSize: Theme.fontSizeMedium
                 }
             }
         }
@@ -83,7 +101,7 @@ BackgroundItem {
         Label {
             id: label
 
-            text: station.stationIndex.name
+            text: station ? station.stationIndex.name : " "
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: Theme.fontSizeLarge
         }

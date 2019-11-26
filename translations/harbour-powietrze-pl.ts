@@ -88,7 +88,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Nearest station</source>
-        <translation>Najbliższa stacja</translation>
+        <translation type="vanished">Najbliższa stacja</translation>
     </message>
     <message>
         <source>Favourite</source>
@@ -285,6 +285,21 @@ https://developer.airly.eu</translation>
     <message>
         <source>Select station</source>
         <translation type="vanished">Wybierz stację</translation>
+    </message>
+</context>
+<context>
+    <name>SensorItem</name>
+    <message>
+        <source>date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>norm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unit</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

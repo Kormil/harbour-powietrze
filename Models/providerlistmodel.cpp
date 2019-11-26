@@ -68,15 +68,17 @@ void ProviderListModel::addProvider(ProviderDataPtr provider)
 
 ProviderDataPtr ProviderListModel::provider(int providerId) const
 {
-    for (const auto& provider: m_providerList) {
-        if (provider->id() == providerId)
+    for (auto& provider: m_providerList) {
+        if (provider->id() == providerId) {
             return provider;
+        }
     }
 
     //Default provider with id = 1
-    for (const auto& provider: m_providerList) {
-        if (provider->id() == DEFAULT_PROVIDER)
+    for (auto& provider: m_providerList) {
+        if (provider->id() == DEFAULT_PROVIDER) {
             return provider;
+        }
     }
 
     return nullptr;
