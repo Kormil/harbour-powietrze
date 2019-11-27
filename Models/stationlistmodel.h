@@ -90,7 +90,8 @@ public:
         FavouriteRole,
         IndexRole,
         DistanceRole,
-        ProviderRole
+        ProviderRole,
+        ProviderNameRole
     };
 
     explicit StationListModel(QObject *parent = nullptr);

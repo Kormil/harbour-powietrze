@@ -49,8 +49,6 @@ Page {
         }
 
         delegate: StationNearestItem {
-            name: model.description
-            distance: model.distance + " km"
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
                 stationListProxyModel.onItemClicked(index)

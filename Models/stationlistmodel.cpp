@@ -61,6 +61,8 @@ QVariant StationListModel::data(const QModelIndex &index, int role) const
         else
             return QVariant("");
     }
+    case ProviderNameRole:
+        return station->providerName();
     }
     return QVariant();
 }
@@ -188,6 +190,7 @@ QHash<int, QByteArray> StationListModel::roleNames() const
     names[IndexRole] = "indexName";
     names[DistanceRole] = "distance";
     names[ProviderRole] = "provider";
+    names[ProviderNameRole] = "providerName";
     return names;
 }
 
