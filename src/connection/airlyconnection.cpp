@@ -428,9 +428,9 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     } else if (value < 50) {
         id = 1;
     } else if (value < 75) {
-        id = 3;
+        id = 2;
     } else if (value < 100) {
-        id = 4;
+        id = 3;
     } else {
         id = 5;
     }

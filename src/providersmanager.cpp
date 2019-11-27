@@ -57,7 +57,8 @@ void ProvidersManager::createProviders()
     airly->setSite("airapi.airly.eu\nmap.airly.eu");
     airly->setIcon("airly.jpg");
     airly->setConnection(m_airly);
-    airly->setAirQualityIndexId(0);
+    QVariant indexId = settings->providerSettings(airly->name(), "aqi");
+    airly->setAirQualityIndexId(indexId.isValid() ? indexId.toInt() : 0);
     enabled = settings->providerSettings(airly->name(), "enabled");
     airly->setEnabled(enabled.isValid() ? enabled.toBool() : false);
     QVariant apiKey = settings->providerSettings(airly->name(), "apiKey");
