@@ -321,15 +321,15 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Units type</source>
-        <translation>Jednostki</translation>
+        <translation type="vanished">Jednostki</translation>
     </message>
     <message>
         <source>Microgram</source>
-        <translation>Mikrogram</translation>
+        <translation type="vanished">Mikrogram</translation>
     </message>
     <message>
         <source>Milligram</source>
-        <translation>Miligram</translation>
+        <translation type="vanished">Miligram</translation>
     </message>
     <message>
         <source>GPS</source>

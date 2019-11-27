@@ -13,16 +13,10 @@ class QQmlEngine;
 class Settings : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(unsigned short unitType READ unitType WRITE setUnitType NOTIFY unitTypeChanged)
     Q_PROPERTY(bool notifications READ notifications WRITE setNotifications NOTIFY notificationsChanged)
     Q_PROPERTY(unsigned short gpsUpdateFrequency READ gpsUpdateFrequency WRITE setGpsUpdateFrequency NOTIFY gpsUpdateFrequencyChanged)
 public:
     static QObject *instance(QQmlEngine *engine, QJSEngine *scriptEngine);
-
-    unsigned short unitType() const;
-    void setUnitType(const unsigned short &value);
-    Q_INVOKABLE QString unitName();
-    Q_INVOKABLE QString unitName(unsigned short unitType);
 
     StationListPtr favouriteStations() const;
     Q_INVOKABLE void addFavouriteStation(Station *station);
@@ -33,10 +27,9 @@ public:
 
     Q_INVOKABLE QString license();
     Q_INVOKABLE QString providerLicense(QString providerName);
-    Q_INVOKABLE QString version();
 
     Q_INVOKABLE unsigned short gpsUpdateFrequency();
-    Q_INVOKABLE void setGpsUpdateFrequency(unsigned short unitType);
+    Q_INVOKABLE void setGpsUpdateFrequency(unsigned short gpsFrequency);
 
     Q_INVOKABLE QVariant providerSettings(QString name, QString key);
     Q_INVOKABLE void setProviderSettings(QString name, QString key, QVariant value);
@@ -48,8 +41,8 @@ public:
     void setGpsLocationPaused(const QDateTime &value);
 
     static void bindToQml();
+
 signals:
-    void unitTypeChanged();
     void lastViewStationChanged();
     void favouriteStationsChanged();
     void updateFavouriteStationsChanged();

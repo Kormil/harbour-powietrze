@@ -301,15 +301,15 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Units type</source>
-        <translation>单位类型</translation>
+        <translation type="vanished">单位类型</translation>
     </message>
     <message>
         <source>Microgram</source>
-        <translation>微克</translation>
+        <translation type="vanished">微克</translation>
     </message>
     <message>
         <source>Milligram</source>
-        <translation>毫克</translation>
+        <translation type="vanished">毫克</translation>
     </message>
     <message>
         <source>GPS</source>

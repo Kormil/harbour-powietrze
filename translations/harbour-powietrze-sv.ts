@@ -302,15 +302,15 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Units type</source>
-        <translation>Enhetstyp</translation>
+        <translation type="vanished">Enhetstyp</translation>
     </message>
     <message>
         <source>Microgram</source>
-        <translation>Mikrogram</translation>
+        <translation type="vanished">Mikrogram</translation>
     </message>
     <message>
         <source>Milligram</source>
-        <translation>Milligram</translation>
+        <translation type="vanished">Milligram</translation>
     </message>
     <message>
         <source>GPS</source>

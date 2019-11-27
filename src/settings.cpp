@@ -4,7 +4,6 @@
 #include <QVariant>
 #include <sailfishapp.h>
 
-#define UNITS_TYPE QStringLiteral("units/type")
 #define FAVOURITE_STATIONS QStringLiteral("stations/favourite")
 #define NOTIFICATIONS_STATIONS QStringLiteral("stations/notifications")
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
@@ -24,20 +23,6 @@ QObject *Settings::instance(QQmlEngine *engine, QJSEngine *scriptEngine)
 
     static Settings instance;
     return &instance;
-}
-
-unsigned short Settings::unitType() const
-{
-    return m_settings->value(UNITS_TYPE, 0).toInt();
-}
-
-void Settings::setUnitType(const unsigned short &value)
-{
-    if (unitType() != value)
-    {
-        m_settings->setValue(UNITS_TYPE, value);
-        emit unitTypeChanged();
-    }
 }
 
 QVariantList Settings::favouriteStationsData() const
@@ -132,11 +117,6 @@ QString Settings::providerLicense(QString providerName)
     return content;
 }
 
-QString Settings::version()
-{
-    return "1.0";
-}
-
 void Settings::setGpsUpdateFrequency(unsigned short gpsFrequency)
 {
     if (gpsUpdateFrequency() != gpsFrequency)
@@ -197,22 +177,6 @@ unsigned short Settings::gpsUpdateFrequency()
 void Settings::bindToQml()
 {
     qmlRegisterSingletonType<Settings>("Settings", 1, 0, "Settings", Settings::instance);
-}
-
-QString Settings::unitName()
-{
-    return unitName(unitType());
-}
-
-QString Settings::unitName(unsigned short unitType)
-{
-    switch (unitType)
-    {
-    case 0: return "µg/m<sup>3</sup>";
-    case 1: return "mg/m<sup>3</sup>";
-    }
-
-    return "";
 }
 
 StationListPtr Settings::favouriteStations() const

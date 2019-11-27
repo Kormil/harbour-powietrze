@@ -296,18 +296,6 @@ https://developer.airly.eu</source>
         <translation></translation>
     </message>
     <message>
-        <source>Units type</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Microgram</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Milligram</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>GPS</source>
         <translation></translation>
     </message>

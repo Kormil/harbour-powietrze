@@ -26,21 +26,6 @@ Page {
                 title: qsTr("Settings")
             }
 
-            ComboBox {
-                width: parent.width
-                label: qsTr("Units type")
-                currentIndex: Settings.unitType
-
-                menu: ContextMenu {
-                    MenuItem { text: qsTr("Microgram") }
-                    MenuItem { text: qsTr("Milligram") }
-                }
-
-                onCurrentIndexChanged: {
-                    Settings.unitType = currentIndex
-                }
-            }
-
             TextSwitch {
                 text: qsTr("Notifications")
                 checked: Settings.notifications

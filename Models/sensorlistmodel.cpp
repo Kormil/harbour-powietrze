@@ -5,7 +5,6 @@
 #include "Types/station.h"
 #include "src/settings.h"
 #include "src/utils.h"
-#include <iostream>
 
 SensorListModel::SensorListModel(QObject *parent)
     : QAbstractListModel(parent),
@@ -42,9 +41,8 @@ QVariant SensorListModel::data(const QModelIndex &index, int role) const
                 return QVariant(noData);
             }
 
-            Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
-            float value = unitsConverter(UnitsType::MICROGRAM, static_cast<UnitsType>(settings->unitType()), it.value());
-            return QVariant(QString::number(value, 'G', 5));
+            float value = it.value();
+            return QVariant(QString::number(value, 'f', 2));
         }
         case DATE:
         {
