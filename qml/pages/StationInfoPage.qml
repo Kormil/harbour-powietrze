@@ -60,7 +60,7 @@ Page {
                 model: sensorListModel
 
                 width: page.width
-                height: contentHeight - prviderLabel.height
+                height: contentHeight
 
                 delegate: SensorItem {
                     sensor: model;

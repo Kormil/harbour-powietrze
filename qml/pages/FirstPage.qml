@@ -29,6 +29,9 @@ Page {
     SilicaFlickable {
         id: mainItem
         anchors.fill: parent
+        contentHeight: listView.height + nearestStation.height + favouriteSection.height
+
+        VerticalScrollDecorator {}
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
@@ -92,11 +95,10 @@ Page {
 
         SilicaListView {
             id: listView
-            spacing: Theme.paddingLarge
-            anchors.topMargin: Theme.paddingLarge
             anchors.top: favouriteSection.bottom
+            spacing: Theme.paddingLarge
             width: parent.width
-            height: parent.height
+            height: contentHeight
 
             model: StationListProxyModel {
                 id: stationListProxyModel
@@ -110,7 +112,6 @@ Page {
                     stationListProxyModel.onItemClicked(index)
                 }
             }
-            VerticalScrollDecorator {}
         }
     }
 

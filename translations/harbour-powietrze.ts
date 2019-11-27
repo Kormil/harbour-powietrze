@@ -82,12 +82,16 @@ https://developer.airly.eu</source>
         <translation></translation>
     </message>
     <message>
-        <source>Pull down to select stations</source>
-        <translation></translation>
+        <source>Favourite</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Favourite</source>
-        <translation></translation>
+        <source>Pull down to select stations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop locating</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Only once</source>
@@ -102,15 +106,11 @@ https://developer.airly.eu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Permanently</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>24 hours</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stop locating</source>
+        <source>Permanently</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
