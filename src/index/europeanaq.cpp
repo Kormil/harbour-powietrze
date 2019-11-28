@@ -46,6 +46,7 @@ void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexP
         if (!sensorList) {
             if (station->sensorList()->isAll()) {
                 handler(recalculate(station->sensorList()));
+                return ;
             }
         }
 
@@ -55,6 +56,7 @@ void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexP
             connection->getSensorData(sensor, [handler, station, this](Pollution sensorData) {
                 station->sensorList()->setData(sensorData);
 
+                std::lock_guard<std::mutex> guard(m_sensorDataMutex);
                 if (station->sensorList()->isAll()) {
                     handler(recalculate(station->sensorList()));
                 }

@@ -36,13 +36,14 @@ public:
     float value() const;
     float avg(size_t hours) const;
     bool isInitialized() const;
+    void setInitialized(bool m_initialized);
 
     void setValues(PollutionValue value);
     void setValues(const std::vector<PollutionValue> &value);
 
 private:
-    std::atomic_bool initialized;
-    std::vector<PollutionValue> values;
+    std::atomic_bool m_initialized;
+    std::vector<PollutionValue> m_values;
 };
 
 using PollutionUnitList = std::vector<PollutionUnit>;

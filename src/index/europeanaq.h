@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <mutex>
 #include "airqualityindex.h"
 
 class EuropeanAQ : public AirQualityIndex
@@ -19,6 +20,8 @@ private:
 
     std::map<QString, PollutionThresholds> m_parametersThreshold;
     std::vector<QString> m_names;
+
+    std::mutex m_sensorDataMutex;
 };
 
 #endif // EAUROPEANAQ_H

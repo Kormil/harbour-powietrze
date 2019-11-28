@@ -221,6 +221,7 @@ void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollut
         }
     }
 
+    sensor.setInitialized(true);
     handler(sensor);
 }
 
@@ -393,6 +394,7 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
         sensorData.name.replace(0, 1, sensorData.name[0].toUpper());
 
+        sensorData.setInitialized(false);
         sensorList->setData(sensorData);
     }
 

@@ -56,8 +56,9 @@ void SensorList::setData(Pollution sensorData)
 
     emit valueChanged(index);
 
-    if (isAll())
+    if (isAll()) {
         emit allLoaded();
+    }
 }
 
 void SensorList::setStation(Station *value)

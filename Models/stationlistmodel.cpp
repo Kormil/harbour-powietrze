@@ -305,7 +305,6 @@ void StationListModel::getIndexForFavourites()
             int row = m_stationList->row(station->id());
             station->setStationIndex(std::move(stationIndex));
             station->stationIndex()->setDateToCurent();
-
             emit dataChanged(index(row), index(row), {IndexRole});
         });
     }
