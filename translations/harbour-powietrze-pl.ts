@@ -291,15 +291,15 @@ https://developer.airly.eu</translation>
     <name>SensorItem</name>
     <message>
         <source>date</source>
-        <translation type="unfinished"></translation>
+        <translation>data</translation>
     </message>
     <message>
         <source>norm</source>
-        <translation type="unfinished"></translation>
+        <translation>norma</translation>
     </message>
     <message>
         <source>unit</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostka</translation>
     </message>
 </context>
 <context>
