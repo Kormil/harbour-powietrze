@@ -211,6 +211,11 @@ void StationListModel::onItemClicked(int index)
         return;
     }
 
+
+    auto coordinate = GPSModule::instance()->lastKnowPosition();
+    double distance = station->coordinate().distanceTo(coordinate);
+    station->setDistance(distance);
+
     m_modelsManager->sensorListModel()->setStation(station);
     setSelectedStation(station);
 
@@ -316,6 +321,8 @@ void StationListModel::onGPSPositionUpdate(QGeoCoordinate coordinate)
         emit nearestStationFounded();
         return ;
     }
+
+    calculateDistances(coordinate);
 
     ProvidersManager::instance()->findNearestStation(coordinate, m_stationDistanceLimit, [this](StationListPtr stationList) {
         std::lock_guard<std::mutex> guard(m_findNearestStationMutex);
