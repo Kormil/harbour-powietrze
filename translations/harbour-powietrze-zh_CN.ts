@@ -87,7 +87,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Nearest station</source>
-        <translation type="vanished">最近站点</translation>
+        <translation>最近站点</translation>
     </message>
     <message>
         <source>Favourite</source>
@@ -99,11 +99,11 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>4 hours</source>
-        <translation>4 小时</translation>
+        <translation>4小时</translation>
     </message>
     <message>
         <source>8 hours</source>
-        <translation>8 小时</translation>
+        <translation>8小时</translation>
     </message>
     <message>
         <source>Permanently</source>
@@ -111,7 +111,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>24 hours</source>
-        <translation>24 小时</translation>
+        <translation>24小时</translation>
     </message>
     <message>
         <source>Stop locating</source>
@@ -155,7 +155,7 @@ https://developer.airly.eu</source>
     <name>PowietrzeConnection</name>
     <message>
         <source>OTHER</source>
-        <translation type="obsolete">OTHER</translation>
+        <translation>其它</translation>
     </message>
 </context>
 <context>
@@ -271,15 +271,15 @@ https://developer.airly.eu</source>
     <name>SensorItem</name>
     <message>
         <source>date</source>
-        <translation type="unfinished"></translation>
+        <translation>日期</translation>
     </message>
     <message>
         <source>norm</source>
-        <translation type="unfinished"></translation>
+        <translation>标准</translation>
     </message>
     <message>
         <source>unit</source>
-        <translation type="unfinished"></translation>
+        <translation>单位</translation>
     </message>
 </context>
 <context>
@@ -301,15 +301,15 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Units type</source>
-        <translation type="vanished">单位类型</translation>
+        <translation>单位类型</translation>
     </message>
     <message>
         <source>Microgram</source>
-        <translation type="vanished">微克</translation>
+        <translation>微克</translation>
     </message>
     <message>
         <source>Milligram</source>
-        <translation type="vanished">毫克</translation>
+        <translation>毫克</translation>
     </message>
     <message>
         <source>GPS</source>
@@ -321,19 +321,19 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>30 minutes</source>
-        <translation>30 分钟</translation>
+        <translation>30分钟</translation>
     </message>
     <message>
         <source>1 hour</source>
-        <translation>1 小时</translation>
+        <translation>1小时</translation>
     </message>
     <message>
         <source>2 hours</source>
-        <translation>2 小时</translation>
+        <translation>2小时</translation>
     </message>
     <message>
         <source>4 hours</source>
-        <translation>4 小时</translation>
+        <translation>4小时</translation>
     </message>
     <message>
         <source>Update frequency</source>
@@ -345,7 +345,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Works only with the screen on. If the screen is off, the program will automatically look for the nearest station after turning the screen on.</source>
-        <translation>仅当屏幕点亮时工作。如果屏幕熄灭，程序将在重新电量屏幕之后自动搜索最近站点。</translation>
+        <translation>仅当屏幕点亮时工作。如果屏幕熄灭，软件将在重新点亮屏幕之后自动搜索最近站点。</translation>
     </message>
     <message>
         <source>Manage providers</source>
@@ -375,7 +375,7 @@ https://developer.airly.eu</source>
     <name>StationList</name>
     <message>
         <source>OTHER</source>
-        <translation type="vanished">OTHER</translation>
+        <translation>其它</translation>
     </message>
 </context>
 <context>
@@ -386,11 +386,11 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Air pollution in your neighbour is getting worse: </source>
-        <translation>你附近的空气质量状况将会恶化:</translation>
+        <translation>你附近的空气质量状况正在恶化:</translation>
     </message>
     <message>
         <source>Air pollution in your neighbour is getting better: </source>
-        <translation>你附近的空气污染将会改善:</translation>
+        <translation>你附近的空气污染状况正在改善:</translation>
     </message>
     <message>
         <source>Air pollution is getting worse: </source>
