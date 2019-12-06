@@ -19,8 +19,10 @@ Page {
     }
 
     SilicaFlickable {
+        property int heightWithProviderLabel: station.height + prviderLabel.height
+
         anchors.fill: parent
-        contentHeight: station.height
+        contentHeight: page.height > heightWithProviderLabel ? page.height : heightWithProviderLabel
 
         PullDownMenu {
             MenuItem {
@@ -68,6 +70,16 @@ Page {
             }
         }
 
+        Label {
+            id: prviderLabel
+            width:  parent.width
+            anchors.bottom: parent.bottom
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.secondaryColor
+            anchors.bottomMargin: Theme.paddingSmall
+            horizontalAlignment: Text.AlignHCenter
+        }
+
         Connections {
             target: stationListModel
             onStationDataRequested: {
@@ -111,15 +123,5 @@ Page {
         size: BusyIndicatorSize.Large
         anchors.verticalCenter: parent.verticalCenter
         visible: false
-    }
-
-    Label {
-        id: prviderLabel
-        width: parent.width
-        anchors.bottom: page.bottom
-        font.pixelSize: Theme.fontSizeExtraSmall
-        color: Theme.secondaryColor
-        anchors.bottomMargin: Theme.paddingSmall
-        horizontalAlignment: Text.AlignHCenter
     }
 }
