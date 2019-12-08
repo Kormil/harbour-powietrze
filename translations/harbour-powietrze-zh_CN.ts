@@ -87,7 +87,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Nearest station</source>
-        <translation>最近站点</translation>
+        <translation type="vanished">最近站点</translation>
     </message>
     <message>
         <source>Favourite</source>
@@ -155,7 +155,7 @@ https://developer.airly.eu</source>
     <name>PowietrzeConnection</name>
     <message>
         <source>OTHER</source>
-        <translation>其它</translation>
+        <translation type="vanished">其它</translation>
     </message>
 </context>
 <context>
@@ -301,15 +301,15 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Units type</source>
-        <translation>单位类型</translation>
+        <translation type="vanished">单位类型</translation>
     </message>
     <message>
         <source>Microgram</source>
-        <translation>微克</translation>
+        <translation type="vanished">微克</translation>
     </message>
     <message>
         <source>Milligram</source>
-        <translation>毫克</translation>
+        <translation type="vanished">毫克</translation>
     </message>
     <message>
         <source>GPS</source>
@@ -375,7 +375,7 @@ https://developer.airly.eu</source>
     <name>StationList</name>
     <message>
         <source>OTHER</source>
-        <translation>其它</translation>
+        <translation type="vanished">其它</translation>
     </message>
 </context>
 <context>
