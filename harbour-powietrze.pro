@@ -155,7 +155,6 @@ HEADERS += \
 RESOURCES += \
     graphics.qrc
 
-
 license.files = LICENSE
 license.path = /usr/share/$${TARGET}
 INSTALLS += license

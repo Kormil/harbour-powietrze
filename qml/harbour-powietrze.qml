@@ -4,6 +4,7 @@ import "pages"
 
 ApplicationWindow
 {
+    id: app
     function changeCoverPage(coverUrl) {
             if (coverUrl !== cover) {
                 cover = coverUrl

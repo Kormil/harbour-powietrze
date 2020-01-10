@@ -146,6 +146,8 @@ void StationListModel::requestStationIndexData(StationPtr station)
     airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
         {
+            int row = m_stationList->row(station->hash());
+
             if (m_nearestStation && station->id() == m_nearestStation->id())
             {
                 Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
@@ -158,17 +160,20 @@ void StationListModel::requestStationIndexData(StationPtr station)
                     if (m_beforeNearestStation->stationIndex()->id() < stationIndex->id())
                     {
                         Utils::simpleNotification(tr("Nearest station"),
-                                                  tr("Air pollution in your neighbour is getting worse: ").append(stationIndex->name()));
+                                                  tr("Air pollution in your neighbour is getting worse: ").append(stationIndex->name()),
+                                                  "openPage",
+                                                  {QVariant(row)});
                     }
                     else if (m_beforeNearestStation->stationIndex()->id() > stationIndex->id())
                     {
                         Utils::simpleNotification(tr("Nearest station"),
-                                                  tr("Air pollution in your neighbour is getting better: ").append(stationIndex->name()));
+                                                  tr("Air pollution in your neighbour is getting better: ").append(stationIndex->name()),
+                                                  "openPage",
+                                                  {QVariant(row)});
                     }
                 }
             }
 
-            int row = m_stationList->row(station->id());
             station->setStationIndex(stationIndex);
             stationIndex->setDateToCurent();
 
@@ -289,6 +294,8 @@ void StationListModel::getIndexForFavourites()
                 return;
             }
 
+            int row = m_stationList->row(station->hash());
+
             if (settings->notifications())
             {
                 if (station->stationIndex()) {
@@ -298,16 +305,19 @@ void StationListModel::getIndexForFavourites()
 
                     if (station->stationIndex()->id() < stationIndex->id()) {
                         Utils::simpleNotification(station->name(),
-                                                  tr("Air pollution is getting worse: ").append(stationIndex->name()));
+                                                  tr("Air pollution is getting worse: ").append(stationIndex->name()),
+                                                  "openPage",
+                                                  {QVariant(row)});
                     }
                     else if (station->stationIndex()->id() > stationIndex->id()) {
                         Utils::simpleNotification(station->name(),
-                                                  tr("Air pollution is getting better: ").append(stationIndex->name()));
+                                                  tr("Air pollution is getting better: ").append(stationIndex->name()),
+                                                  "openPage",
+                                                  {QVariant(row)});
                     }
                 }
             }
 
-            int row = m_stationList->row(station->id());
             station->setStationIndex(std::move(stationIndex));
             station->stationIndex()->setDateToCurent();
             emit dataChanged(index(row), index(row), {IndexRole});

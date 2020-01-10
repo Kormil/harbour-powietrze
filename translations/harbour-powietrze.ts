@@ -71,15 +71,15 @@ https://developer.airly.eu</source>
     <name>FirstPage</name>
     <message>
         <source>About Powietrze</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select station</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Favourite</source>

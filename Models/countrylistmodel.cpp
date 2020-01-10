@@ -1,7 +1,6 @@
 #include "countrylistmodel.h"
-#include "src/modelsmanager.h"
-
 #include <QtQml>
+#include "src/modelsmanager.h"
 
 CountryListModel::CountryListModel(QObject *parent)
     : QAbstractListModel(parent),

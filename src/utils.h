@@ -13,7 +13,7 @@ struct WHONorm {
 
 namespace Utils
 {
-    void simpleNotification(QString header, QString body);
+    void simpleNotification(QString header, QString body, QString function, QVariantList parameters);
     float calculateWHONorms(const Pollution& sensorData);
 }
 

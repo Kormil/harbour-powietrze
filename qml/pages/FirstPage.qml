@@ -3,10 +3,25 @@ import Sailfish.Silica 1.0
 import StationListModel 1.0
 import GPSModule 1.0
 import Settings 1.0
+import Nemo.Notifications 1.0
+import Nemo.DBus 2.0
 
 import "../items"
 
 Page {
+    DBusAdaptor {
+        service: "harbour.powietrze.service"
+        path: "/harbour/powietrze/service"
+        iface: "harbour.powietrze.service"
+
+        function openPage(item) {
+            app.activate();
+            pageStack.pop(page, PageStackAction.Immediate);
+            pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"), {}, PageStackAction.Immediate)
+            stationListModel.onItemClicked(item)
+        }
+    }
+
     property bool nearestStationEnabled: Settings.gpsUpdateFrequency
     property int selectedTimeBreak
     id: page

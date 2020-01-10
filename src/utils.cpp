@@ -2,15 +2,23 @@
 #include <notification.h>
 #include <iostream>
 
-void Utils::simpleNotification(QString header, QString body)
+void Utils::simpleNotification(QString header, QString body, QString function, QVariantList parameters)
 {
     Notification notification;
-    notification.setIcon("qrc:///icons/172x172/harbour-powietrze.png");
-    notification.setCategory("Powietrze.update");
+    notification.setCategory("powietrze.update");
     notification.setSummary(header);
     notification.setBody(body);
     notification.setPreviewSummary(header);
     notification.setPreviewBody(body);
+
+
+    notification.setRemoteAction(Notification::remoteAction("default",
+                                                            "",
+                                                            "harbour.powietrze.service",
+                                                            "/harbour/powietrze/service",
+                                                            "harbour.powietrze.service",
+                                                            function,
+                                                            parameters));
     notification.publish();
 }
 
