@@ -22,7 +22,7 @@ Page {
         property int heightWithProviderLabel: station.height + prviderLabel.height
 
         anchors.fill: parent
-        contentHeight: page.height > heightWithProviderLabel ? page.height : heightWithProviderLabel
+        contentHeight: page.height > heightWithProviderLabel ? page.height : heightWithProviderLabel + Theme.paddingMedium
 
         PullDownMenu {
             MenuItem {

@@ -111,7 +111,6 @@ Page {
         SilicaListView {
             id: listView
             anchors.top: favouriteSection.bottom
-            spacing: Theme.paddingLarge
             width: parent.width
             height: contentHeight
 

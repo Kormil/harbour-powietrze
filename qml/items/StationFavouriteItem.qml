@@ -3,25 +3,27 @@ import Sailfish.Silica 1.0
 
 BackgroundItem {
     id: delegate
-    anchors.topMargin: Theme.paddingMedium
-    anchors.bottomMargin: anchors.topMargin
-    height: nameLabel.height + valueLabel.height
+    height: column.height + Theme.paddingLarge
 
-    Label {
-        id: nameLabel
-        x: Theme.horizontalPageMargin
-        text: model.description
-        color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-        width: delegate.width
-        truncationMode: TruncationMode.Fade
-    }
+    Column {
+        id: column
+        anchors.centerIn: parent
 
-    Label {
-        id: valueLabel
-        x: Theme.horizontalPageMargin
-        anchors.top: nameLabel.bottom
-        text: model.indexName
-        font.pixelSize: Theme.fontSizeExtraSmall
-        color: delegate.highlighted ? Theme.highlightColor : Theme.secondaryColor
+        Label {
+            id: nameLabel
+            x: Theme.horizontalPageMargin
+            text: model.description
+            color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+            width: delegate.width
+            truncationMode: TruncationMode.Fade
+        }
+
+        Label {
+            id: valueLabel
+            x: Theme.horizontalPageMargin
+            text: model.indexName
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: delegate.highlighted ? Theme.highlightColor : Theme.secondaryColor
+        }
     }
 }

@@ -14,8 +14,6 @@ Page {
 
     SilicaFlickable{
         anchors.fill: parent
-        anchors.leftMargin: Theme.paddingMedium
-        anchors.rightMargin: Theme.paddingMedium
         contentHeight: column.height
 
         PullDownMenu {
