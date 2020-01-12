@@ -4,13 +4,13 @@ import Sailfish.Silica 1.0
 import StationListModel 1.0
 
 CoverBackground {
+    id: cover
 
     SilicaListView {
          id: listView
          width: parent.width
-         height: parent.height
-         spacing: Theme.paddingLarge
-
+         height: cover.height - coverActionArea.height
+         spacing: Theme.paddingMedium
 
          model: StationListProxyModel {
              id: stationListProxyModel
@@ -45,4 +45,17 @@ CoverBackground {
          }
          VerticalScrollDecorator {}
      }
+
+    CoverActionList {
+        id: coverActions
+        enabled: true
+        iconBackground: true
+
+        CoverAction {
+            iconSource: "image://theme/icon-cover-favorite"
+            onTriggered: {
+                changeCoverPage(Qt.resolvedUrl("../cover/NearestCoverPage.qml"));
+            }
+        }
+    }
 }

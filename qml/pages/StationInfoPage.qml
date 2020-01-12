@@ -14,7 +14,7 @@ Page {
 
     onStatusChanged: {
         if (status === PageStatus.Deactivating) {
-            changeCoverPage(Qt.resolvedUrl("../cover/CoverPage.qml"));
+            changeCoverPage(Qt.resolvedUrl("../cover/FavouriteCoverPage.qml"));
         }
     }
 

@@ -48,9 +48,11 @@ SOURCES += src/harbour-powietrze.cpp \
     src/utils.cpp
 
 DISTFILES += \
-    qml/cover/CoverPage.qml \
+    qml/cover/FavouriteCoverPage.qml \
+    qml/cover/NearestCoverPage.qml \
     qml/items/ProviderItem.qml \
     qml/items/SensorItem.qml \
+    qml/items/StationInfoCoverItem.qml \
     qml/items/StationInfoItem.qml \
     qml/pages/ManageProvidersPage.qml \
     qml/pages/ProviderLicensePage.qml \
