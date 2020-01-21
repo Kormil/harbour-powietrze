@@ -50,6 +50,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin: Theme.paddingSmall
             anchors.top: image.bottom
+            width: parent.width
+            truncationMode: TruncationMode.Fade
         }
     }
 }
