@@ -49,7 +49,7 @@
     <message>
         <source>To get access to Airly api you must generate key. You can get your own api key from
 https://developer.airly.eu</source>
-        <translation>你必须生成密钥以访问Airly API, 你可以从下方网站获取你的 API https://developer.airly.eu</translation>
+        <translation>你必须生成密钥以访问 Airly API, 你可以从下方网站获取你的 API https://developer.airly.eu</translation>
     </message>
 </context>
 <context>
@@ -155,7 +155,7 @@ https://developer.airly.eu</source>
     <name>PowietrzeConnection</name>
     <message>
         <source>OTHER</source>
-        <translation type="vanished">其它</translation>
+        <translation type="vanis>其它</translation>
     </message>
 </context>
 <context>
