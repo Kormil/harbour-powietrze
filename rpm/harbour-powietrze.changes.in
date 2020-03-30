@@ -12,6 +12,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Mar 30 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.1-1\
+- Minors bugfix
+- Updated chinese by dashinfantry
+
 * Sat Jan 21 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.0-1\
 - Notifications are now clickable
 - Add actions to cover page
