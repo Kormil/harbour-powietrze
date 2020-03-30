@@ -72,6 +72,8 @@ void ProvidersManager::createProviders()
     providerListModel->addProvider(powietrze);
     providerListModel->addProvider(openaq);
     providerListModel->addProvider(airly);
+
+    std::cout << "Providers created" << std::endl;
 }
 
 Connection *ProvidersManager::connection(int providerId) const
@@ -92,6 +94,8 @@ void ProvidersManager::createConenctions(ModelsManager *modelsManager)
     m_powietrze = new PowietrzeConnection(modelsManager);
     m_openAq = new OpenAQConnection(modelsManager);
     m_airly = new AirlyConnection(modelsManager);
+
+    std::cout << "Providers connection created" << std::endl;
 }
 
 void ProvidersManager::findNearestStation(QGeoCoordinate coordinate, int distanceLimit, std::function<void (StationListPtr)> handler)
@@ -129,4 +133,6 @@ void ProvidersManager::deleteProviders()
         delete m_airly;
         m_airly = nullptr;
     }
+
+    std::cout << "Provider deleted" << std::endl;
 }

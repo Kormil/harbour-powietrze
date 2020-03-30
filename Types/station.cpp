@@ -57,7 +57,7 @@ bool Station::favourite() const
 void Station::setFavourite(bool value)
 {
     m_favourite = value;
-    emit dataChanged(id());
+    emit dataChanged(hash());
 }
 
 StationData Station::stationData() const
@@ -102,7 +102,6 @@ void Station::setDistance(double distance)
 {
     m_distance = distance;
     emit distanceChanged();
-    emit dataChanged(hash());
 }
 
 StationIndex *Station::stationIndex() const

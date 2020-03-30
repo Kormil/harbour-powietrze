@@ -6,7 +6,7 @@ StationList::StationList(QObject *parent) : QObject(parent)
 {
 }
 
-StationPtr StationList::station(int index)
+StationPtr StationList::station(unsigned int index)
 {
     if (m_stations.size() < index)
         return nullptr;
@@ -26,8 +26,9 @@ size_t StationList::size() const
 
 void StationList::append(StationPtr station)
 {
-    if (station == nullptr)
+    if (station == nullptr) {
         return;
+    }
 
     std::lock_guard<std::mutex> guard(m_appendStationMutex);
 
@@ -50,8 +51,7 @@ void StationList::append(StationPtr station)
 
 void StationList::appendList(StationListPtr& stationList)
 {
-    for (auto& station: stationList->m_stations)
-    {
+    for (auto& station: stationList->m_stations) {
         append(station);
     }
 

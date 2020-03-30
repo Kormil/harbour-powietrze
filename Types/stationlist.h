@@ -25,7 +25,7 @@ public:
     explicit StationList(QObject *parent = nullptr);
     size_t size() const;
 
-    StationPtr station(int index);
+    StationPtr station(unsigned int index);
     StationPtr find(unsigned int hash);
 
     void append(StationPtr station);

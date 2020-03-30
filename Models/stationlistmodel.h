@@ -133,14 +133,12 @@ public slots:
     void onGPSPositionUpdate(QGeoCoordinate coordinate);
 
 signals:
-    void stationListRequested();
     void stationListLoaded();
     void stationDataRequested();
     void stationDataLoaded();
     void selectedStationChanged();
     void favourtiesUpdated();
     void favourtiesUpdatingStarted();
-    void nearestStationRequested();
     void nearestStationFounded();
     void stationDistanceLimitChanged();
 

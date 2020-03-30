@@ -35,6 +35,8 @@ void ModelsManager::createModels()
     m_provinceListModel->setModelsManager(this);
     m_sensorListModel->setModelsManager(this);
     m_countryListModel->setModelsManager(this);
+
+    std::cout << "Models created" << std::endl;
 }
 
 void ModelsManager::deleteModels()
@@ -53,7 +55,7 @@ void ModelsManager::bindToQml(QQuickView * view)
     qmlRegisterType<CountryListModel>("CountryListModel", 1, 0, "CountryListModel");
     qmlRegisterType<ProviderListModel>("ProviderListModel", 1, 0, "ProviderListModel");
 
-    ProvinceListProxyModel::bindToQml(); //FIXME nie podob mi się że to tu jest
+    ProvinceListProxyModel::bindToQml();
     StationListProxyModel::bindToQml();
     ProviderListProxyModel::bindToQml();
     CountryListProxyModel::bindToQml();
@@ -76,6 +78,8 @@ void ModelsManager::loadSettings()
     m_stationListModel->getIndexForFavourites();
 
     m_timer.start(60 * 60 * 1000);
+
+    std::cout << "Models settings loaded" << std::endl;
 }
 
 ProvinceListModel *ModelsManager::provinceListModel() const
@@ -100,7 +104,9 @@ AirQualityIndexModel *ModelsManager::airQualityIndexModel() const
 
 void ModelsManager::updateModels()
 {
-    m_stationListModel->getIndexForFavourites();
+    if (m_stationListModel) {
+        m_stationListModel->getIndexForFavourites();
+    }
 }
 
 SensorListModel *ModelsManager::sensorListModel() const

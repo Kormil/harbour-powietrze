@@ -35,7 +35,6 @@ void GPSModule::requestPosition()
     } else {
         m_lastKnowPosition = m_positionSource->lastKnownPosition().coordinate();
         emit positionUpdated(m_lastKnowPosition);
-        emit positionFounded(m_lastKnowPosition);
     }
 }
 
@@ -47,7 +46,6 @@ void GPSModule::stopLocating()
 
     m_timeLastKnowPosition = QDateTime::currentDateTime();
     emit positionUpdated(m_lastKnowPosition);
-    emit positionFounded(m_lastKnowPosition);
 }
 
 void GPSModule::pauseLocating(int hours)
@@ -96,7 +94,6 @@ void GPSModule::onPositionUpdate(const QGeoPositionInfo &positionInfo)
         m_positionSource->stopUpdates();
 
         emit positionUpdated(m_lastKnowPosition);
-        emit positionFounded(m_lastKnowPosition);
 
         std::cout << "GPS FOUNDED" << std::endl;
     }
@@ -118,7 +115,6 @@ void GPSModule::onGpsUpdateFrequencyChanged()
         m_positionSource->stopUpdates();
 
         emit positionUpdated(QGeoCoordinate());
-        emit positionFounded(QGeoCoordinate());
 
         m_timer.stop();
     }
@@ -128,12 +124,9 @@ void GPSModule::onUpdateTimeout()
 {
     std::cout << "GPS TIMEOUT" << std::endl;
 
-    if (m_lastKnowPosition.isValid())
-    {
+    if (m_lastKnowPosition.isValid()) {
         m_positionSource->stopUpdates();
-
         emit positionUpdated(m_lastKnowPosition);
-        emit positionFounded(m_lastKnowPosition);
     }
 }
 
@@ -141,12 +134,7 @@ GPSModule::GPSModule(QObject *parent) :
     QObject(parent)
 {
     init();
-
-    QObject::connect(&m_timer, &QTimer::timeout, [this]() {
-        if (!isPaused() &&
-            QDateTime::currentDateTime() >= m_timeLastKnowPosition.addSecs(m_minimumRequestIntervalInSec))
-            emit shouldRequest();
-    });
+    std::cout << "GPS created" << std::endl;
 }
 
 int GPSModule::frequencyFromSettings()
@@ -178,6 +166,8 @@ void GPSModule::stop()
     m_timer.stop();
 
     onUpdateTimeout();
+
+    std::cout << "GPS stopped" << std::endl;
 }
 
 void GPSModule::init()
@@ -200,4 +190,15 @@ void GPSModule::init()
 
     m_pausedLocatingDateTime = settings->gpsLocationPaused();
     onGpsUpdateFrequencyChanged();
+
+    QObject::connect(&m_timer, &QTimer::timeout, [this]() {
+        if (!isPaused() &&
+            QDateTime::currentDateTime() >= m_timeLastKnowPosition.addSecs(m_minimumRequestIntervalInSec))
+            emit shouldRequest();
+    });
+}
+
+bool GPSModule::knowAnyPosition()
+{
+    return m_lastKnowPosition.isValid();
 }

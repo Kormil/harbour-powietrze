@@ -77,7 +77,7 @@ Page {
 
     Connections {
         target: gps
-        onPositionFounded: {
+        onPositionUpdated: {
             loading.visible = false
             findMoreItem.visible = true
         }

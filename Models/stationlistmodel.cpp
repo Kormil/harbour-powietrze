@@ -110,8 +110,6 @@ void StationListModel::setStationList(StationListPtr stationList)
 
 void StationListModel::requestStationListData()
 {
-    emit stationListRequested();
-
     Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection();
 
     connection->getStationList([this](StationListPtr stationList) {
@@ -201,6 +199,9 @@ QHash<int, QByteArray> StationListModel::roleNames() const
 
 void StationListModel::onStationClicked(Station* station)
 {
+    if (!station) {
+        return;
+    }
     onItemClicked(m_stationList->row(station->hash()));
 }
 
@@ -260,15 +261,15 @@ void StationListModel::calculateDistances(QGeoCoordinate coordinate)
 
 void StationListModel::findNearestStation()
 {
-    emit nearestStationRequested();
-    emit stationListRequested();
-
     GPSModule::instance()->requestPosition();
 }
 
 void StationListModel::getIndexForFavourites()
 {
     Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+    if (!m_stationList) {
+        return;
+    }
     auto favourites = m_stationList->favourites();
 
     m_indexesToDownload = favourites.size();
@@ -280,6 +281,9 @@ void StationListModel::getIndexForFavourites()
     for (const auto& hash: favourites)
     {
         StationPtr station = m_stationList->find(hash);
+        if (!station) {
+            return;
+        }
 
         auto provider = m_modelsManager->providerListModel()->provider(station->provider());
         auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId());
@@ -300,7 +304,7 @@ void StationListModel::getIndexForFavourites()
             {
                 if (station->stationIndex()) {
 
-                    if (m_beforeNearestStation->stationIndex()->id() == -1 || stationIndex->id() == -1)
+                    if (station->stationIndex()->id() == -1 || stationIndex->id() == -1)
                         return;
 
                     if (station->stationIndex()->id() < stationIndex->id()) {
@@ -337,7 +341,6 @@ void StationListModel::onGPSPositionUpdate(QGeoCoordinate coordinate)
     ProvidersManager::instance()->findNearestStation(coordinate, m_stationDistanceLimit, [this](StationListPtr stationList) {
         std::lock_guard<std::mutex> guard(m_findNearestStationMutex);
         if (m_stationList) {
-
             if (stationList) {
                 m_stationList->appendList(stationList);
             }

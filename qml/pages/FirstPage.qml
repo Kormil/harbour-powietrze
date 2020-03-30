@@ -96,8 +96,10 @@ Page {
             station: stationListModel.nearestStation
 
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
-                stationListModel.onStationClicked(stationListModel.nearestStation)
+                if (gps.knowAnyPosition) {
+                    pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
+                    stationListModel.onStationClicked(stationListModel.nearestStation)
+                }
             }
         }
 
@@ -143,8 +145,6 @@ Page {
     Connections {
         target: stationListModel
         onDataChanged: {
-            stationListProxyModel.invalidate()
-
             if (stationListProxyModel.rowCount() === 0) {
                 hintLabel.visible = true
                 hint.visible = true

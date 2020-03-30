@@ -23,7 +23,7 @@ int ProviderListModel::rowCount(const QModelIndex &parent) const
 
 QVariant ProviderListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || m_providerList.size() < index.row())
+    if (!index.isValid() || m_providerList.size() < static_cast<size_t>(index.row()))
         return QVariant();
 
     const ProviderData* provider = m_providerList[index.row()].get();

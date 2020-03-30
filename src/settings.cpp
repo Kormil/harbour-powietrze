@@ -1,4 +1,5 @@
 #include "settings.h"
+#include <iostream>
 #include <QSettings>
 #include <QtQml>
 #include <QVariant>
@@ -187,8 +188,8 @@ StationListPtr Settings::favouriteStations() const
     for (auto& stationData: stations)
     {
         StationPtr station = StationPtr(new Station());
-        station->setFavourite(true);
         station->setStationData(stationData.value<StationData>());
+        station->setFavourite(true);
 
         stationList->append(station);
     }

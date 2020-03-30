@@ -55,8 +55,12 @@ public:
     int provider() const;
     QString providerName() const;
 
-    unsigned int hash() const {
-        return qHash(name() % QString(m_stationData.provider));
+    unsigned int hash() {
+        if (m_hash < 0) {
+            m_hash = qHash(name() % QString(m_stationData.provider));
+        }
+
+        return m_hash;
     }
 
 signals:
@@ -74,6 +78,7 @@ private:
 
     bool m_favourite;
     double m_distance = 0.f;
+    long m_hash = -1;
 };
 
 using StationPtr = std::shared_ptr<Station>;

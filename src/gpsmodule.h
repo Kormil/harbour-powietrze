@@ -15,6 +15,7 @@ class GPSModule : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool paused READ isPaused WRITE removePauseFlag NOTIFY pausedChanged)
+    Q_PROPERTY(bool knowAnyPosition READ knowAnyPosition NOTIFY positionUpdated)
 public:
     static GPSModule *instance();
     static void bindToQml(QQuickView * view);
@@ -25,6 +26,7 @@ public:
     bool isPaused();
     void removePauseFlag(bool);
     void init();
+    bool knowAnyPosition();
 
     QGeoCoordinate lastKnowPosition() const;
 
@@ -38,7 +40,6 @@ private slots:
 signals:
     void shouldRequest();
     void positionRequested();
-    void positionFounded(QGeoCoordinate coordinate);
     void positionUpdated(QGeoCoordinate coordinate);
     void pausedChanged();
 
