@@ -46,7 +46,7 @@ Page {
 
         VerticalScrollDecorator {}
 
-        Item {
+        Column {
             id: station
             width: parent.width
 
@@ -59,7 +59,6 @@ Page {
 
             SilicaListView {
                 id: listView
-                anchors.top: stationInfo.bottom
                 model: sensorListModel
 
                 width: page.width

@@ -8,12 +8,12 @@ BackgroundItem {
 
     id: index
     height: mainColumn.height + Theme.paddingMedium
-    y: Theme.paddingMedium
 
     Column {
         id: mainColumn
         width: parent.width
         spacing: Theme.paddingMedium
+        y: Theme.paddingMedium
 
         Column {
             width: parent.width
