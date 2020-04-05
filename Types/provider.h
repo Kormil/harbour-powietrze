@@ -18,6 +18,8 @@ class ProviderData : public QObject
     Q_PROPERTY(QString site READ site NOTIFY siteChanged)
     Q_PROPERTY(int nameVariant READ nameVariant WRITE setNameVariant NOTIFY dataChanged)
     Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged)
+    Q_PROPERTY(int requestLimit READ requestLimit NOTIFY requestLimitChanged)
+    Q_PROPERTY(int requestRemaining READ requestRemaining NOTIFY requestLimitChanged)
 
 public:
     explicit ProviderData(QObject* parent = nullptr);
@@ -42,7 +44,11 @@ public:
     int nameVariant() const;
     void setNameVariant(int value);
     QString apiKey() const;
-    void setApiKey(const QString &apiKey);
+    void setApiKey(const QString &apiKey);    
+    int requestLimit() const;
+    void setRequestLimit(int requestLimit);
+    int requestRemaining() const;
+    void setRequestRemaining(int requestRemaining);
 
     void setModelsManager(ModelsManager *modelsManager);
 
@@ -54,6 +60,7 @@ signals:
     void siteChanged();
     void airQualityIndexChanged();
     void apiKeyChanged();
+    void requestLimitChanged();
 
 private:
     int m_id;
@@ -66,6 +73,8 @@ private:
     int m_nameVariant = 0;
     int m_airQualityIndexId;
     QString m_apiKey;
+    int m_requestLimit = 0;
+    int m_requestRemaining = 0;
 
     Settings * m_settings;
     ModelsManager * m_modelsManager;

@@ -111,16 +111,18 @@ void StationListModel::setStationList(StationListPtr stationList)
 void StationListModel::requestStationListData()
 {
     Connection* connection = m_modelsManager->providerListModel()->selectedProvider()->connection();
+    emit stationListRequested();
 
     connection->getStationList([this](StationListPtr stationList) {
         if (!stationList) {
-            stationListLoaded();
+            emit stationListLoaded();
             return;
         }
 
         if (m_stationList) {
             std::lock_guard<std::mutex> guard(m_setStationListMutex);
             m_stationList->appendList(stationList);
+            emit stationListLoaded();
         }
         else {
             setStationList(stationList);
@@ -211,12 +213,14 @@ void StationListModel::onItemClicked(int index)
         return;
 
     StationPtr station = m_stationList->station(index);
-    auto provider = m_modelsManager->providerListModel()->provider(station->provider());
-
-    if (station == nullptr || !provider->enabled()) {
+    if (station == nullptr) {
         return;
     }
 
+    auto provider = m_modelsManager->providerListModel()->provider(station->provider());
+    if (!provider->enabled()) {
+        return;
+    }
 
     auto coordinate = GPSModule::instance()->lastKnowPosition();
     double distance = station->coordinate().distanceTo(coordinate);

@@ -34,6 +34,7 @@ public:
     void run();
 
     void addHeader(const QByteArray& key, const QByteArray& value);
+    QList<QPair<QByteArray, QByteArray> > &getResponseHeaders();
 
     ~Request()
     {
@@ -48,6 +49,7 @@ private:
     Connection *m_connection;
     QNetworkReply* networkReply;
     QByteArray responseArray;
+    QList<QPair<QByteArray, QByteArray>> responseHeaders;
     int m_serial;
 
 signals:

@@ -85,6 +85,10 @@ void SensorListModel::requestData()
     auto station = m_station;
     Connection* connection = ProvidersManager::instance()->connection(m_station->provider());
     connection->getSensorList(station, [=](SensorListPtr sensorList) {
+        if (!sensorList) {
+            return;
+        }
+
         setSensorList(sensorList, station);
         requestSensorData(station);
     });

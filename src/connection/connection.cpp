@@ -28,6 +28,7 @@ void Request::run()
             return ;
         }
 
+        responseHeaders = networkReply->rawHeaderPairs();
         emit finished(SUCCESS, responseArray);
     });
 }
@@ -45,6 +46,11 @@ int Request::serial() const
 void Request::setSerial(int serial)
 {
     m_serial = serial;
+}
+
+QList<QPair<QByteArray, QByteArray>>& Request::getResponseHeaders()
+{
+    return responseHeaders;
 }
 
 Connection::Connection(ModelsManager* modelsManager) :

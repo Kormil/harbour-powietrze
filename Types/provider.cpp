@@ -116,6 +116,28 @@ void ProviderData::setModelsManager(ModelsManager *modelsManager)
     m_modelsManager = modelsManager;
 }
 
+int ProviderData::requestLimit() const
+{
+    return m_requestLimit;
+}
+
+void ProviderData::setRequestLimit(int requestLimit)
+{
+    m_requestLimit = requestLimit;
+    emit requestLimitChanged();
+}
+
+int ProviderData::requestRemaining() const
+{
+    return m_requestRemaining;
+}
+
+void ProviderData::setRequestRemaining(int requestRemaining)
+{
+    m_requestRemaining = requestRemaining;
+    emit requestLimitChanged();
+}
+
 ProviderData::ProviderData(QObject *parent) : QObject(parent)
 {
     m_settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));

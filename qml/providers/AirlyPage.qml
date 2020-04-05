@@ -42,6 +42,22 @@ Page {
                 provider: page.provider
             }
 
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                Label {
+                    text: qsTr("Request remaining ")
+                    color: Theme.secondaryHighlightColor
+                    horizontalAlignment: Text.AlignRight
+                    fontSizeMode: Theme.fontSizeSmall
+                }
+                Label {
+                    horizontalAlignment: Text.AlignLeft
+                    text: provider ? provider.requestRemaining + "/" + provider.requestLimit : ""
+                    fontSizeMode: Theme.fontSizeSmall
+                    color: Theme.highlightColor
+                }
+            }
+
             TextSwitch {
                 id: enabledTextSwitch
                 text: qsTr("Enabled")

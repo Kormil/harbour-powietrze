@@ -13,28 +13,59 @@ Page {
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
-    SilicaListView {
-        id: listView
-        model: StationListProxyModel {
-            id: stationListProxyModel
-            favourites: false
-            provinceNameFilter: provinceListModel.selectedProvince
-            provider: providerListModel.selectedProviderId
-            stationModel: stationListModel
-        }
-
+    SilicaFlickable {
         anchors.fill: parent
-        header: PageHeader {
-            property string provinceName: provinceListModel.selectedProvince.toLowerCase()
-            title: provinceName.charAt(0).toUpperCase() + provinceName.slice(1);
+
+        SilicaListView {
+            id: listView
+
+            model: StationListProxyModel {
+                id: stationListProxyModel
+                favourites: false
+                provinceNameFilter: provinceListModel.selectedProvince
+                provider: providerListModel.selectedProviderId
+                stationModel: stationListModel
+            }
+
+            anchors.fill: parent
+            header: PageHeader {
+                property string provinceName: provinceListModel.selectedProvince.toLowerCase()
+                title: provinceName.charAt(0).toUpperCase() + provinceName.slice(1);
+            }
+
+            delegate: StationItem {
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
+                    stationListProxyModel.onItemClicked(index)
+                }
+            }
+
+            VerticalScrollDecorator {}
         }
 
-        delegate: StationItem {
-            onClicked: {
-                pageStack.push(Qt.resolvedUrl("StationInfoPage.qml"))
-                stationListProxyModel.onItemClicked(index)
+        BusyIndicator {
+            id: loading
+            anchors.centerIn: parent
+            running: true
+            size: BusyIndicatorSize.Large
+            anchors.verticalCenter: parent.verticalCenter
+            visible: true
+        }
+
+        Connections {
+            target: stationListModel
+            onStationListRequested: {
+                loading.enabled = true
+                loading.visible = true
             }
         }
-        VerticalScrollDecorator {}
+
+        Connections {
+            target: stationListModel
+            onStationListLoaded: {
+                loading.enabled = false
+                loading.visible = false
+            }
+        }
     }
 }

@@ -92,7 +92,6 @@ Page {
         StationInfoItem {
             id: nearestStation
             visible: nearestStationEnabled
-            anchors.margins: Theme.horizontalPageMargin
             station: stationListModel.nearestStation
 
             onClicked: {

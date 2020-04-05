@@ -59,7 +59,9 @@ void AirlyConnection::countryListRequest(ProvinceListPtr provinceList, std::func
         countryList->append(country);
     }
 
-    m_cashedCountries = countryList;
+    if (countryList->size() > 0) {
+        m_cashedCountries = countryList;
+    }
     handler(countryList);
 }
 
@@ -94,6 +96,7 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
             handler(StationListPtr(nullptr));
         else
         {
+            parseHeaders(requestRaw->getResponseHeaders());
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
             m_cashedStations = stationList;
             handler(stationList);
@@ -163,6 +166,7 @@ void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
         if (status == Request::ERROR) {
             handler();
         } else {
+            parseHeaders(requestRaw->getResponseHeaders());
             m_parametersUnits = readParametersUnitsFromJson(QJsonDocument::fromJson(responseArray));
             handler();
         }
@@ -199,6 +203,7 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
             handler( SensorListPtr() );
         else
         {
+            parseHeaders(requestRaw->getResponseHeaders());
             parameterUnitsRequest([this, responseArray, handler]() {
                 SensorListPtr sensorList = readSensorsFromJson(QJsonDocument::fromJson(responseArray));
                 sensorList->setDateToCurrent();
@@ -250,6 +255,7 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
+            parseHeaders(requestRaw->getResponseHeaders());
             StationIndexData stationIndexData;
 
             stationIndexData.m_id = -1;
@@ -285,6 +291,7 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
             handler(StationListPtr{});
         else
         {
+            parseHeaders(requestRaw->getResponseHeaders());
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
 
             if (stationList->size() >= 1) {
@@ -297,6 +304,21 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
 
         deleteRequest(requestRaw->serial());
     });
+}
+
+void AirlyConnection::parseHeaders(QList<QPair<QByteArray, QByteArray>>& headers)
+{
+    auto provider = m_modelsManager->providerListModel()->provider(id());
+
+    for (auto header: headers) {
+        QString headerString = header.first.toLower();
+
+        if (headerString == "x-ratelimit-remaining-day") {
+            provider->setRequestRemaining(header.second.toInt());
+        } else if (headerString == "x-ratelimit-limit-day") {
+            provider->setRequestLimit(header.second.toInt());
+        }
+    }
 }
 
 StationListPtr AirlyConnection::readStationsFromJson(const QJsonDocument &jsonDocument)

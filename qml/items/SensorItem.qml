@@ -20,6 +20,7 @@ BackgroundItem {
                 color: Theme.secondaryHighlightColor
                 horizontalAlignment: Text.AlignRight
                 fontSizeMode: Theme.itemSizeExtraSmall
+                wrapMode: Text.Wrap
             }
             Label {
                 horizontalAlignment: Text.AlignLeft

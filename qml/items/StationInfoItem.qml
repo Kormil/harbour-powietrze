@@ -7,7 +7,8 @@ BackgroundItem {
     property var station : undefined
 
     id: index
-    height: mainColumn.height
+    height: mainColumn.height + Theme.paddingMedium
+    y: Theme.paddingMedium
 
     Column {
         id: mainColumn
@@ -16,25 +17,28 @@ BackgroundItem {
 
         Column {
             width: parent.width
+
             Label {
                 id: cityLabel
                 text: station ? station.cityName : " "
                 horizontalAlignment: Text.AlignRight
+                verticalAlignment: Text.AlignVCenter
+                anchors.rightMargin: Theme.horizontalPageMargin
                 color: Theme.highlightColor
                 font.pixelSize: Theme.fontSizeLarge
                 anchors.right: parent.right
                 truncationMode: TruncationMode.Fade
-                anchors.rightMargin: Theme.horizontalPageMargin
             }
 
             Label {
                 id: streetLabel
                 text: station ? station.streetName : " "
-                horizontalAlignment: Text.AlignRight
+                horizontalAlignment: Text.AlignRightRight
+                verticalAlignment: Text.AlignVCenter
+                anchors.rightMargin: Theme.horizontalPageMargin
                 color: Theme.highlightColor
                 anchors.right: parent.right
                 truncationMode: TruncationMode.Fade
-                anchors.rightMargin: Theme.horizontalPageMargin
                 font.pixelSize: Theme.fontSizeMedium
             }
         }

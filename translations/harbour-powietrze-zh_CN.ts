@@ -51,6 +51,10 @@
 https://developer.airly.eu</source>
         <translation>你必须生成密钥以访问 Airly API, 你可以从下方网站获取你的 API https://developer.airly.eu</translation>
     </message>
+    <message>
+        <source>Request remaining </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>

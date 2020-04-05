@@ -52,6 +52,10 @@ https://developer.airly.eu</source>
         <translation>För att få åtkomst till Airly API, måste du generera en nyckel. Du kan få din egen API-nyckel från
 https://developer.airly.eu</translation>
     </message>
+    <message>
+        <source>Request remaining </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>

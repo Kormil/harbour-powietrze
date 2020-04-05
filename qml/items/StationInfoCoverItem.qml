@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.2
 import Sailfish.Silica 1.0
 
 Item {
@@ -16,7 +16,7 @@ Item {
         color: Theme.primaryColor
         x: Theme.horizontalPageMargin
         truncationMode: TruncationMode.Fade
-        width: parent.width
+        width: parent.width - 2 * Theme.horizontalPageMargin
     }
 
     Label {
@@ -27,7 +27,7 @@ Item {
         color: Theme.primaryColor
         x: Theme.horizontalPageMargin
         truncationMode: TruncationMode.Fade
-        width: parent.width
+        width: parent.width - 2 * Theme.horizontalPageMargin
     }
 
     Item {
@@ -47,11 +47,20 @@ Item {
         Label {
             id: label
             text: station.stationIndex.name
+            horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin: Theme.paddingSmall
             anchors.top: image.bottom
             width: parent.width
             truncationMode: TruncationMode.Fade
+
+            onTextChanged: {
+                if (station.stationIndex.nameWidth(label.font) < label.width  - 2 * Theme.horizontalPageMargin) {
+                    label.horizontalAlignment = Text.AlignHCenter
+                } else {
+                    label.horizontalAlignment = Text.AlignLeft
+                }
+            }
         }
     }
 }

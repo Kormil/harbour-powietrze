@@ -55,6 +55,7 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handler)
 {
     QString province = m_modelsManager->provinceListModel()->selectedProvinceName();
+    QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
     QDateTime currentTime = QDateTime::currentDateTime();
 
     if (m_lastStationListRequestDate.isValid())
@@ -74,7 +75,9 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
 
     m_requestedStation.insert(province);
 
-    QString url = "https://" + m_host + m_port + "/v1/locations?city=" + province
+    QString url = "https://" + m_host + m_port
+            + "/v1/locations?city=" + province
+            + "&country=" + countryCode
             + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
 
@@ -150,7 +153,11 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
         return;
     }
 
-    QString location = station->cityName();
+    QString location = station->streetName();
+    if (location.isEmpty()) {   //for backward compatybility (04.2020)
+        location = station->cityName();
+    }
+
     QString url = "https://" + m_host + m_port + "/v1/locations?location=" + location
             + "&limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
@@ -304,9 +311,16 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
 
     for (const auto& station: results)
     {
+        QDateTime lastUpdate = QDateTime::fromString(station.toObject()["lastUpdated"].toString(), Qt::ISODate);
+
+        if (lastUpdate < QDateTime::currentDateTime().addYears(-1)) {
+            continue;
+        }
+
         StationPtr item = StationPtr(new Station());
         StationData stationData;
-        stationData.cityName = station.toObject()["location"].toString();
+        stationData.cityName = station.toObject()["city"].toString();
+        stationData.street = station.toObject()["location"].toString();
         stationData.provider = id();
 
         double lat = station.toObject()["coordinates"].toObject()["latitude"].toDouble();

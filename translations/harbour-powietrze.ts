@@ -51,6 +51,10 @@
 https://developer.airly.eu</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Request remaining </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>

@@ -51,14 +51,16 @@ Page {
 
                 Label {
                     x: Theme.horizontalPageMargin
+                    width: parent.width - Theme.horizontalPageMargin * 2
                     text: model.name
                     anchors.verticalCenter: parent.verticalCenter
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+                    truncationMode: TruncationMode.Fade
                 }
                 onClicked: {
                     provinceListProxyModel.onItemClicked(index)
-                    stationListModel.requestStationListData()
                     pageStack.push(Qt.resolvedUrl("SelectStationPage.qml"))
+                    stationListModel.requestStationListData()
                 }
             }
             VerticalScrollDecorator {}

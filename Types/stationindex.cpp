@@ -1,5 +1,6 @@
 #include "stationindex.h"
 #include <QQuickView>
+#include <QFontMetrics>
 #include "station.h"
 
 int StationIndex::id() const
@@ -20,6 +21,12 @@ QString StationIndex::indexCalculateDate() const
 QString StationIndex::calculationModeName() const
 {
     return m_data.m_calculationModeName;
+}
+
+int StationIndex::nameWidth(QFont font) const
+{
+    QFontMetrics metric(font);
+    return metric.width(name());
 }
 
 void StationIndex::bindToQml(QQuickView * view)

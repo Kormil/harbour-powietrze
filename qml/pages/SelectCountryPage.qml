@@ -31,9 +31,11 @@ Page {
 
                 Label {
                     x: Theme.horizontalPageMargin
+                    width: parent.width - Theme.horizontalPageMargin * 2
                     text: model.name
                     anchors.verticalCenter: parent.verticalCenter
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+                    truncationMode: TruncationMode.Fade
                 }
                 onClicked: {
                     countryListProxyModel.onItemClicked(index)

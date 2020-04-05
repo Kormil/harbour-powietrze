@@ -52,6 +52,10 @@ https://developer.airly.eu</source>
         <translation>Aby korzystać z Airly musisz posiadać klucz. Możesz uzyskać własny klucz z
 https://developer.airly.eu</translation>
     </message>
+    <message>
+        <source>Request remaining </source>
+        <translation>Pozostało zapytań</translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>

@@ -133,6 +133,7 @@ public slots:
     void onGPSPositionUpdate(QGeoCoordinate coordinate);
 
 signals:
+    void stationListRequested();
     void stationListLoaded();
     void stationDataRequested();
     void stationDataLoaded();

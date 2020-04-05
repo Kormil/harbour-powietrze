@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QFont>
 #include <memory>
 
 class Station;
@@ -33,6 +34,7 @@ public:
     QString name() const;
     QString indexCalculateDate() const;
     QString calculationModeName() const;
+    Q_INVOKABLE int nameWidth(QFont font) const;
 
     static void bindToQml(QQuickView * view);
 
