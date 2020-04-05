@@ -31,7 +31,6 @@ void PowietrzeConnection::getCountryList(std::function<void (CountryListPtr)> ha
 
     countryList->append(poland);
 
-    m_cashedCountries = countryList;
     handler(std::move(countryList));
 }
 
@@ -106,7 +105,6 @@ void PowietrzeConnection::provinceListRequest(StationListPtr stationList, std::f
         provinceList->append(province);
     }
 
-    m_cashedProvinces = provinceList;
     handler(provinceList);
 }
 

@@ -27,6 +27,8 @@ public:
     virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
 private:
+    void provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler);
+
     //JSON
     CountryListPtr readCountriesFromJson(const QJsonDocument &jsonDocument);
     ProvinceListPtr readProvincesFromJson(const QJsonDocument &jsonDocument);
@@ -34,8 +36,9 @@ private:
     SensorListPtr readSensorsFromJson(const QJsonDocument &jsonDocument);
     Pollution readSensorDataFromJson(const QJsonDocument &jsonDocument);
 
-    std::set<QString> m_requestedProvince;
-    std::set<QString> m_requestedStation;
+    std::map<QString, ProvinceListPtr> m_cashedProvinces;
+    std::map<QString, QDateTime> m_requestMapStationDatetime;
+    std::map<QString, StationListPtr> m_requestedStation;
 
     int m_recordLimits = 1000;
     float m_minimumValue = 0.01f;

@@ -118,8 +118,6 @@ protected:
     std::mutex m_getStationListMutex;
 
     //Cach
-    CountryListPtr m_cashedCountries;
-    ProvinceListPtr m_cashedProvinces;
     StationListPtr m_cashedStations;
 private:
     QNetworkAccessManager* m_networkAccessManager;

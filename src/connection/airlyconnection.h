@@ -41,6 +41,10 @@ private:
 
     int m_recordLimits = -1;
     std::vector<PollutionUnit> m_parametersUnits;
+
+    //Cach
+    CountryListPtr m_cashedCountries;
+    ProvinceListPtr m_cashedProvinces;
 };
 
 #endif // AIRLYCONNECTION_H

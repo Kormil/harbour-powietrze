@@ -54,29 +54,21 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 
 void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handler)
 {
-    QString province = m_modelsManager->provinceListModel()->selectedProvinceName();
     QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
     QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (m_lastStationListRequestDate.isValid())
+    if (m_requestMapStationDatetime[countryCode].isValid())
     {
-        if (currentTime.secsTo(m_lastStationListRequestDate) < m_getStationListFrequency) {
-            if (m_requestedStation.find(province) != m_requestedStation.end()) {
-                handler(StationListPtr{});
-                return ;
-            }
-        } else {
-            m_lastStationListRequestDate = currentTime;
-            m_requestedStation.clear();
+        if (currentTime.secsTo(m_requestMapStationDatetime[countryCode]) < m_getStationListFrequency) {
+            handler(m_requestedStation[countryCode]);
+            return ;
         }
-    } else {
-        m_lastStationListRequestDate = currentTime;
     }
 
-    m_requestedStation.insert(province);
+    m_requestMapStationDatetime[countryCode] = currentTime;
 
     QString url = "https://" + m_host + m_port
-            + "/v1/locations?city=" + province
+            + "/v1/locations?"
             + "&country=" + countryCode
             + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
@@ -84,12 +76,13 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
     Request* requestRaw = request(stationListURL);
     requestRaw->run();
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
+    QObject::connect(requestRaw, &Request::finished, [this, countryCode, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
-            handler(StationListPtr{});
+            handler(m_requestedStation[countryCode]);
         else
         {
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
+            m_requestedStation[countryCode] = stationList;
             handler(stationList);
         }
 
@@ -97,46 +90,46 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
     });
 }
 
-void OpenAQConnection::getProvinceList(std::function<void(ProvinceListPtr)> handler)
+void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> handler)
+{
+    getStationList([this, handler](StationListPtr stationList) {
+        provinceListRequest(stationList, handler);
+    });
+}
+
+void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler)
 {
     QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
-    QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (m_lastProvinceListRequestDate.isValid())
-    {
-        if (currentTime.secsTo(m_lastProvinceListRequestDate) < m_getProvinceListFrequency) {
-            if (m_requestedProvince.find(countryCode) != m_requestedProvince.end()) {
-                handler(ProvinceListPtr{});
-                return ;
-            }
-        } else {
-            m_lastProvinceListRequestDate = currentTime;
-            m_requestedProvince.clear();
-        }
-    } else {
-        m_lastProvinceListRequestDate = currentTime;
+    if (stationList == nullptr) {
+        handler(m_cashedProvinces[countryCode]);
+        return;
     }
 
-    m_requestedProvince.insert(countryCode);
+    auto cmp = [](const QString& a, const QString& b) {
+        return QString::localeAwareCompare(a, b) < 0;
+    };
 
-    QString url = "https://" + m_host + m_port + "/v1/cities?country=" + countryCode
-            + "&limit=" + QString::number(m_recordLimits);
-    QUrl provinceListURL(url);
+    std::set<QString, decltype(cmp)> names(cmp);
+    for (unsigned int i = 0; i < stationList->size(); ++i)
+    {
+        StationPtr station = stationList->station(i);
+        QString name = station->province();
+        names.insert(name);
+    }
 
-    Request* requestRaw = request(provinceListURL);
-    requestRaw->run();
+    ProvinceListPtr provinceList(new ProvinceList());
+    for (const auto value: names)
+    {
+        ProvinceItemPtr province(new ProvinceItem());
+        province->name = value;
+        province->countryCode = countryCode;
+        province->provider = id();
+        provinceList->append(province);
+    }
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
-        if (status == Request::ERROR)
-            handler(ProvinceListPtr{});
-        else
-        {
-            ProvinceListPtr provinceList = readProvincesFromJson(QJsonDocument::fromJson(responseArray));
-            handler(provinceList);
-        }
-
-        deleteRequest(requestRaw->serial());
-    });
+    m_cashedProvinces[countryCode] = provinceList;
+    handler(provinceList);
 }
 
 void OpenAQConnection::getSensorList(StationPtr station, std::function<void (SensorListPtr)> handler)
