@@ -5,7 +5,7 @@
     <name>AboutPage</name>
     <message>
         <source>About</source>
-        <translation>O</translation>
+        <translation>O Powietrze</translation>
     </message>
     <message>
         <source>Application for checking the current state of air quality.</source>
