@@ -53,7 +53,7 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Request remaining </source>
-        <translation type="unfinished"></translation>
+        <translation>保持请求</translation>
     </message>
 </context>
 <context>
