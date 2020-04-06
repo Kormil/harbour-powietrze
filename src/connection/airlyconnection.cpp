@@ -69,8 +69,7 @@ void AirlyConnection::getStationList(std::function<void (StationListPtr)> handle
 {
     QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (m_lastStationListRequestDate.isValid()
-            && currentTime.secsTo(m_lastStationListRequestDate) < m_getStationListFrequency)
+    if (m_cashedStations->size() && m_lastStationListRequestDate.secsTo(currentTime) < m_getStationListFrequency)
     {
         handler(m_cashedStations);
         return ;

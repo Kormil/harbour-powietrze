@@ -54,7 +54,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Request remaining </source>
-        <translation>Pozostało zapytań</translation>
+        <translation>Pozostało zapytań </translation>
     </message>
 </context>
 <context>

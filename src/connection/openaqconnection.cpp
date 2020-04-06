@@ -23,10 +23,9 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 {
     QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (m_lastCountryListRequestDate.isValid()
-            && currentTime.secsTo(m_lastCountryListRequestDate) < m_getCountryListFrequency)
+    if (m_cashedCountries->size() && m_lastCountryListRequestDate.secsTo(currentTime) < m_getCountryListFrequency)
     {
-        handler(CountryListPtr{});
+        handler(m_cashedCountries);
         return ;
     }
 
@@ -44,6 +43,7 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
         else
         {
             CountryListPtr countryList = readCountriesFromJson(QJsonDocument::fromJson(responseArray));
+            m_cashedCountries = countryList;
             handler(std::move(countryList));
         }
 

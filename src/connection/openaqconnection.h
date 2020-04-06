@@ -36,12 +36,15 @@ private:
     SensorListPtr readSensorsFromJson(const QJsonDocument &jsonDocument);
     Pollution readSensorDataFromJson(const QJsonDocument &jsonDocument);
 
+    //Cache
     std::map<QString, ProvinceListPtr> m_cashedProvinces;
     std::map<QString, QDateTime> m_requestMapStationDatetime;
     std::map<QString, StationListPtr> m_requestedStation;
+    CountryListPtr m_cashedCountries;
 
     int m_recordLimits = 1000;
     float m_minimumValue = 0.01f;
+
 };
 
 #endif // OpenAQConnection_H
