@@ -12,6 +12,18 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Apr 06 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.2-1\
+- fix getting sensors value too often (openaq)
+- fix showing stations from other country (openaq)
+- update airly logo
+- add top margin in StationInfoItem
+- Rename province name to station name and set station name to street (openaq)
+- add truncate mode
+- Show request remainig and request limit (airly)
+- Showing station where update time is less then one year ago (openaq)
+- Remove empty provinces (openaq)
+- Fix connect signals to request race
+
 * Sat Mar 30 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.1-1\
 - Minors bugfix
 - Updated chinese by dashinfantry
