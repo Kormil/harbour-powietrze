@@ -81,10 +81,7 @@ Page {
                 loading.enabled = true
                 loading.visible = true
             }
-        }
 
-        Connections {
-            target: provinceListModel
             onProvinceLoaded: {
                 loading.enabled = false
                 loading.visible = false

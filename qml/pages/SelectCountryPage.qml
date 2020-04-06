@@ -39,8 +39,8 @@ Page {
                 }
                 onClicked: {
                     countryListProxyModel.onItemClicked(index)
-                    provinceListModel.requestProvinceList()
                     pageStack.push(Qt.resolvedUrl("SelectProvincePage.qml"))
+                    provinceListModel.requestProvinceList()
                 }
             }
             VerticalScrollDecorator {}

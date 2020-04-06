@@ -123,6 +123,7 @@ void ProvinceListModel::requestProvinceList()
 
         if (m_provinceList) {
             m_provinceList->appendList(provinceList);
+            emit provinceLoaded();
         }
         else {
             setProvinceList(provinceList);

@@ -28,6 +28,7 @@ Page {
             MenuItem {
                 id: addFevourite
                 text: qsTr("Add to favourite")
+                visible: false
                 onClicked: {
                     stationListModel.selectedStation.favourite = true
                     Settings.addFavouriteStation(stationListModel.selectedStation)
@@ -37,6 +38,7 @@ Page {
             MenuItem {
                 id: removeFevourite
                 text: qsTr("Remove from favourite")
+                visible: false
                 onClicked: {
                     stationListModel.selectedStation.favourite = false
                     Settings.removeFavouriteStation(stationListModel.selectedStation.id)

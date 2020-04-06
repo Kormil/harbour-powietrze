@@ -59,7 +59,7 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
 
     if (m_requestMapStationDatetime[countryCode].isValid())
     {
-        if (currentTime.secsTo(m_requestMapStationDatetime[countryCode]) < m_getStationListFrequency) {
+        if (m_requestMapStationDatetime[countryCode].secsTo(currentTime) < m_getStationListFrequency) {
             handler(m_requestedStation[countryCode]);
             return ;
         }
@@ -101,11 +101,6 @@ void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::func
 {
     QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
 
-    if (stationList == nullptr) {
-        handler(m_cashedProvinces[countryCode]);
-        return;
-    }
-
     auto cmp = [](const QString& a, const QString& b) {
         return QString::localeAwareCompare(a, b) < 0;
     };
@@ -128,7 +123,6 @@ void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::func
         provinceList->append(province);
     }
 
-    m_cashedProvinces[countryCode] = provinceList;
     handler(provinceList);
 }
 
