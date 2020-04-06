@@ -89,7 +89,6 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
 
     Request* requestRaw = request(stationListURL);
     requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -104,6 +103,8 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
 
         deleteRequest(requestRaw->serial());
     });
+
+    requestRaw->run();
 }
 
 void AirlyConnection::getProvinceList(std::function<void (ProvinceListPtr)> handler)
@@ -160,7 +161,6 @@ void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
 
     Request* requestRaw = request(provinceListURL);
     requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
@@ -173,6 +173,7 @@ void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void AirlyConnection::getSensorList(StationPtr station, std::function<void (SensorListPtr)> handler)
@@ -196,7 +197,6 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
 
     Request* requestRaw = request(provinceListURL);
     requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -213,6 +213,7 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -251,7 +252,6 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
 
     Request* requestRaw = request(stationIndexURL);
     requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
@@ -272,6 +272,7 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
@@ -284,7 +285,6 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
 
     Request* requestRaw = request(stationListURL);
     requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -304,6 +304,7 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void AirlyConnection::parseHeaders(QList<QPair<QByteArray, QByteArray>>& headers)

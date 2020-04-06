@@ -54,7 +54,6 @@ void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)
     QString url = "http://" + m_host + m_port + "/station/findAll";
 
     Request* requestRaw = request(url);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -68,6 +67,7 @@ void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void PowietrzeConnection::getProvinceList(std::function<void(ProvinceListPtr)> handler)
@@ -126,7 +126,6 @@ void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(S
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
@@ -139,6 +138,7 @@ void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(S
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -147,7 +147,6 @@ void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Po
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
         Pollution data;
@@ -162,6 +161,7 @@ void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Po
         handler(data);
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void (StationIndexPtr)> handler)
@@ -182,7 +182,6 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
     QUrl stationIndexURL(url);
 
     Request* requestRaw = request(stationIndexURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR) {
@@ -202,6 +201,7 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void PowietrzeConnection::getNearestStations(QGeoCoordinate coordinate, float, std::function<void (StationListPtr)> handler)

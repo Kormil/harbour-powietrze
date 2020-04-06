@@ -37,7 +37,6 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
     QUrl countryListURL(url);
 
     Request* requestRaw = request(countryListURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -50,6 +49,7 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handler)
@@ -74,8 +74,6 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
-    requestRaw->run();
-
     QObject::connect(requestRaw, &Request::finished, [this, countryCode, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
             handler(m_requestedStation[countryCode]);
@@ -88,6 +86,8 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
 
         deleteRequest(requestRaw->serial());
     });
+
+    requestRaw->run();
 }
 
 void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> handler)
@@ -150,7 +150,6 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -164,6 +163,7 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -175,7 +175,6 @@ void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollu
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
         Pollution data = sensor;
@@ -191,6 +190,7 @@ void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollu
         handler(data);
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIndexPtr)> handler)
@@ -214,7 +214,6 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
     QUrl stationListURL(url);
 
     Request* requestRaw = request(stationListURL);
-    requestRaw->run();
 
     QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
         if (status == Request::ERROR)
@@ -233,6 +232,7 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
 
         deleteRequest(requestRaw->serial());
     });
+    requestRaw->run();
 }
 
 CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &jsonDocument)
