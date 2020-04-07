@@ -12,6 +12,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Apr 07 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.3-1\
+- fix crash on start
+- Updated chinese by dashinfantry
+
 * Mon Apr 06 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.2-1\
 - fix getting sensors value too often (openaq)
 - fix showing stations from other country (openaq)

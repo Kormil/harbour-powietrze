@@ -23,7 +23,8 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
 {
     QDateTime currentTime = QDateTime::currentDateTime();
 
-    if (m_cashedCountries->size() && m_lastCountryListRequestDate.secsTo(currentTime) < m_getCountryListFrequency)
+    if (m_cashedCountries && m_cashedCountries->size()
+            && m_lastCountryListRequestDate.secsTo(currentTime) < m_getCountryListFrequency)
     {
         handler(m_cashedCountries);
         return ;
