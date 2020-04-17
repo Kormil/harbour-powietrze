@@ -34,6 +34,10 @@ float Pollution::value() const {
 }
 
 float Pollution::avg(size_t hours) const {
+    if (!m_values.size()) {
+        return 0.0;
+    }
+
     int secods = hours * 60;
     QDateTime lastDateTime = QDateTime::currentDateTime().addSecs(-secods);
     size_t index = 1;
