@@ -100,6 +100,10 @@ void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> han
 
 void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler)
 {
+    if (!stationList) {
+        return;
+    }
+
     QString countryCode = m_modelsManager->countryListModel()->selectedCountryCode();
 
     auto cmp = [](const QString& a, const QString& b) {

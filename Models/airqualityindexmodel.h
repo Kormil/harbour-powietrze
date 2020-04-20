@@ -3,7 +3,6 @@
 
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
-#include "Types/countrylist.h"
 #include "src/index/airqualityindex.h"
 #include "src/index/europeanaq.h"
 #include "src/index/airindexfromserver.h"
