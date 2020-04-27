@@ -104,7 +104,7 @@ void ProviderListModel::onItemClicked(int index)
 
 ProviderData *ProviderListModel::selectedProvider()
 {
-    return  m_providerList[m_selectedItem].get();
+    return m_providerList[m_selectedItem].get();
 }
 
 int ProviderListModel::selectedProviderId()

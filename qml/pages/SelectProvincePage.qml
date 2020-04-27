@@ -21,6 +21,7 @@ Page {
                 onClicked: {
                     provinceListModel.onItemClicked(-1)
                     pageStack.push(Qt.resolvedUrl("SelectStationPage.qml"))
+                    stationListModel.requestStationListData()
                 }
             }
 

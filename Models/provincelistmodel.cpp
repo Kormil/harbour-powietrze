@@ -85,12 +85,10 @@ void ProvinceListModel::onStationListModelLoaded()
 
 void ProvinceListModel::onItemClicked(int index)
 {
-    if (index != -1)
-    {
+    if (index != -1) {
         m_selectedItem = m_provinceList->get(index).get();
     }
-    else
-    {
+    else {
         m_selectedItem = nullptr;
     }
 
