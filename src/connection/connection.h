@@ -44,8 +44,13 @@ public:
     int serial() const;
     void setSerial(int serial);
 
+private slots:
+    void timeout();
+    void responseFinished(QNetworkReply::NetworkError error);
+
 private:
     QNetworkRequest m_networkRequest;
+    QTimer m_requestTimer;
     Connection *m_connection;
     QNetworkReply* networkReply;
     QByteArray responseArray;

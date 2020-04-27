@@ -3,33 +3,30 @@
 #include <notification.h>
 #include "../modelsmanager.h"
 
+namespace {
+    int REQUEST_TIMEOUT = 10000;
+}
+
 Request::Request(const QUrl &url, Connection *connection) :
     m_networkRequest(url),
     m_connection(connection)
 {
+    m_requestTimer.setSingleShot(true);
+
+    QObject::connect(&m_requestTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 }
 
 void Request::run()
 {
     networkReply = m_connection->networkAccessManager()->get(m_networkRequest);
+    m_requestTimer.start(REQUEST_TIMEOUT);
 
     QObject::connect(networkReply, &QIODevice::readyRead, [this]() {
         responseArray.append(networkReply->readAll());
     });
 
     QObject::connect(networkReply, &QNetworkReply::finished, [this]() {
-        if (networkReply->error() != QNetworkReply::NoError)
-        {
-            std::cout << networkReply->errorString().toStdString() << std::endl;
-            Notification notification;
-            notification.setPreviewBody(networkReply->errorString());
-            notification.publish();
-            emit finished(ERROR, QByteArray());
-            return ;
-        }
-
-        responseHeaders = networkReply->rawHeaderPairs();
-        emit finished(SUCCESS, responseArray);
+        responseFinished(networkReply->error());
     });
 }
 
@@ -46,6 +43,29 @@ int Request::serial() const
 void Request::setSerial(int serial)
 {
     m_serial = serial;
+}
+
+void Request::timeout()
+{
+    responseFinished(QNetworkReply::TimeoutError);
+}
+
+void Request::responseFinished(QNetworkReply::NetworkError error)
+{
+    m_requestTimer.stop();
+
+    if (error != QNetworkReply::NoError)
+    {
+        std::cout << networkReply->errorString().toStdString() << std::endl;
+        Notification notification;
+        notification.setPreviewBody(networkReply->errorString());
+        notification.publish();
+        emit finished(ERROR, QByteArray());
+        return ;
+    }
+
+    responseHeaders = networkReply->rawHeaderPairs();
+    emit finished(SUCCESS, responseArray);
 }
 
 QList<QPair<QByteArray, QByteArray>>& Request::getResponseHeaders()
