@@ -45,7 +45,6 @@ void PowietrzeConnection::getStationList(std::function<void(StationListPtr)> han
         return ;
     }
 
-    m_lastStationListRequestDate = currentTime;
     stationListRequest(handler);
 }
 
@@ -60,6 +59,7 @@ void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)
             handler(StationListPtr(nullptr));
         else
         {
+            m_lastStationListRequestDate = QDateTime::currentDateTime();
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
             m_cashedStations = stationList;
             handler(stationList);

@@ -76,7 +76,6 @@ void AirlyConnection::getStationList(std::function<void (StationListPtr)> handle
         return ;
     }
 
-    m_lastStationListRequestDate = currentTime;
     stationListRequest(handler);
 }
 
@@ -95,6 +94,7 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
             handler(StationListPtr(nullptr));
         else
         {
+            m_lastStationListRequestDate = QDateTime::currentDateTime();
             parseHeaders(requestRaw->getResponseHeaders());
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
             m_cashedStations = stationList;

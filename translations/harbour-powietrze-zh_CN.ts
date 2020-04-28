@@ -239,6 +239,13 @@ https://developer.airly.eu</source>
     </message>
 </context>
 <context>
+    <name>Request</name>
+    <message>
+        <source>Request timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SelectCountryPage</name>
     <message>
         <source>Select country</source>

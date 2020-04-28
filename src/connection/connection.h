@@ -46,7 +46,7 @@ public:
 
 private slots:
     void timeout();
-    void responseFinished(QNetworkReply::NetworkError error);
+    void responseFinished(QNetworkReply::NetworkError error, QString errorString);
 
 private:
     QNetworkRequest m_networkRequest;

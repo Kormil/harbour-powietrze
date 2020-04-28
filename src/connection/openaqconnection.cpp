@@ -30,8 +30,6 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
         return ;
     }
 
-    m_lastCountryListRequestDate = currentTime;
-
     QString url = "https://" + m_host + m_port + "/v1/countries"
             + "?limit=" + QString::number(m_recordLimits);
     QUrl countryListURL(url);
@@ -43,6 +41,7 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
             handler(CountryListPtr{});
         else
         {
+            m_lastCountryListRequestDate = QDateTime::currentDateTime();
             CountryListPtr countryList = readCountriesFromJson(QJsonDocument::fromJson(responseArray));
             m_cashedCountries = countryList;
             handler(std::move(countryList));
@@ -66,8 +65,6 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
         }
     }
 
-    m_requestMapStationDatetime[countryCode] = currentTime;
-
     QString url = "https://" + m_host + m_port
             + "/v1/locations?"
             + "&country=" + countryCode
@@ -80,6 +77,7 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
             handler(m_requestedStation[countryCode]);
         else
         {
+            m_requestMapStationDatetime[countryCode] = QDateTime::currentDateTime();
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
             m_requestedStation[countryCode] = stationList;
             handler(stationList);
@@ -101,6 +99,8 @@ void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> han
 void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler)
 {
     if (!stationList) {
+        ProvinceListPtr provinceList(new ProvinceList());
+        handler(provinceList);
         return;
     }
 

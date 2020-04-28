@@ -4,7 +4,7 @@
 #include "../modelsmanager.h"
 
 namespace {
-    int REQUEST_TIMEOUT = 10000;
+    int REQUEST_TIMEOUT = 20000;
 }
 
 Request::Request(const QUrl &url, Connection *connection) :
@@ -26,7 +26,7 @@ void Request::run()
     });
 
     QObject::connect(networkReply, &QNetworkReply::finished, [this]() {
-        responseFinished(networkReply->error());
+        responseFinished(networkReply->error(), networkReply->errorString());
     });
 }
 
@@ -47,18 +47,19 @@ void Request::setSerial(int serial)
 
 void Request::timeout()
 {
-    responseFinished(QNetworkReply::TimeoutError);
+    networkReply->disconnect();
+    networkReply->abort();
+    responseFinished(QNetworkReply::TimeoutError, tr("Request timeout"));
 }
 
-void Request::responseFinished(QNetworkReply::NetworkError error)
+void Request::responseFinished(QNetworkReply::NetworkError error, QString errorString)
 {
     m_requestTimer.stop();
 
     if (error != QNetworkReply::NoError)
     {
-        std::cout << networkReply->errorString().toStdString() << std::endl;
         Notification notification;
-        notification.setPreviewBody(networkReply->errorString());
+        notification.setPreviewBody(errorString);
         notification.publish();
         emit finished(ERROR, QByteArray());
         return ;
