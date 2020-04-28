@@ -12,6 +12,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Apr 07 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.4-1\
+- fix crash when there are no pollutions data
+- fix crash when select a province (openaq)
+- add timeout to request
+
 * Mon Apr 07 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.3-1\
 - fix crash on start
 - Updated chinese by dashinfantry
