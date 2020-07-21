@@ -77,7 +77,7 @@ QList<QPair<QByteArray, QByteArray>>& Request::getResponseHeaders()
 Connection::Connection(ModelsManager* modelsManager) :
     m_modelsManager(modelsManager)
 {
-    m_networkAccessManager = new QNetworkAccessManager;
+    m_networkAccessManager = std::make_unique<QNetworkAccessManager>();
 }
 
 void Connection::deleteRequest(int serial)
@@ -88,7 +88,7 @@ void Connection::deleteRequest(int serial)
 
 QNetworkAccessManager* Connection::networkAccessManager()
 {
-    return m_networkAccessManager;
+    return m_networkAccessManager.get();
 }
 
 int Connection::nextSerial()
@@ -143,7 +143,7 @@ Request* Connection::request(const QUrl &requestUrl)
 
     int serial = nextSerial();
 
-    RequestPtr requestPtr (new Request(requestUrl, this));
+    RequestPtr requestPtr = std::make_unique<Request>(requestUrl, this);
 
     requestPtr->setSerial(serial);
     m_networkRequests[serial] = std::move(requestPtr);

@@ -1,8 +1,10 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <memory>
 #include <QObject>
 #include <QVariant>
+
 #include "Types/station.h"
 #include "Types/stationlist.h"
 
@@ -54,7 +56,7 @@ private:
     QVariantList favouriteStationsData() const;
 
     explicit Settings(QObject *parent = nullptr);
-    QSettings *m_settings;
+    std::unique_ptr<QSettings> m_settings;
 };
 
 #endif // SETTINGS_H

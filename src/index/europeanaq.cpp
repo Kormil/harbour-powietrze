@@ -33,8 +33,7 @@ void EuropeanAQ::calculate(StationPtr station, std::function<void (StationIndexP
     Connection* connection = m_modelsManager->providerListModel()->provider(station->provider())->connection();
     connection->getSensorList(station, [=](SensorListPtr sensorList) {
         if(!sensorList && !station->sensorList()) {
-            StationIndexPtr stationIndex(new StationIndex);
-            handler(stationIndex);
+            handler(std::make_shared<StationIndex>());
         }
 
         if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(connection->getStationIndexFrequency()))
@@ -92,7 +91,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
     stationIndexData.m_date = QDateTime::currentDateTime();
     stationIndexData.m_calculationModeName = shortName();
 
-    StationIndexPtr stationIndex( new StationIndex );
+    StationIndexPtr stationIndex = std::make_shared<StationIndex>();
     stationIndex->setData(stationIndexData);
     return stationIndex;
 }

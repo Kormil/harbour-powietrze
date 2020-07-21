@@ -11,6 +11,7 @@
 #include <memory>
 #include <mutex>
 #include <iostream>
+#include <functional>
 
 #include "Types/stationlist.h"
 #include "Types/provincelist.h"
@@ -125,7 +126,7 @@ protected:
     //Cach
     StationListPtr m_cashedStations;
 private:
-    QNetworkAccessManager* m_networkAccessManager;
+    std::unique_ptr<QNetworkAccessManager> m_networkAccessManager;
     std::map<int, RequestPtr> m_networkRequests;
     std::atomic<int> m_serial;
 

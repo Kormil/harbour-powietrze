@@ -12,7 +12,7 @@
 #define GPS_PAUSED QStringLiteral("gps/paused")
 
 Settings::Settings(QObject *parent) :
-    m_settings(new QSettings(parent))
+    m_settings(std::make_unique<QSettings>(parent))
 {
 
 }
@@ -183,11 +183,11 @@ void Settings::bindToQml()
 StationListPtr Settings::favouriteStations() const
 {
     QVariantList stations = favouriteStationsData();
-    StationListPtr stationList(new StationList());
+    StationListPtr stationList = std::make_shared<StationList>();
 
     for (auto& stationData: stations)
     {
-        StationPtr station = StationPtr(new Station());
+        StationPtr station = std::make_shared<Station>();
         station->setStationData(stationData.value<StationData>());
         station->setFavourite(true);
 

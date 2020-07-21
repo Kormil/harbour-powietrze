@@ -22,9 +22,9 @@ PowietrzeConnection::~PowietrzeConnection()
 
 void PowietrzeConnection::getCountryList(std::function<void (CountryListPtr)> handler)
 {
-    CountryListPtr countryList(new CountryList());
+    CountryListPtr countryList = std::make_shared<CountryList>();
 
-    CountryItemPtr poland(new CountryItem);
+    CountryItemPtr poland = std::make_shared<CountryItem>();
     poland->name = QObject::tr("Poland");
     poland->code = countryCode();
     poland->provider = id();
@@ -95,10 +95,10 @@ void PowietrzeConnection::provinceListRequest(StationListPtr stationList, std::f
         names.insert(name);
     }
 
-    ProvinceListPtr provinceList(new ProvinceList());
+    ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
     for (const auto value: names)
     {
-        ProvinceItemPtr province(new ProvinceItem());
+        ProvinceItemPtr province = std::make_shared<ProvinceItem>();
         province->name = value;
         province->countryCode = countryCode();
         province->provider = id();
@@ -190,7 +190,7 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
             stationIndexData.m_id = -1;
             stationIndexData.m_name = "No index";
 
-            StationIndexPtr stationIndex(new StationIndex);
+            StationIndexPtr stationIndex = std::make_shared<StationIndex>();
             stationIndex->setData(stationIndexData);
             handler(stationIndex);
         } else {
@@ -219,13 +219,13 @@ void PowietrzeConnection::getNearestStations(QGeoCoordinate coordinate, float, s
 
 ProvinceListPtr PowietrzeConnection::readProvincesFromJson(const QJsonDocument &jsonDocument)
 {
-    ProvinceListPtr provinceList(new ProvinceList());
+    ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
 
     QJsonArray array = jsonDocument.array();
 
     for (const auto& station: array)
     {
-        ProvinceItemPtr item(new ProvinceItem);
+        ProvinceItemPtr item = std::make_shared<ProvinceItem>();
         item->name = station.toObject()["city"].toObject()["commune"].toObject()["provinceName"].toString();
         item->countryCode = countryCode();
         item->provider = id();
@@ -238,25 +238,25 @@ ProvinceListPtr PowietrzeConnection::readProvincesFromJson(const QJsonDocument &
 
 StationListPtr PowietrzeConnection::readStationsFromJson(const QJsonDocument &jsonDocument)
 {
-    StationListPtr stationList(new StationList());
+    StationListPtr stationList = std::make_shared<StationList>();
 
     QJsonArray array = jsonDocument.array();
-
     for (const auto& station: array)
     {
-        StationPtr item = StationPtr(new Station());
+        auto stationObj = station.toObject();
+        StationPtr item = std::make_shared<Station>();
         StationData stationData;
-        stationData.id = station.toObject()["id"].toInt();
-        stationData.cityName = station.toObject()["city"].toObject()["name"].toString();
-        stationData.street = station.toObject()["addressStreet"].toString();
+        stationData.id = stationObj["id"].toInt();
+        stationData.cityName = stationObj["city"].toObject()["name"].toString();
+        stationData.street = stationObj["addressStreet"].toString();
         stationData.provider = id();
         stationData.country = countryCode();
 
-        double lat = station.toObject()["gegrLat"].toString().toDouble();
-        double lon = station.toObject()["gegrLon"].toString().toDouble();
+        double lat = stationObj["gegrLat"].toString().toDouble();
+        double lon = stationObj["gegrLon"].toString().toDouble();
         stationData.coordinate = QGeoCoordinate(lat, lon);
 
-        stationData.province = station.toObject()["city"].toObject()["commune"].toObject()["provinceName"].toString();
+        stationData.province = stationObj["city"].toObject()["commune"].toObject()["provinceName"].toString();
 
         if (stationData.province.isNull())
             stationData.province = QObject::tr("OTHER");
@@ -273,7 +273,7 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
     if (jsonDocument.isNull())
         return SensorListPtr(nullptr);
 
-    SensorListPtr sensorList(new SensorList());
+    SensorListPtr sensorList = std::make_shared<SensorList>();
 
     QJsonArray array = jsonDocument.array();
 
@@ -281,9 +281,11 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
     {
         Pollution sensorData;
 
-        sensorData.id = sensor.toObject()["id"].toInt();
-        sensorData.name = sensor.toObject()["param"].toObject()["paramName"].toString();
-        sensorData.code = sensor.toObject()["param"].toObject()["paramCode"].toString().toLower();
+        auto sensorObj = sensor.toObject();
+        auto sensorParamObj = sensorObj["param"].toObject();
+        sensorData.id = sensorObj["id"].toInt();
+        sensorData.name = sensorParamObj["paramName"].toString();
+        sensorData.code = sensorParamObj["paramCode"].toString().toLower();
 
 
         if (sensorData.code == QStringLiteral("pm2.5"))
@@ -304,11 +306,12 @@ Pollution PowietrzeConnection::readSensorDataFromJson(const QJsonDocument &jsonD
     std::vector<PollutionValue> values;
     for (const auto& sensor: array)
     {
-        if (sensor.toObject()["value"].isNull())
+        auto sensorObj = sensor.toObject();
+        if (sensorObj["value"].isNull())
             continue;
 
-        float value = sensor.toObject()["value"].toDouble();
-        QString dateString = sensor.toObject()["date"].toString();
+        float value = sensorObj["value"].toDouble();
+        QString dateString = sensorObj["date"].toString();
         auto date = QDateTime::fromString(dateString, dateFormat());
 
         values.push_back(PollutionValue{value, date});
@@ -345,7 +348,7 @@ StationIndexPtr PowietrzeConnection::readStationIndexFromJson(const QJsonDocumen
     stationIndexData.m_date = date;
     stationIndexData.m_calculationModeName = m_indexName;
 
-    StationIndexPtr stationIndex( new StationIndex );
+    StationIndexPtr stationIndex = std::make_shared<StationIndex>();
     stationIndex->setData(stationIndexData);
     return stationIndex;
 }

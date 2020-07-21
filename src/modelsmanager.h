@@ -35,12 +35,12 @@ public:
 
 private:
     QTimer m_timer;
-    StationListModel * m_stationListModel;
-    SensorListModel * m_sensorListModel;
-    ProvinceListModel * m_provinceListModel;
-    CountryListModel * m_countryListModel;
-    ProviderListModel * m_providerListModel;
-    AirQualityIndexModel * m_airQualityIndexModel;
+    std::unique_ptr<StationListModel> m_stationListModel;
+    std::unique_ptr<SensorListModel> m_sensorListModel;
+    std::unique_ptr<ProvinceListModel> m_provinceListModel;
+    std::unique_ptr<CountryListModel> m_countryListModel;
+    std::unique_ptr<ProviderListModel> m_providerListModel;
+    std::unique_ptr<AirQualityIndexModel> m_airQualityIndexModel;
 
 };
 

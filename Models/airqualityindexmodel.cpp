@@ -3,11 +3,8 @@
 AirQualityIndexModel::AirQualityIndexModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    AirQualityIndexPtr european(new EuropeanAQ);
-    AirQualityIndexPtr fromServer(new AirIndexFromServer);
-
-    m_airQualityIndexList.push_back(fromServer);
-    m_airQualityIndexList.push_back(european);
+    m_airQualityIndexList.push_back(std::make_shared<AirIndexFromServer>());
+    m_airQualityIndexList.push_back(std::make_shared<EuropeanAQ>());
 }
 
 int AirQualityIndexModel::rowCount(const QModelIndex &parent) const

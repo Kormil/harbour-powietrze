@@ -23,12 +23,12 @@ ModelsManager::~ModelsManager()
 
 void ModelsManager::createModels()
 {
-    m_stationListModel = new StationListModel();
-    m_provinceListModel = new ProvinceListModel();
-    m_sensorListModel = new SensorListModel();
-    m_countryListModel = new CountryListModel();
-    m_providerListModel = new ProviderListModel();
-    m_airQualityIndexModel = new AirQualityIndexModel();
+    m_stationListModel = std::make_unique<StationListModel>();
+    m_provinceListModel = std::make_unique<ProvinceListModel>();
+    m_sensorListModel = std::make_unique<SensorListModel>();
+    m_countryListModel = std::make_unique<CountryListModel>();
+    m_providerListModel = std::make_unique<ProviderListModel>();
+    m_airQualityIndexModel = std::make_unique<AirQualityIndexModel>();
 
     m_airQualityIndexModel->setModelsManager(this);
     m_stationListModel->setModelsManager(this);
@@ -41,12 +41,7 @@ void ModelsManager::createModels()
 
 void ModelsManager::deleteModels()
 {
-    delete m_stationListModel;
-    delete m_provinceListModel;
-    delete m_sensorListModel;
-    delete m_countryListModel;
-    delete m_providerListModel;
-    delete m_airQualityIndexModel;
+    std::cout << "Models deleted" << std::endl;
 }
 
 void ModelsManager::bindToQml(QQuickView * view)
@@ -61,11 +56,11 @@ void ModelsManager::bindToQml(QQuickView * view)
     CountryListProxyModel::bindToQml();
     StationListModel::bindToQml(view);
 
-    view->rootContext()->setContextProperty(QStringLiteral("stationListModel"), m_stationListModel);
-    view->rootContext()->setContextProperty(QStringLiteral("provinceListModel"), m_provinceListModel);
-    view->rootContext()->setContextProperty(QStringLiteral("sensorListModel"), m_sensorListModel);
-    view->rootContext()->setContextProperty(QStringLiteral("countryListModel"), m_countryListModel);
-    view->rootContext()->setContextProperty(QStringLiteral("providerListModel"), m_providerListModel);
+    view->rootContext()->setContextProperty(QStringLiteral("stationListModel"), m_stationListModel.get());
+    view->rootContext()->setContextProperty(QStringLiteral("provinceListModel"), m_provinceListModel.get());
+    view->rootContext()->setContextProperty(QStringLiteral("sensorListModel"), m_sensorListModel.get());
+    view->rootContext()->setContextProperty(QStringLiteral("countryListModel"), m_countryListModel.get());
+    view->rootContext()->setContextProperty(QStringLiteral("providerListModel"), m_providerListModel.get());
 }
 
 void ModelsManager::loadSettings()
@@ -84,22 +79,22 @@ void ModelsManager::loadSettings()
 
 ProvinceListModel *ModelsManager::provinceListModel() const
 {
-    return m_provinceListModel;
+    return m_provinceListModel.get();
 }
 
 CountryListModel *ModelsManager::countryListModel() const
 {
-    return m_countryListModel;
+    return m_countryListModel.get();
 }
 
 ProviderListModel *ModelsManager::providerListModel() const
 {
-    return m_providerListModel;
+    return m_providerListModel.get();
 }
 
 AirQualityIndexModel *ModelsManager::airQualityIndexModel() const
 {
-    return m_airQualityIndexModel;
+    return m_airQualityIndexModel.get();
 }
 
 void ModelsManager::updateModels()
@@ -111,10 +106,10 @@ void ModelsManager::updateModels()
 
 SensorListModel *ModelsManager::sensorListModel() const
 {
-    return m_sensorListModel;
+    return m_sensorListModel.get();
 }
 
 StationListModel *ModelsManager::stationListModel() const
 {
-    return m_stationListModel;
+    return m_stationListModel.get();
 }

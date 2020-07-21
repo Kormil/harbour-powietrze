@@ -26,9 +26,9 @@ public:
 private:
     ProvidersManager();
 
-    OpenAQConnection* m_openAq;
-    PowietrzeConnection* m_powietrze;
-    AirlyConnection* m_airly;
+    std::unique_ptr<OpenAQConnection> m_openAq;
+    std::unique_ptr<PowietrzeConnection> m_powietrze;
+    std::unique_ptr<AirlyConnection> m_airly;
 
     ModelsManager* m_modelsManager;
 };

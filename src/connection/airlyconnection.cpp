@@ -49,10 +49,10 @@ void AirlyConnection::countryListRequest(ProvinceListPtr provinceList, std::func
         names.insert(name);
     }
 
-    CountryListPtr countryList(new CountryList());
+    CountryListPtr countryList = std::make_shared<CountryList>();
     for (const auto value: names)
     {
-        CountryItemPtr country(new CountryItem());
+        CountryItemPtr country = std::make_shared<CountryItem>();
         country->name = value;
         country->code = value;
         country->provider = id();
@@ -134,10 +134,10 @@ void AirlyConnection::provinceListRequest(StationListPtr stationList, std::funct
         names.insert(std::make_pair(name, countryCode));
     }
 
-    ProvinceListPtr provinceList(new ProvinceList());
+    ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
     for (const auto value: names)
     {
-        ProvinceItemPtr province(new ProvinceItem());
+        ProvinceItemPtr province = std::make_shared<ProvinceItem>();
         province->name = value.first;
         province->countryCode = value.second;
         province->provider = id();
@@ -261,7 +261,7 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
             stationIndexData.m_id = -1;
             stationIndexData.m_name = "No index";
 
-            StationIndexPtr stationIndex(new StationIndex);
+            StationIndexPtr stationIndex = std::make_shared<StationIndex>();
             stationIndex->setData(stationIndexData);
             handler(stationIndex);
         } else {
@@ -324,22 +324,26 @@ void AirlyConnection::parseHeaders(QList<QPair<QByteArray, QByteArray>>& headers
 
 StationListPtr AirlyConnection::readStationsFromJson(const QJsonDocument &jsonDocument)
 {
-    StationListPtr stationList(new StationList());
+    StationListPtr stationList = std::make_shared<StationList>();
 
     QJsonArray array = jsonDocument.array();
 
     for (const auto& station: array)
     {
-        StationPtr item = StationPtr(new Station());
+        auto stationObj = station.toObject();
+        StationPtr item = std::make_shared<Station>();
         StationData stationData;
-        stationData.id = station.toObject()["id"].toInt();
-        stationData.cityName = station.toObject()["address"].toObject()["city"].toString();
-        stationData.street = station.toObject()["address"].toObject()["street"].toString();
-        stationData.country = station.toObject()["address"].toObject()["country"].toString();
+        stationData.id = stationObj["id"].toInt();
+
+        auto adressObj = stationObj["address"].toObject();
+        stationData.cityName = adressObj["city"].toString();
+        stationData.street = adressObj["street"].toString();
+        stationData.country = adressObj["country"].toString();
         stationData.provider = id();
 
-        double lat = station.toObject()["location"].toObject()["latitude"].toDouble();
-        double lon = station.toObject()["location"].toObject()["longitude"].toDouble();
+        auto locationObj = stationObj["location"].toObject();
+        double lat = locationObj["latitude"].toDouble();
+        double lon = locationObj["longitude"].toDouble();
         stationData.coordinate = QGeoCoordinate(lat, lon);
 
         stationData.province = stationData.cityName;
@@ -359,21 +363,23 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
     if (jsonDocument.isNull())
         return SensorListPtr(nullptr);
 
-    SensorListPtr sensorList(new SensorList());
+    SensorListPtr sensorList = std::make_shared<SensorList>();
 
     auto current = jsonDocument.object()["current"];
     if (current.isUndefined()) {
         return sensorList;
     }
+    auto currentObj = current.toObject();
 
-    QJsonArray results = current.toObject()["values"].toArray();
+    QJsonArray results = currentObj["values"].toArray();
 
     std::map<QString, Pollution> nameToSensorData;
     for (const auto& result: results) {
-        QString name = result.toObject()["name"].toString();
-        float value = result.toObject()["value"].toDouble();
+        auto resultObj = result.toObject();
+        QString name = resultObj["name"].toString();
+        float value = resultObj["value"].toDouble();
 
-        QString dateString = current.toObject()["tillDateTime"].toString();
+        QString dateString = currentObj["tillDateTime"].toString();
         QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
         Pollution sensorData;
@@ -394,10 +400,11 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
     for (const auto& historyResult: historyResults) {
         results = historyResult.toObject()["values"].toArray();
         for (const auto& result: results) {
-            QString name = result.toObject()["name"].toString();
-            float value = result.toObject()["value"].toDouble();
+            auto resultObj = result.toObject();
+            QString name = resultObj["name"].toString();
+            float value = resultObj["value"].toDouble();
 
-            QString dateString = current.toObject()["tillDateTime"].toString();
+            QString dateString = currentObj["tillDateTime"].toString();
             QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
             auto sensorDataIt = nameToSensorData.find(name);
@@ -434,17 +441,18 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
         std::cout << "Error in Airly Index json" << std::endl;
         return StationIndexPtr(nullptr);
     }
-
-    QString dateString = current.toObject()["tillDateTime"].toString();
-    QJsonArray results = current.toObject()["indexes"].toArray();
+    auto currentObj = current.toObject();
+    QString dateString = currentObj["tillDateTime"].toString();
+    QJsonArray results = currentObj["indexes"].toArray();
 
     float value = 100.f;
     float id;
     QString name;
 
     for (const auto& result: results) {
-        value = result.toObject()["value"].toDouble();
-        name = result.toObject()["description"].toString();
+        auto resultObj = result.toObject();
+        value = resultObj["value"].toDouble();
+        name = resultObj["description"].toString();
         break;
     }
 
@@ -469,7 +477,7 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     stationIndexData.m_date = date;
     stationIndexData.m_calculationModeName = m_indexName;
 
-    StationIndexPtr stationIndex( new StationIndex );
+    StationIndexPtr stationIndex = std::make_shared<StationIndex>();
     stationIndex->setData(stationIndexData);
     return stationIndex;
 }
@@ -482,8 +490,9 @@ PollutionUnitList AirlyConnection::readParametersUnitsFromJson(const QJsonDocume
 
     for (const auto& station: array)
     {
-        QString name = station.toObject()["name"].toString().toLower();
-        QString unit = station.toObject()["unit"].toString();
+        auto stationObj = station.toObject();
+        QString name = stationObj["name"].toString().toLower();
+        QString unit = stationObj["unit"].toString();
 
         pollutionUnitList.push_back({name, unit});
     }

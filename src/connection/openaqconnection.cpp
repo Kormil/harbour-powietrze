@@ -99,8 +99,7 @@ void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> han
 void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::function<void (ProvinceListPtr)> handler)
 {
     if (!stationList) {
-        ProvinceListPtr provinceList(new ProvinceList());
-        handler(provinceList);
+        handler(std::make_shared<ProvinceList>());
         return;
     }
 
@@ -118,10 +117,10 @@ void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::func
         names.insert(name);
     }
 
-    ProvinceListPtr provinceList(new ProvinceList());
+    ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
     for (const auto value: names)
     {
-        ProvinceItemPtr province(new ProvinceItem());
+        ProvinceItemPtr province = std::make_shared<ProvinceItem>();
         province->name = value;
         province->countryCode = countryCode;
         province->provider = id();
@@ -205,7 +204,7 @@ void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIn
     stationIndexData.m_id = -1;
     stationIndexData.m_name = "No index";
 
-    StationIndexPtr stationIndex(new StationIndex);
+    StationIndexPtr stationIndex = std::make_shared<StationIndex>();
     stationIndex->setData(stationIndexData);
     handler(stationIndex);
 }
@@ -242,9 +241,7 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
 
 CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &jsonDocument)
 {
-    CountryListPtr countryList(new CountryList());
-
-
+    CountryListPtr countryList = std::make_shared<CountryList>();
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
         std::cout << "OpenAQ: no results in JSON" << std::endl;
@@ -255,9 +252,10 @@ CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &json
 
     for (const auto& country: results)
     {
-        CountryItemPtr item(new CountryItem);
-        item->name = country.toObject()["name"].toString();
-        item->code = country.toObject()["code"].toString();
+        CountryItemPtr item = std::make_shared<CountryItem>();
+        auto countryObj = country.toObject();
+        item->name = countryObj["name"].toString();
+        item->code = countryObj["code"].toString();
         item->provider = id();
         countryList->append(item);
     }
@@ -267,7 +265,7 @@ CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &json
 
 ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jsonDocument)
 {
-    ProvinceListPtr provinceList(new ProvinceList());
+    ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
@@ -279,9 +277,10 @@ ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jso
 
     for (const auto& province: results)
     {
-        ProvinceItemPtr item(new ProvinceItem);
-        item->name = province.toObject()["city"].toString();
-        item->countryCode = province.toObject()["country"].toString();
+        ProvinceItemPtr item = std::make_shared<ProvinceItem>();
+        auto provinceObj = province.toObject();
+        item->name = provinceObj["city"].toString();
+        item->countryCode = provinceObj["country"].toString();
         item->provider = id();
         provinceList->append(item);
     }
@@ -291,7 +290,7 @@ ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jso
 
 StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonDocument)
 {
-    StationListPtr stationList(new StationList());
+    StationListPtr stationList = std::make_shared<StationList>();
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
@@ -303,24 +302,26 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
 
     for (const auto& station: results)
     {
-        QDateTime lastUpdate = QDateTime::fromString(station.toObject()["lastUpdated"].toString(), Qt::ISODate);
+        auto stationObj = station.toObject();
+        QDateTime lastUpdate = QDateTime::fromString(stationObj["lastUpdated"].toString(), Qt::ISODate);
 
         if (lastUpdate < QDateTime::currentDateTime().addYears(-1)) {
             continue;
         }
 
-        StationPtr item = StationPtr(new Station());
+        StationPtr item = std::make_shared<Station>();
         StationData stationData;
-        stationData.cityName = station.toObject()["city"].toString();
-        stationData.street = station.toObject()["location"].toString();
+        stationData.cityName = stationObj["city"].toString();
+        stationData.street = stationObj["location"].toString();
         stationData.provider = id();
 
-        double lat = station.toObject()["coordinates"].toObject()["latitude"].toDouble();
-        double lon = station.toObject()["coordinates"].toObject()["longitude"].toDouble();
+        auto stationCoordObj = stationObj["coordinates"].toObject();
+        double lat = stationCoordObj["latitude"].toDouble();
+        double lon = stationCoordObj["longitude"].toDouble();
         stationData.coordinate = QGeoCoordinate(lat, lon);
 
-        stationData.province = station.toObject()["city"].toString();
-        stationData.country = station.toObject()["country"].toString();
+        stationData.province = stationObj["city"].toString();
+        stationData.country = stationObj["country"].toString();
 
         item->setStationData(stationData);
         stationList->append(item);
@@ -334,7 +335,7 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
     if (jsonDocument.isNull())
         return SensorListPtr(nullptr);
 
-    SensorListPtr sensorList(new SensorList());
+    SensorListPtr sensorList = std::make_shared<SensorList>();
 
     auto response = jsonDocument.object()["results"];
     if (response.isUndefined()) {
@@ -345,8 +346,9 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
 
     for (const auto& result: results)
     {
-        QString location = result.toObject()["location"].toString();
-        QJsonArray sensors = result.toObject()["parameters"].toArray();
+        auto resultObj = result.toObject();
+        QString location = resultObj["location"].toString();
+        QJsonArray sensors = resultObj["parameters"].toArray();
         for (const auto& sensor: sensors)
         {
             Pollution sensorData;
@@ -379,11 +381,12 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
 
     QJsonArray results = response.toArray();
 
-    QString dateString = results[0].toObject()["date"].toObject()["utc"].toString();
+    auto firstResultObj = results[0].toObject();
+    QString dateString = firstResultObj["date"].toObject()["utc"].toString();
 
-    sensorData.id = results[0].toObject()["location"].toString();
-    sensorData.name = results[0].toObject()["parameter"].toString();
-    sensorData.unit = results[0].toObject()["unit"].toString();
+    sensorData.id = firstResultObj["location"].toString();
+    sensorData.name = firstResultObj["parameter"].toString();
+    sensorData.unit = firstResultObj["unit"].toString();
     sensorData.code = sensorData.name;
     sensorData.date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
@@ -394,9 +397,10 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
     std::vector<PollutionValue> values;
     for (const auto& result: results)
     {
-        float value = result.toObject()["value"].toDouble();
+        auto resultObj = result.toObject();
+        float value = resultObj["value"].toDouble();
 
-        QString dateString = result.toObject()["date"].toObject()["utc"].toString();
+        QString dateString = resultObj["date"].toObject()["utc"].toString();
         QDateTime sensorDate = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
         values.push_back(PollutionValue{value, sensorDate});

@@ -4,6 +4,7 @@
 #include <map>
 #include <QString>
 #include <memory>
+#include <functional>
 #include "Types/station.h"
 #include "Types/sensorlist.h"
 

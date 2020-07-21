@@ -345,7 +345,7 @@ void StationListModel::onGPSPositionUpdate(QGeoCoordinate coordinate)
     ProvidersManager::instance()->findNearestStation(coordinate, m_stationDistanceLimit, [this](StationListPtr stationList) {
         std::lock_guard<std::mutex> guard(m_findNearestStationMutex);
         if (m_stationList) {
-            if (stationList) {
+           if (stationList) {
                 m_stationList->appendList(stationList);
             }
         }

@@ -14,6 +14,7 @@ TARGET = harbour-powietrze
 
 QT += dbus positioning concurrent
 CONFIG += sailfishapp
+QMAKE_CXXFLAGS += -std=c++17
 
 PKGCONFIG += \
     nemonotifications-qt5
@@ -108,7 +109,7 @@ ts.output = $$TS_FILE
 ts.input = .
 
 ts_install.files = $$TS_FILE
-ts_install.path = /usr/share/translations/source
+ts_install.path = /usr/share/$${TARGET}/translations/source
 ts_install.CONFIG += no_check_exist
 
 transaltions_files.commands += lrelease $$TS_FILE
