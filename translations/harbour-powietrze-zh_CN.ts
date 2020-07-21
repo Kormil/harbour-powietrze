@@ -242,7 +242,7 @@ https://developer.airly.eu</source>
     <name>Request</name>
     <message>
         <source>Request timeout</source>
-        <translation type="unfinished"></translation>
+        <translation>请求超时</translation>
     </message>
 </context>
 <context>
