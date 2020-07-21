@@ -54,7 +54,8 @@ BackgroundItem {
                 id: image
                 height: 256
                 source: "qrc:///Graphics/weatherIcons/256/" + station.stationIndex.id + ".png"
-                anchors.centerIn: parent
+                anchors.centerIn: (parent.width - image.width) / 2 > dataColumn.width ? parent : undefined
+                anchors.right: (parent.width - image.width) / 2 < dataColumn.width ? dataColumn.left : undefined
             }
 
             Column {
@@ -62,6 +63,7 @@ BackgroundItem {
                 anchors.right: parent.right
                 anchors.bottom: image.bottom
                 anchors.rightMargin: Theme.horizontalPageMargin
+                width: distanceLabel.width
 
 
                 Label {
@@ -72,6 +74,8 @@ BackgroundItem {
                     anchors.right: parent.right
                     visible: station.distance
                     font.pixelSize: Theme.fontSizeMedium
+                    truncationMode: TruncationMode.Fade
+                    width: Math.min(contentWidth, mainColumn.width - image.width - 2*Theme.horizontalPageMargin)
                 }
 
                 Label {
