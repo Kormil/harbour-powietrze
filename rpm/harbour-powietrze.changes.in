@@ -12,6 +12,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Jul 21 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.5-1\
+- fix distance is overlapping air quality picture
+- update chinese by dashinfantry
+
 * Mon Apr 07 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.4-1\
 - fix crash when there are no pollutions data
 - fix crash when select a province (openaq)
