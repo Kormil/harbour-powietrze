@@ -374,20 +374,21 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
     QJsonArray results = currentObj["values"].toArray();
 
     std::map<QString, Pollution> nameToSensorData;
+    QDateTime currentResultDate;
     for (const auto& result: results) {
         auto resultObj = result.toObject();
         QString name = resultObj["name"].toString();
         float value = resultObj["value"].toDouble();
 
         QString dateString = currentObj["tillDateTime"].toString();
-        QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
+        currentResultDate = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
 
         Pollution sensorData;
         sensorData.id = DEFAULT_SENSOR_ID;
         sensorData.name = name;
-        sensorData.date = date;
+        sensorData.date = currentResultDate;
 
-        sensorData.setValues(PollutionValue{value, date});
+        sensorData.setValues(PollutionValue{value, currentResultDate});
         nameToSensorData[sensorData.name] = sensorData;
     }
 
@@ -406,6 +407,10 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
             QString dateString = currentObj["tillDateTime"].toString();
             QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
+
+            if (date > currentResultDate) {
+                continue;
+            }
 
             auto sensorDataIt = nameToSensorData.find(name);
             if (sensorDataIt != nameToSensorData.end()) {
