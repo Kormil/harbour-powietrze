@@ -30,7 +30,7 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
         return ;
     }
 
-    QString url = "https://" + m_host + m_port + "/v1/countries"
+    QString url = "https://" + m_host + m_port + "/v2/countries"
             + "?limit=" + QString::number(m_recordLimits);
     QUrl countryListURL(url);
 
@@ -66,7 +66,7 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
     }
 
     QString url = "https://" + m_host + m_port
-            + "/v1/locations?"
+            + "/v2/locations?"
             + "&country=" + countryCode
             + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
@@ -144,13 +144,7 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
         return;
     }
 
-    QString location = station->streetName();
-    if (location.isEmpty()) {   //for backward compatybility (04.2020)
-        location = station->cityName();
-    }
-
-    QString url = "https://" + m_host + m_port + "/v1/locations?location=" + location
-            + "&limit=" + QString::number(m_recordLimits);
+    QString url = "https://" + m_host + m_port + "/v2/locations/" + QString::number(station->id()) + "?limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
@@ -172,10 +166,11 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
 
 void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
 {
-    QString url = "https://" + m_host + m_port + "/v1/measurements?location=" + sensor.id.toString()
+    QString url = "https://" + m_host + m_port + "/v2/measurements?location_id=" + sensor.id.toString()
             + "&parameter=" + sensor.code
             + "&limit=" + QString::number(m_recordLimits)
-            + "&value_from=" + QString::number(m_minimumValue);
+            + "&value_from=" + QString::number(m_minimumValue)
+            + "&date_from=" + QDateTime::currentDateTime().addDays(-1).toString(Qt::ISODate);
     QUrl sensorDataURL(url);
 
     Request* requestRaw = request(sensorDataURL);
@@ -211,9 +206,9 @@ void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIn
 
 void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
 {
-    QString url = "https://" + m_host + m_port + "/v1/locations?coordinates="
+    QString url = "https://" + m_host + m_port + "/v2/locations?coordinates="
             + QString::number(coordinate.latitude()) + "," + QString::number(coordinate.longitude())
-            + "&order_by=distance&limit=" + QString::number(m_recordLimits)
+            + "&order_by=location&limit=" + QString::number(m_recordLimits)
             + "&radius=" + QString::number(distanceLimit);
     QUrl stationListURL(url);
 
@@ -305,14 +300,15 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
         auto stationObj = station.toObject();
         QDateTime lastUpdate = QDateTime::fromString(stationObj["lastUpdated"].toString(), Qt::ISODate);
 
-        if (lastUpdate < QDateTime::currentDateTime().addYears(-1)) {
+        if (lastUpdate < QDateTime::currentDateTime().addDays(-1)) {
             continue;
         }
 
         StationPtr item = std::make_shared<Station>();
         StationData stationData;
+        stationData.id = stationObj["id"].toInt();
         stationData.cityName = stationObj["city"].toString();
-        stationData.street = stationObj["location"].toString();
+        stationData.street = stationObj["name"].toString();
         stationData.provider = id();
 
         auto stationCoordObj = stationObj["coordinates"].toObject();
@@ -347,13 +343,14 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
     for (const auto& result: results)
     {
         auto resultObj = result.toObject();
-        QString location = resultObj["location"].toString();
         QJsonArray sensors = resultObj["parameters"].toArray();
         for (const auto& sensor: sensors)
         {
+            auto sensorObj = sensor.toObject();
+
             Pollution sensorData;
-            sensorData.id = location;
-            sensorData.name = sensor.toString();
+            sensorData.id = QString::number(resultObj["id"].toInt());
+            sensorData.name = sensorObj["parameter"].toString();
             sensorData.code = sensorData.name;
 
             if (sensorData.name == QStringLiteral("pm25"))
