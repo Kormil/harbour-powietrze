@@ -144,7 +144,8 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
         return;
     }
 
-    QString url = "https://" + m_host + m_port + "/v2/locations/" + QString::number(station->id()) + "?limit=" + QString::number(m_recordLimits);
+    //TODO change it to take locations by station Id
+    QString url = "https://" + m_host + m_port + "/v2/locations?location=" + station->streetName() + "&limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
 
     Request* requestRaw = request(provinceListURL);
@@ -225,7 +226,8 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
                 stationList->calculateDistances(coordinate);
                 handler(stationList);
             } else {
-                getNearestStations(coordinate, distanceLimit * 2, handler);
+                handler(StationListPtr{});
+                //getNearestStations(coordinate, distanceLimit * 2, handler);
             }
         }
 
