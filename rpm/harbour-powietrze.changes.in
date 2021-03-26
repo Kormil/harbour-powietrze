@@ -12,6 +12,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Fri Mar 26 2021 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.7-1\
+- Move to api v2 (openaq)
+- Add support with My Backup
+
 * Mon Nov 2 2020 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.6-1\
 - fix showing last avaiable data (Airly)
 
