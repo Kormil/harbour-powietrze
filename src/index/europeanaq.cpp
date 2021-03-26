@@ -68,6 +68,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
 {
     int worestIndexId = -1;
     QString worestPollutionCode;
+    QDateTime oldestDate = QDateTime::currentDateTime();
 
     for (const auto& sensor: sensorList->sensors()) {
         auto parameter = m_parametersThreshold.find(sensor.code);
@@ -81,6 +82,8 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
                 worestIndexId = indexId;
                 worestPollutionCode = sensor.code;
             }
+
+            oldestDate = std::min(oldestDate, sensor.date);
         }
     }
 
@@ -88,7 +91,7 @@ StationIndexPtr EuropeanAQ::recalculate(SensorListPtr sensorList)
     if (worestIndexId >= 0)
         stationIndexData.m_name = m_names[worestIndexId];
     stationIndexData.m_id = worestIndexId;
-    stationIndexData.m_date = QDateTime::currentDateTime();
+    stationIndexData.m_date = oldestDate;
     stationIndexData.m_calculationModeName = shortName();
 
     StationIndexPtr stationIndex = std::make_shared<StationIndex>();

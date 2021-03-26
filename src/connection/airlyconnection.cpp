@@ -451,11 +451,17 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     QJsonArray results = currentObj["indexes"].toArray();
 
     float value = 100.f;
-    float id;
-    QString name;
+    float id = -1;
+    QString name = "No index";
+    bool hasValue = true;
 
     for (const auto& result: results) {
         auto resultObj = result.toObject();
+        if (resultObj["value"].isNull()) {
+            hasValue = false;
+            break;
+        }
+
         value = resultObj["value"].toDouble();
         name = resultObj["description"].toString();
         break;
@@ -476,9 +482,11 @@ StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &j
     QDateTime date = QDateTime::fromString(dateString, Qt::ISODate).toLocalTime();
     StationIndexData stationIndexData;
 
-    if (!name.isEmpty())
+    if (hasValue) {
         stationIndexData.m_id = id;
-    stationIndexData.m_name = name;
+        stationIndexData.m_name = name;
+    }
+
     stationIndexData.m_date = date;
     stationIndexData.m_calculationModeName = m_indexName;
 

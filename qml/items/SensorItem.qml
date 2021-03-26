@@ -97,6 +97,10 @@ BackgroundItem {
     }
 
     onClicked: {
+        if (sensor.date.length === 0) {
+            return
+        }
+
         if (!dateLabel.visible) {
             properHeight = values.height + dateLabel.height
             if (parseInt(sensor.norm) > -1) {
