@@ -52,9 +52,9 @@ void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)
 {
     QString url = "http://" + m_host + m_port + "/station/findAll";
 
-    Request* requestRaw = request(url);
+    RequestPtr request = createRequest(url);
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         if (status == Request::ERROR)
             handler(StationListPtr(nullptr));
         else
@@ -64,10 +64,9 @@ void PowietrzeConnection::stationListRequest(std::function<void (StationListPtr)
             m_cashedStations = stationList;
             handler(stationList);
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void PowietrzeConnection::getProvinceList(std::function<void(ProvinceListPtr)> handler)
@@ -125,9 +124,9 @@ void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(S
     QString url = "http://" + m_host + m_port + "/station/sensors/" + QString::number(station->id());
     QUrl provinceListURL(url);
 
-    Request* requestRaw = request(provinceListURL);
+    RequestPtr request = createRequest(provinceListURL);
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         if (status == Request::ERROR) {
             handler( SensorListPtr{} );
         } else {
@@ -135,10 +134,9 @@ void PowietrzeConnection::getSensorList(StationPtr station, std::function<void(S
             sensorList->setDateToCurrent();
             handler(std::move(sensorList));
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -146,9 +144,9 @@ void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Po
     QString url = "http://" + m_host + m_port + "/data/getData/" + QString::number(sensor.id.toInt());
     QUrl sensorDataURL(url);
 
-    Request* requestRaw = request(sensorDataURL);
+    RequestPtr request = createRequest(sensorDataURL);
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler, sensor](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         Pollution data;
         if (status != Request::ERROR) {
             data = readSensorDataFromJson(QJsonDocument::fromJson(responseArray));
@@ -159,9 +157,9 @@ void PowietrzeConnection::getSensorData(Pollution sensor, std::function<void (Po
         data.code = sensor.code;
 
         handler(data);
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    };
+
+    request->run(requestHandler);
 }
 
 void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void (StationIndexPtr)> handler)
@@ -181,9 +179,9 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
     QString url = "http://" + m_host + m_port + "/aqindex/getIndex/" + QString::number(station->id());
     QUrl stationIndexURL(url);
 
-    Request* requestRaw = request(stationIndexURL);
+    RequestPtr request = createRequest(stationIndexURL);
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         if (status == Request::ERROR) {
             StationIndexData stationIndexData;
 
@@ -198,10 +196,9 @@ void PowietrzeConnection::getStationIndex(StationPtr station, std::function<void
             stationIndex->setDateToCurent();
             handler(stationIndex);
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void PowietrzeConnection::getNearestStations(QGeoCoordinate coordinate, float, std::function<void (StationListPtr)> handler)
@@ -233,7 +230,7 @@ ProvinceListPtr PowietrzeConnection::readProvincesFromJson(const QJsonDocument &
         provinceList->append(item);
     }
 
-    return std::move(provinceList);
+    return provinceList;
 }
 
 StationListPtr PowietrzeConnection::readStationsFromJson(const QJsonDocument &jsonDocument)
@@ -294,7 +291,7 @@ SensorListPtr PowietrzeConnection::readSensorsFromJson(const QJsonDocument &json
         sensorList->setData(sensorData);
     }
 
-    return std::move(sensorList);
+    return sensorList;
 }
 
 Pollution PowietrzeConnection::readSensorDataFromJson(const QJsonDocument &jsonDocument)

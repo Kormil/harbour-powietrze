@@ -12,6 +12,7 @@
 #include <mutex>
 #include <iostream>
 #include <functional>
+#include <atomic>
 
 #include "Types/stationlist.h"
 #include "Types/provincelist.h"
@@ -30,20 +31,26 @@ public:
         SUCCESS,
         ERROR
     };
+    using ResponseHeaders = QList<QPair<QByteArray, QByteArray>>;
+    using RequestHandler = std::function<void(Request::Status status, const QByteArray& responseArray, const ResponseHeaders& headers)>;
 
     Request(const QUrl& url, Connection *connection);
-    void run();
+    void run(RequestHandler handler);
 
     void addHeader(const QByteArray& key, const QByteArray& value);
     QList<QPair<QByteArray, QByteArray> > &getResponseHeaders();
 
     ~Request()
     {
-        networkReply->deleteLater();
+        if (networkReply) {
+            networkReply->deleteLater();
+        }
     }
 
     int serial() const;
     void setSerial(int serial);
+
+    bool shutdown() const;
 
 private slots:
     void timeout();
@@ -55,15 +62,18 @@ private:
     Connection *m_connection;
     QNetworkReply* networkReply;
     QByteArray responseArray;
-    QList<QPair<QByteArray, QByteArray>> responseHeaders;
+    ResponseHeaders responseHeaders;
     int m_serial;
+    std::atomic_bool m_shutdown;
+
+    RequestHandler m_handler;
 
 signals:
     void finished(Status, const QByteArray&);
 };
 
 using PatameterList = std::map<QString, QString>;
-using RequestPtr = std::unique_ptr<Request>;
+using RequestPtr = std::shared_ptr<Request>;
 
 class Connection
 {
@@ -85,8 +95,7 @@ public:
 
     QNetworkAccessManager *networkAccessManager();
 
-    Request* request(const QUrl &requestUrl);
-    void deleteRequest(int serial);
+    RequestPtr createRequest(const QUrl &requestUrl);
 
     int getCountryListFrequency() const;
     int getStationListFrequency() const;
@@ -128,7 +137,7 @@ protected:
 private:
     std::unique_ptr<QNetworkAccessManager> m_networkAccessManager;
     std::map<int, RequestPtr> m_networkRequests;
-    std::atomic<int> m_serial;
+    std::atomic<int> m_serial = 0;
 
     std::mutex m_networkRequestsMutex;
 };

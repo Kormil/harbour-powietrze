@@ -2,6 +2,7 @@
 #include <QStringBuilder>
 #include <iostream>
 #include <notification.h>
+
 #include "../modelsmanager.h"
 
 OpenAQConnection::OpenAQConnection(ModelsManager* modelsManager) :
@@ -34,13 +35,13 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
             + "?limit=" + QString::number(m_recordLimits);
     QUrl countryListURL(url);
 
-    Request* requestRaw = request(countryListURL);
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
-        if (status == Request::ERROR)
+    RequestPtr request = createRequest(countryListURL);
+
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
+        if (status == Request::ERROR) {
             handler(CountryListPtr{});
-        else
-        {
+        } else {
             m_lastCountryListRequestDate = QDateTime::currentDateTime();
 
             CountryListPtr countryList = readCountriesFromJson(QJsonDocument::fromJson(responseArray));
@@ -48,10 +49,9 @@ void OpenAQConnection::getCountryList(std::function<void(CountryListPtr)> handle
             m_cashedCountries = countryList;
             handler(std::move(countryList));
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handler)
@@ -73,8 +73,8 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
             + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
 
-    Request* requestRaw = request(stationListURL);
-    QObject::connect(requestRaw, &Request::finished, [this, countryCode, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
+    RequestPtr request = createRequest(stationListURL);
+    auto requestHandler = [this, countryCode, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         if (status == Request::ERROR)
             handler(m_requestedStation[countryCode]);
         else
@@ -84,11 +84,9 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
             m_requestedStation[countryCode] = stationList;
             handler(stationList);
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void OpenAQConnection::getProvinceList(std::function<void (ProvinceListPtr)> handler)
@@ -150,9 +148,9 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
     QString url = "https://" + m_host + m_port + "/v2/locations?location=" + station->streetName() + "&limit=" + QString::number(m_recordLimits);
     QUrl provinceListURL(url);
 
-    Request* requestRaw = request(provinceListURL);
+    RequestPtr request = createRequest(provinceListURL);
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler =  [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         if (status == Request::ERROR)
             handler( SensorListPtr() );
         else
@@ -161,10 +159,9 @@ void OpenAQConnection::getSensorList(StationPtr station, std::function<void (Sen
             sensorList->setDateToCurrent();
             handler(std::move(sensorList));
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -176,9 +173,9 @@ void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollu
             + "&date_from=" + QDateTime::currentDateTime().addDays(-1).toString(Qt::ISODate);
     QUrl sensorDataURL(url);
 
-    Request* requestRaw = request(sensorDataURL);
+    RequestPtr request = createRequest(sensorDataURL);
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler, sensor](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler, sensor](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&) {
         Pollution data = sensor;
         if (status != Request::ERROR) {
             data = readSensorDataFromJson(QJsonDocument::fromJson(responseArray));
@@ -190,9 +187,9 @@ void OpenAQConnection::getSensorData(Pollution sensor, std::function<void (Pollu
         }
 
         handler(data);
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    };
+
+    request->run(requestHandler);
 }
 
 void OpenAQConnection::getStationIndex(StationPtr, std::function<void (StationIndexPtr)> handler)
@@ -215,9 +212,9 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
             + "&radius=" + QString::number(distanceLimit);
     QUrl stationListURL(url);
 
-    Request* requestRaw = request(stationListURL);
+    RequestPtr request = createRequest(stationListURL);
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler, coordinate](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders&y) {
         if (status == Request::ERROR)
             handler(StationListPtr{});
         else
@@ -232,10 +229,9 @@ void OpenAQConnection::getNearestStations(QGeoCoordinate coordinate, float dista
                 //getNearestStations(coordinate, distanceLimit * 2, handler);
             }
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &jsonDocument)
