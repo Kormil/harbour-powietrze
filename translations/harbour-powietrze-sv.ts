@@ -240,13 +240,6 @@ https://developer.airly.eu</translation>
     </message>
 </context>
 <context>
-    <name>Request</name>
-    <message>
-        <source>Request timeout</source>
-        <translation>Tidsgräns för begäran</translation>
-    </message>
-</context>
-<context>
     <name>SelectCountryPage</name>
     <message>
         <source>Select country</source>

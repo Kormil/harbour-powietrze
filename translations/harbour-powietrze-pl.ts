@@ -247,7 +247,7 @@ https://developer.airly.eu</translation>
     <name>Request</name>
     <message>
         <source>Request timeout</source>
-        <translation>Przekroczono czas na odpowiedź</translation>
+        <translation type="vanished">Przekroczono czas na odpowiedź</translation>
     </message>
 </context>
 <context>

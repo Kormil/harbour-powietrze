@@ -9,15 +9,17 @@ namespace {
 
 Request::Request(const QUrl &url, Connection *connection) :
     m_networkRequest(url),
-    m_connection(connection)
+    m_connection(connection),
+    m_shutdown(false)
 {
     m_requestTimer.setSingleShot(true);
 
     QObject::connect(&m_requestTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 }
 
-void Request::run()
+void Request::run(RequestHandler handler)
 {
+    m_handler = handler;
     networkReply = m_connection->networkAccessManager()->get(m_networkRequest);
     m_requestTimer.start(REQUEST_TIMEOUT);
 
@@ -47,9 +49,7 @@ void Request::setSerial(int serial)
 
 void Request::timeout()
 {
-    networkReply->disconnect();
     networkReply->abort();
-    responseFinished(QNetworkReply::TimeoutError, tr("Request timeout"));
 }
 
 void Request::responseFinished(QNetworkReply::NetworkError error, QString errorString)
@@ -61,12 +61,18 @@ void Request::responseFinished(QNetworkReply::NetworkError error, QString errorS
         Notification notification;
         notification.setPreviewBody(errorString);
         notification.publish();
-        emit finished(ERROR, QByteArray());
-        return ;
+        m_handler(ERROR, QByteArray(), ResponseHeaders());
+    } else {
+        responseHeaders = networkReply->rawHeaderPairs();
+        m_handler(SUCCESS, responseArray, responseHeaders);
     }
 
-    responseHeaders = networkReply->rawHeaderPairs();
-    emit finished(SUCCESS, responseArray);
+    m_shutdown = true;
+}
+
+bool Request::shutdown() const
+{
+    return m_shutdown;
 }
 
 QList<QPair<QByteArray, QByteArray>>& Request::getResponseHeaders()
@@ -78,12 +84,6 @@ Connection::Connection(ModelsManager* modelsManager) :
     m_modelsManager(modelsManager)
 {
     m_networkAccessManager = std::make_unique<QNetworkAccessManager>();
-}
-
-void Connection::deleteRequest(int serial)
-{
-    std::lock_guard<std::mutex> lock(m_networkRequestsMutex);
-    m_networkRequests.erase( m_networkRequests.find(serial) );
 }
 
 QNetworkAccessManager* Connection::networkAccessManager()
@@ -137,16 +137,26 @@ int Connection::getCountryListFrequency() const
     return m_getCountryListFrequency;
 }
 
-Request* Connection::request(const QUrl &requestUrl)
+RequestPtr Connection::createRequest(const QUrl &requestUrl)
 {
     std::lock_guard<std::mutex> lock(m_networkRequestsMutex);
 
+    // remove old requests:
+    for (auto request_it = m_networkRequests.begin(); request_it != m_networkRequests.end();) {
+        if (request_it->second && request_it->second->shutdown()) {
+            request_it = m_networkRequests.erase(request_it);
+        } else {
+            ++request_it;
+        }
+    }
+
+    // create new request
     int serial = nextSerial();
 
-    RequestPtr requestPtr = std::make_unique<Request>(requestUrl, this);
+    RequestPtr requestPtr = std::make_shared<Request>(requestUrl, this);
 
     requestPtr->setSerial(serial);
-    m_networkRequests[serial] = std::move(requestPtr);
+    m_networkRequests[serial] = requestPtr;
 
-    return m_networkRequests[serial].get();
+    return requestPtr;
 }

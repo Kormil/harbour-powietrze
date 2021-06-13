@@ -25,7 +25,7 @@ public:
     virtual void getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void(StationListPtr)> handler) override;
 
 private:
-    void parseHeaders(QList<QPair<QByteArray, QByteArray> > &headers);
+    void parseHeaders(const QList<QPair<QByteArray, QByteArray> > &headers);
 
     //Requests
     void countryListRequest(ProvinceListPtr provinceList, std::function<void (CountryListPtr)> handler);

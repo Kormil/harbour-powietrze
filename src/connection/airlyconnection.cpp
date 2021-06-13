@@ -50,7 +50,7 @@ void AirlyConnection::countryListRequest(ProvinceListPtr provinceList, std::func
     }
 
     CountryListPtr countryList = std::make_shared<CountryList>();
-    for (const auto value: names)
+    for (const auto& value: names)
     {
         CountryItemPtr country = std::make_shared<CountryItem>();
         country->name = value;
@@ -86,25 +86,23 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
             + "&lat=50.0&lng=20.0&maxDistanceKM=-1&maxResults=-1";
     QUrl stationListURL(url);
 
-    Request* requestRaw = request(stationListURL);
-    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    RequestPtr request = createRequest(stationListURL);
+    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
 
-    QObject::connect(requestRaw, &Request::finished, [this, requestRaw, handler](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)
             handler(StationListPtr(nullptr));
         else
         {
             m_lastStationListRequestDate = QDateTime::currentDateTime();
-            parseHeaders(requestRaw->getResponseHeaders());
+            parseHeaders(headers);
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
             m_cashedStations = stationList;
             handler(stationList);
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void AirlyConnection::getProvinceList(std::function<void (ProvinceListPtr)> handler)
@@ -135,7 +133,7 @@ void AirlyConnection::provinceListRequest(StationListPtr stationList, std::funct
     }
 
     ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
-    for (const auto value: names)
+    for (const auto& value: names)
     {
         ProvinceItemPtr province = std::make_shared<ProvinceItem>();
         province->name = value.first;
@@ -159,21 +157,20 @@ void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
     QString url = "https://" + m_host + m_port + "/v2/meta/measurements?apikey=" + apiKey;
     QUrl provinceListURL(url);
 
-    Request* requestRaw = request(provinceListURL);
-    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    RequestPtr request = createRequest(provinceListURL);
+    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR) {
             handler();
         } else {
-            parseHeaders(requestRaw->getResponseHeaders());
+            parseHeaders(headers);
             m_parametersUnits = readParametersUnitsFromJson(QJsonDocument::fromJson(responseArray));
             handler();
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void AirlyConnection::getSensorList(StationPtr station, std::function<void (SensorListPtr)> handler)
@@ -195,25 +192,24 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
             + "&installationId=" + QString::number(station->id());
     QUrl provinceListURL(url);
 
-    Request* requestRaw = request(provinceListURL);
-    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    RequestPtr request = createRequest(provinceListURL);
+    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)
             handler( SensorListPtr() );
         else
         {
-            parseHeaders(requestRaw->getResponseHeaders());
+            parseHeaders(headers);
             parameterUnitsRequest([this, responseArray, handler]() {
                 SensorListPtr sensorList = readSensorsFromJson(QJsonDocument::fromJson(responseArray));
                 sensorList->setDateToCurrent();
                 handler(std::move(sensorList));
             });
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollution)> handler)
@@ -250,12 +246,11 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
             + "&indexType=AIRLY_CAQI&installationId=" + QString::number(station->id());
     QUrl stationIndexURL(url);
 
-    Request* requestRaw = request(stationIndexURL);
-    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    RequestPtr request = createRequest(stationIndexURL);
+    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR) {
-            parseHeaders(requestRaw->getResponseHeaders());
             StationIndexData stationIndexData;
 
             stationIndexData.m_id = -1;
@@ -265,14 +260,14 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
             stationIndex->setData(stationIndexData);
             handler(stationIndex);
         } else {
+            parseHeaders(headers);
             StationIndexPtr stationIndex = readStationIndexFromJson(QJsonDocument::fromJson(responseArray));
             stationIndex->setDateToCurent();
             handler(stationIndex);
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
 void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distanceLimit, std::function<void (StationListPtr)> handler)
@@ -283,15 +278,15 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
             + "&maxDistanceKM=" + QString::number(distanceLimit / 1000) + "&maxResults=-1";
     QUrl stationListURL(url);
 
-    Request* requestRaw = request(stationListURL);
-    requestRaw->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    RequestPtr request = createRequest(stationListURL);
+    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
 
-    QObject::connect(requestRaw, &Request::finished, [=](Request::Status status, const QByteArray& responseArray) {
+    auto requestHandler = [this, handler, coordinate, distanceLimit](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)
             handler(StationListPtr{});
         else
         {
-            parseHeaders(requestRaw->getResponseHeaders());
+            parseHeaders(headers);
             StationListPtr stationList = readStationsFromJson(QJsonDocument::fromJson(responseArray));
 
             if (stationList->size() >= 1) {
@@ -301,13 +296,12 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
                 getNearestStations(coordinate, distanceLimit * 2, handler);
             }
         }
+    };
 
-        deleteRequest(requestRaw->serial());
-    });
-    requestRaw->run();
+    request->run(requestHandler);
 }
 
-void AirlyConnection::parseHeaders(QList<QPair<QByteArray, QByteArray>>& headers)
+void AirlyConnection::parseHeaders(const QList<QPair<QByteArray, QByteArray>>& headers)
 {
     auto provider = m_modelsManager->providerListModel()->provider(id());
 
@@ -433,7 +427,7 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
         sensorList->setData(sensorData);
     }
 
-    return std::move(sensorList);
+    return sensorList;
 }
 
 StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &jsonDocument)
