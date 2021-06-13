@@ -54,7 +54,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Request remaining </source>
-        <translation type="unfinished"></translation>
+        <translation>Begäran återstår </translation>
     </message>
 </context>
 <context>
@@ -276,15 +276,15 @@ https://developer.airly.eu</translation>
     <name>SensorItem</name>
     <message>
         <source>date</source>
-        <translation type="unfinished"></translation>
+        <translation>datum</translation>
     </message>
     <message>
         <source>norm</source>
-        <translation type="unfinished"></translation>
+        <translation>norm</translation>
     </message>
     <message>
         <source>unit</source>
-        <translation type="unfinished"></translation>
+        <translation>enhet</translation>
     </message>
 </context>
 <context>
