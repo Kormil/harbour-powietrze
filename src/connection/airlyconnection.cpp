@@ -229,14 +229,13 @@ void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollut
 
 void AirlyConnection::getStationIndex(StationPtr station, std::function<void (StationIndexPtr)> handler)
 {
-    if (station == nullptr)
-    {
+    if (station == nullptr) {
+        qWarning() << "get index from null station";
         handler(StationIndexPtr(nullptr));
         return;
     }
 
-    if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(m_getStationIndexFrequency))
-    {
+    if (station->stationIndex() && !station->stationIndex()->shouldGetNewData(m_getStationIndexFrequency)) {
         handler(StationIndexPtr(nullptr));
         return;
     }
@@ -261,7 +260,10 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
             handler(stationIndex);
         } else {
             parseHeaders(headers);
-            StationIndexPtr stationIndex = readStationIndexFromJson(QJsonDocument::fromJson(responseArray));
+
+            auto document = QJsonDocument::fromJson(responseArray);
+            StationIndexPtr stationIndex = readStationIndexFromJson(document);
+
             stationIndex->setDateToCurent();
             handler(stationIndex);
         }
@@ -320,7 +322,7 @@ StationListPtr AirlyConnection::readStationsFromJson(const QJsonDocument &jsonDo
 {
     StationListPtr stationList = std::make_shared<StationList>();
 
-    QJsonArray array = jsonDocument.array();
+    const auto& array = jsonDocument.array();
 
     for (const auto& station: array)
     {
@@ -359,11 +361,13 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
     SensorListPtr sensorList = std::make_shared<SensorList>();
 
-    auto current = jsonDocument.object()["current"];
+    const auto& object = jsonDocument.object();
+    const auto& current = object["current"];
     if (current.isUndefined()) {
         return sensorList;
     }
-    auto currentObj = current.toObject();
+
+    const auto& currentObj = current.toObject();
 
     QJsonArray results = currentObj["values"].toArray();
 
@@ -386,14 +390,16 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
         nameToSensorData[sensorData.name] = sensorData;
     }
 
-    auto history = jsonDocument.object()["history"];
+    const auto& history = object["history"];
     if (history.isUndefined()) {
         return sensorList;
     }
 
     QJsonArray historyResults = history.toArray();
     for (const auto& historyResult: historyResults) {
-        results = historyResult.toObject()["values"].toArray();
+        const auto& historyObject =  historyResult.toObject();
+
+        results = historyObject["values"].toArray();
         for (const auto& result: results) {
             auto resultObj = result.toObject();
             QString name = resultObj["name"].toString();
@@ -432,15 +438,24 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
 StationIndexPtr AirlyConnection::readStationIndexFromJson(const QJsonDocument &jsonDocument)
 {
-    if (jsonDocument.isNull())
-        return StationIndexPtr(nullptr);
-
-    auto current = jsonDocument.object()["current"];
-    if (current.isUndefined()) {
-        std::cout << "Error in Airly Index json" << std::endl;
+    if (jsonDocument.isNull()) {
+        qDebug() << "jsonDocument is null";
         return StationIndexPtr(nullptr);
     }
-    auto currentObj = current.toObject();
+
+    const auto& object = jsonDocument.object();
+    if (object.isEmpty()) {
+        qWarning() << "jsodnDocument to object is empty";
+        return StationIndexPtr(nullptr);
+    }
+
+    const auto& current = object["current"];
+    if (current.isUndefined()) {
+        qDebug() << "Error in Airly Index json";
+        return StationIndexPtr(nullptr);
+    }
+
+    const auto& currentObj = current.toObject();
     QString dateString = currentObj["tillDateTime"].toString();
     QJsonArray results = currentObj["indexes"].toArray();
 
@@ -493,7 +508,7 @@ PollutionUnitList AirlyConnection::readParametersUnitsFromJson(const QJsonDocume
 {
     PollutionUnitList pollutionUnitList;
 
-    QJsonArray array = jsonDocument.array();
+    const auto& array = jsonDocument.array();
 
     for (const auto& station: array)
     {

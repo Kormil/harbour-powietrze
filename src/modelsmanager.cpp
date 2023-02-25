@@ -41,6 +41,13 @@ void ModelsManager::createModels()
 
 void ModelsManager::deleteModels()
 {
+    m_stationListModel = nullptr;
+    m_provinceListModel = nullptr;
+    m_sensorListModel = nullptr;
+    m_countryListModel = nullptr;
+    m_providerListModel = nullptr;
+    m_airQualityIndexModel = nullptr;
+
     std::cout << "Models deleted" << std::endl;
 }
 

@@ -136,6 +136,7 @@ void StationListModel::requestStationIndexData(StationPtr station)
         return;
 
     emit stationDataRequested();
+
     auto provider = m_modelsManager->providerListModel()->provider(station->provider());
 
     if (!provider->enabled()) {
@@ -143,6 +144,7 @@ void StationListModel::requestStationIndexData(StationPtr station)
     }
 
     auto airQualityIndex = m_modelsManager->airQualityIndexModel()->index(provider->airQualityIndexId());
+
     airQualityIndex->calculate(station, [=](StationIndexPtr stationIndex) {
         if (stationIndex != nullptr)
         {
@@ -568,8 +570,9 @@ void StationListProxyModel::setStationListModel(StationListModel *stationListMod
 
 void StationListProxyModel::onItemClicked(int index)
 {
-    if (!m_stationListModel)
+    if (!m_stationListModel) {
         return;
+    }
 
     QModelIndex modelIndex = mapToSource(this->index(index, 0));
     m_stationListModel->onItemClicked(modelIndex.row());

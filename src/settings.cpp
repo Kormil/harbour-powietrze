@@ -194,5 +194,5 @@ StationListPtr Settings::favouriteStations() const
         stationList->append(station);
     }
 
-    return std::move(stationList);
+    return stationList;
 }

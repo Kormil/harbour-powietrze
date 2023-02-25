@@ -69,7 +69,7 @@ void OpenAQConnection::getStationList(std::function<void(StationListPtr)> handle
 
     QString url = "https://" + m_host + m_port
             + "/v2/locations?"
-            + "&country=" + countryCode
+            + "country=" + countryCode
             + "&limit=" + QString::number(m_recordLimits);
     QUrl stationListURL(url);
 
@@ -238,7 +238,8 @@ CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &json
 {
     CountryListPtr countryList = std::make_shared<CountryList>();
 
-    auto response = jsonDocument.object()["results"];
+    const auto& object = jsonDocument.object();
+    const auto& response = object["results"];
     if (response.isUndefined()) {
         std::cout << "OpenAQ: no results in JSON" << std::endl;
         return countryList;
@@ -251,7 +252,7 @@ CountryListPtr OpenAQConnection::readCountriesFromJson(const QJsonDocument &json
         CountryItemPtr item = std::make_shared<CountryItem>();
 
         try {
-            auto countryObj = country.toObject();
+            const auto& countryObj = country.toObject();
             item->name = countryObj["name"].toString();
             item->code = countryObj["code"].toString();
             item->provider = id();
@@ -270,9 +271,10 @@ ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jso
 {
     ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
 
-    auto response = jsonDocument.object()["results"];
+    const auto& object = jsonDocument.object();
+    const auto& response = object["results"];
     if (response.isUndefined()) {
-        std::cout << "OpenAQ: no results in JSON" << std::endl;
+        qWarning() << "OpenAQ: no results in JSON";
         return provinceList;
     }
 
@@ -283,7 +285,7 @@ ProvinceListPtr OpenAQConnection::readProvincesFromJson(const QJsonDocument &jso
         ProvinceItemPtr item = std::make_shared<ProvinceItem>();
 
         try {
-            auto provinceObj = province.toObject();
+            const auto& provinceObj = province.toObject();
             item->name = provinceObj["city"].toString();
             item->countryCode = provinceObj["country"].toString();
             item->provider = id();
@@ -302,9 +304,10 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
 {
     StationListPtr stationList = std::make_shared<StationList>();
 
-    auto response = jsonDocument.object()["results"];
+    const auto& object = jsonDocument.object();
+    const auto& response = object["results"];
     if (response.isUndefined()) {
-        std::cout << "OpenAQ: no results in JSON" << std::endl;
+        qWarning() << "OpenAQ: no results in JSON";;
         return stationList;
     }
 
@@ -312,7 +315,7 @@ StationListPtr OpenAQConnection::readStationsFromJson(const QJsonDocument &jsonD
 
     for (const auto& station: results)
     {
-        auto stationObj = station.toObject();
+        const auto& stationObj = station.toObject();
         QDateTime lastUpdate = QDateTime::fromString(stationObj["lastUpdated"].toString(), Qt::ISODate);
 
         if (lastUpdate < QDateTime::currentDateTime().addDays(-1)) {
@@ -358,7 +361,8 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
 
     SensorListPtr sensorList = std::make_shared<SensorList>();
 
-    auto response = jsonDocument.object()["results"];
+    const auto& object = jsonDocument.object();
+    const auto& response = object["results"];
     if (response.isUndefined()) {
         return sensorList;
     }
@@ -367,7 +371,7 @@ SensorListPtr OpenAQConnection::readSensorsFromJson(const QJsonDocument &jsonDoc
 
     for (const auto& result: results)
     {
-        auto resultObj = result.toObject();
+        const auto& resultObj = result.toObject();
         QJsonArray sensors = resultObj["parameters"].toArray();
         for (const auto& sensor: sensors)
         {
@@ -400,7 +404,8 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
 {
     Pollution sensorData;
 
-    auto response = jsonDocument.object()["results"];
+    const auto& object = jsonDocument.object();
+    const auto& response = object["results"];
     if (response.isUndefined()) {
         sensorData.setValues(PollutionValue{static_cast<int>(Errors::NoData), QDateTime::currentDateTime()});
         return sensorData;
@@ -409,7 +414,7 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
     QJsonArray results = response.toArray();
 
     try {
-        auto firstResultObj = results[0].toObject();
+        const auto& firstResultObj = results[0].toObject();
         QString dateString = firstResultObj["date"].toObject()["utc"].toString();
 
         sensorData.id = firstResultObj["location"].toString();
@@ -425,7 +430,7 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
         std::vector<PollutionValue> values;
         for (const auto& result: results)
         {
-            auto resultObj = result.toObject();
+            const auto& resultObj = result.toObject();
             float value = resultObj["value"].toDouble();
 
             QString dateString = resultObj["date"].toObject()["utc"].toString();
@@ -438,8 +443,9 @@ Pollution OpenAQConnection::readSensorDataFromJson(const QJsonDocument &jsonDocu
         qWarning("%s", e.what());
     }
 
-    if (results.empty())
+    if (results.empty()) {
         sensorData.setValues(PollutionValue{static_cast<int>(Errors::NoData), QDateTime::currentDateTime()});
+    }
 
     return sensorData;
 }

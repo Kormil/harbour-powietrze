@@ -83,8 +83,7 @@ Connection *ProvidersManager::connection(int providerId) const
 
 ProviderDataPtr ProvidersManager::provider(int providerId) const
 {
-    auto provider = m_modelsManager->providerListModel()->provider(providerId);
-    return provider;
+    return m_modelsManager->providerListModel()->provider(providerId);
 }
 
 void ProvidersManager::createConenctions(ModelsManager *modelsManager)
