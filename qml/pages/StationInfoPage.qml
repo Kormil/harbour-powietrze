@@ -68,6 +68,7 @@ Page {
 
                 delegate: SensorItem {
                     sensor: model;
+                    stationName: stationListModel.selectedStation.name
                 }
             }
         }

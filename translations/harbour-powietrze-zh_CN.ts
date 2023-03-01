@@ -292,6 +292,10 @@ https://developer.airly.eu</source>
         <source>unit</source>
         <translation>单位</translation>
     </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SensorListModel</name>
@@ -365,6 +369,10 @@ https://developer.airly.eu</source>
     <message>
         <source>Paused</source>
         <translation>已暂停</translation>
+    </message>
+    <message>
+        <source>Add station name when copying</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -54,7 +54,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Request remaining </source>
-        <translation>Begäran återstår </translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -275,16 +275,20 @@ https://developer.airly.eu</translation>
 <context>
     <name>SensorItem</name>
     <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>date</source>
-        <translation>datum</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>norm</source>
-        <translation>norm</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>unit</source>
-        <translation>enhet</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -359,6 +363,10 @@ https://developer.airly.eu</translation>
     <message>
         <source>Paused</source>
         <translation>Pausad</translation>
+    </message>
+    <message>
+        <source>Add station name when copying</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

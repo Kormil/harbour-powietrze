@@ -270,6 +270,10 @@ https://developer.airly.eu</source>
 <context>
     <name>SensorItem</name>
     <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>date</source>
         <translation type="unfinished"></translation>
     </message>
@@ -341,6 +345,10 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>Paused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add station name when copying</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -312,6 +312,10 @@ https://developer.airly.eu</translation>
         <source>unit</source>
         <translation>jednostka</translation>
     </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SensorListModel</name>
@@ -385,6 +389,10 @@ https://developer.airly.eu</translation>
     <message>
         <source>Paused</source>
         <translation>Wstrzymany</translation>
+    </message>
+    <message>
+        <source>Add station name when copying</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

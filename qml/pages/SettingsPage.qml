@@ -35,6 +35,17 @@ Page {
                 }
             }
 
+            TextSwitch {
+                text: qsTr("Add station name when copying")
+                checked: Settings.copyWithName
+
+                onCheckedChanged: {
+                    if (Settings.copyWithName !== checked) {
+                        Settings.copyWithName = checked
+                    }
+                }
+            }
+
             SectionHeader {
                 id: favouriteSection
                 text: qsTr("GPS")
