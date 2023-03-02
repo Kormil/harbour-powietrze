@@ -245,6 +245,10 @@ https://developer.airly.eu</translation>
         <source>Select country</source>
         <translation>Välj land</translation>
     </message>
+    <message>
+        <source>Find nearest stations</source>
+        <translation type="unfinished">Hitta närmaste stationer</translation>
+    </message>
 </context>
 <context>
     <name>SelectProviderPage</name>

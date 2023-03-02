@@ -251,6 +251,10 @@ https://developer.airly.eu</source>
         <source>Select country</source>
         <translation>选择国家</translation>
     </message>
+    <message>
+        <source>Find nearest stations</source>
+        <translation type="unfinished">找到最近站点</translation>
+    </message>
 </context>
 <context>
     <name>SelectProviderPage</name>

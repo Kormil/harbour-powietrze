@@ -260,6 +260,10 @@ https://developer.airly.eu</translation>
         <source>Find nearest</source>
         <translation type="obsolete">Znajdź najbliższe</translation>
     </message>
+    <message>
+        <source>Find nearest stations</source>
+        <translation type="unfinished">Znajdź najbliższą stację</translation>
+    </message>
 </context>
 <context>
     <name>SelectProviderPage</name>

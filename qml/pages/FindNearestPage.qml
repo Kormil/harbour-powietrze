@@ -8,6 +8,8 @@ import GPSModule 1.0
 import "../items"
 
 Page {
+    property bool providerSelected
+
     id: page
     allowedOrientations: Orientation.All
 
@@ -26,7 +28,7 @@ Page {
             MenuItem {
                 id: findMoreItem
                 text: qsTr("Find more")
-                visible: false
+                visible: !loading.visible
                 onClicked: {
                     stationListModel.stationDistanceLimit = stationListModel.stationDistanceLimit * 2
                     gps.requestPosition()
@@ -46,6 +48,7 @@ Page {
             stationModel: stationListModel
             sort: SortStation.ByDistance
             distanceLimit: stationListModel.stationDistanceLimit
+            provider: providerSelected ? providerListModel.selectedProviderId : undefined
         }
 
         delegate: StationNearestItem {

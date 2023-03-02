@@ -237,6 +237,10 @@ https://developer.airly.eu</source>
 <context>
     <name>SelectCountryPage</name>
     <message>
+        <source>Find nearest stations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Select country</source>
         <translation type="unfinished"></translation>
     </message>
@@ -244,15 +248,15 @@ https://developer.airly.eu</source>
 <context>
     <name>SelectProviderPage</name>
     <message>
-        <source>Select provider</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Manage providers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Find nearest stations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select provider</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

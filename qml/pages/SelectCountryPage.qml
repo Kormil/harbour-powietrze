@@ -14,6 +14,15 @@ Page {
     SilicaFlickable {
         anchors.fill: parent
 
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("Find nearest stations")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("FindNearestPage.qml"), {providerSelected: true})
+                }
+            }
+        }
+
         SilicaListView {
             id: listView
             model: CountryListProxyModel {
