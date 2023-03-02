@@ -23,6 +23,8 @@ void ProvidersManager::createProviders()
         return;
 
     Settings * settings = qobject_cast<Settings*>(Settings::instance(nullptr, nullptr));
+    QLocale locale;
+    bool isPoland = locale.name() == "pl_PL";
 
     ProviderDataPtr powietrze = std::make_shared<ProviderData>();
     powietrze->setModelsManager(m_modelsManager);
@@ -34,7 +36,7 @@ void ProvidersManager::createProviders()
     powietrze->setConnection(m_powietrze.get());
     powietrze->setAirQualityIndexId(settings->providerSettings(powietrze->name(), "aqi").toInt());
     QVariant enabled = settings->providerSettings(powietrze->name(), "enabled");
-    powietrze->setEnabled(enabled.isValid() ? enabled.toBool() : true);
+    powietrze->setEnabled(enabled.isValid() ? enabled.toBool() : isPoland);
     powietrze->setNameVariant(settings->providerSettings(powietrze->name(), "nameVariant").toInt());
 
     ProviderDataPtr openaq = std::make_shared<ProviderData>();
