@@ -40,7 +40,7 @@ BackgroundItem {
 
                 if (dateRow.visible) {
                     text = text + ", " + dateLabel.text + ":" + sensor.date
-                    text = text + ", " + normLabel.text + ":" + sensor.date
+                    text = text + ", " + normLabel.text + ":" + sensor.norm
                     text = text + ", " + unitLabel.text + ":" + sensor.unit
                 }
 

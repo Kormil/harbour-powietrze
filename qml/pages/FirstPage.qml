@@ -6,6 +6,8 @@ import Settings 1.0
 import Nemo.Notifications 1.0
 import Nemo.DBus 2.0
 
+import ProviderListModel 1.0
+
 import "../items"
 
 Page {
@@ -35,6 +37,12 @@ Page {
 
         if (nearestStationEnabled)
             stationListModel.findNearestStation()
+    }
+
+    ProviderListProxyModel {
+        id: providerListProxyModel
+        providerModel: providerListModel
+        enabledFilter: true
     }
 
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
@@ -67,7 +75,13 @@ Page {
             MenuItem {
                 text: qsTr("Select station")
                 onClicked: {
-                    pageStack.push(Qt.resolvedUrl("SelectProviderPage.qml"))
+                    if (providerListProxyModel.rowCount() === 1) {
+                        providerListProxyModel.onItemClicked(0)
+                        countryListModel.requestCountryList()
+                        pageStack.push(Qt.resolvedUrl("SelectCountryPage.qml"))
+                    } else {
+                        pageStack.push(Qt.resolvedUrl("SelectProviderPage.qml"))
+                    }
                 }
             }
         }
