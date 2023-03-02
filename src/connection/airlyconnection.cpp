@@ -87,7 +87,8 @@ void AirlyConnection::stationListRequest(std::function<void (StationListPtr)> ha
     QUrl stationListURL(url);
 
     RequestPtr request = createRequest(stationListURL);
-    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    QLocale locale;
+    request->addHeader(QByteArray("Accept-Language"), locale.name().left(2).toUtf8());
 
     auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)
@@ -158,7 +159,8 @@ void AirlyConnection::parameterUnitsRequest(std::function<void (void)> handler)
     QUrl provinceListURL(url);
 
     RequestPtr request = createRequest(provinceListURL);
-    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    QLocale locale;
+    request->addHeader(QByteArray("Accept-Language"), locale.name().left(2).toUtf8());
 
     auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR) {
@@ -193,7 +195,8 @@ void AirlyConnection::getSensorList(StationPtr station, std::function<void (Sens
     QUrl provinceListURL(url);
 
     RequestPtr request = createRequest(provinceListURL);
-    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    QLocale locale;
+    request->addHeader(QByteArray("Accept-Language"), locale.name().left(2).toUtf8());
 
     auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)
@@ -246,7 +249,8 @@ void AirlyConnection::getStationIndex(StationPtr station, std::function<void (St
     QUrl stationIndexURL(url);
 
     RequestPtr request = createRequest(stationIndexURL);
-    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    QLocale locale;
+    request->addHeader(QByteArray("Accept-Language"), locale.name().left(2).toUtf8());
 
     auto requestHandler = [this, handler](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR) {
@@ -281,7 +285,8 @@ void AirlyConnection::getNearestStations(QGeoCoordinate coordinate, float distan
     QUrl stationListURL(url);
 
     RequestPtr request = createRequest(stationListURL);
-    request->addHeader(QByteArray("Accept-Language"), QByteArray("en"));
+    QLocale locale;
+    request->addHeader(QByteArray("Accept-Language"), locale.name().left(2).toUtf8());
 
     auto requestHandler = [this, handler, coordinate, distanceLimit](Request::Status status, const QByteArray& responseArray, const Request::ResponseHeaders& headers) {
         if (status == Request::ERROR)

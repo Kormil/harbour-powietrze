@@ -118,7 +118,7 @@ void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::func
     }
 
     ProvinceListPtr provinceList = std::make_shared<ProvinceList>();
-    for (const auto value: names)
+    for (const auto& value: names)
     {
         ProvinceItemPtr province = std::make_shared<ProvinceItem>();
         province->name = value;
