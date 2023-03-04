@@ -372,6 +372,10 @@ https://developer.airly.eu</translation>
         <source>Add station name when copying</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Expand value descriptions</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>StationInfoPage</name>

@@ -17,7 +17,9 @@ class Settings : public QObject
     Q_OBJECT
     Q_PROPERTY(bool notifications READ notifications WRITE setNotifications NOTIFY notificationsChanged)
     Q_PROPERTY(bool copyWithName READ copyWithName WRITE setCopyWithName NOTIFY copyWithNameChanged)
+    Q_PROPERTY(bool expandValues READ expandValues WRITE setExpandValues NOTIFY expandValuesChanged)
     Q_PROPERTY(unsigned short gpsUpdateFrequency READ gpsUpdateFrequency WRITE setGpsUpdateFrequency NOTIFY gpsUpdateFrequencyChanged)
+
 public:
     static QObject *instance(QQmlEngine *engine, QJSEngine *scriptEngine);
 
@@ -43,6 +45,9 @@ public:
     bool copyWithName() const;
     void setCopyWithName(const bool &value);
 
+    bool expandValues() const;
+    void setExpandValues(const bool &value);
+
     QDateTime gpsLocationPaused() const;
     void setGpsLocationPaused(const QDateTime &value);
 
@@ -55,6 +60,7 @@ signals:
     void gpsUpdateFrequencyChanged();
     void notificationsChanged();
     void copyWithNameChanged();
+    void expandValuesChanged();
     void providerSettingsChanged(QString, QString);
 
 private:

@@ -46,6 +46,17 @@ Page {
                 }
             }
 
+            TextSwitch {
+                text: qsTr("Expand value descriptions")
+                checked: Settings.expandValues
+
+                onCheckedChanged: {
+                    if (Settings.expandValues !== checked) {
+                        Settings.expandValues = checked
+                    }
+                }
+            }
+
             SectionHeader {
                 id: favouriteSection
                 text: qsTr("GPS")

@@ -61,7 +61,7 @@ Page {
             running: true
             size: BusyIndicatorSize.Large
             anchors.verticalCenter: parent.verticalCenter
-            visible: false
+            visible: true
         }
 
         Connections {

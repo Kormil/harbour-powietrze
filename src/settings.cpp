@@ -8,6 +8,7 @@
 #define FAVOURITE_STATIONS QStringLiteral("stations/favourite")
 #define NOTIFICATIONS_STATIONS QStringLiteral("stations/notifications")
 #define COPY_WITH_NAME_STATIONS QStringLiteral("stations/copyWithName")
+#define EXPAND_VALUES_STATIONS QStringLiteral("stations/expandValues")
 #define UPDATE_FAVOURITE_STATIONS QStringLiteral("update/favouriteStations")
 #define GPS_FREQUENCY QStringLiteral("gps/frequency")
 #define GPS_PAUSED QStringLiteral("gps/paused")
@@ -169,6 +170,20 @@ void Settings::setCopyWithName(const bool &value)
     {
         m_settings->setValue(COPY_WITH_NAME_STATIONS, value);
         emit copyWithNameChanged();
+    }
+}
+
+bool Settings::expandValues() const
+{
+    return m_settings->value(EXPAND_VALUES_STATIONS, false).toBool();
+}
+
+void Settings::setExpandValues(const bool &value)
+{
+    if (expandValues() != value)
+    {
+        m_settings->setValue(EXPAND_VALUES_STATIONS, value);
+        emit expandValuesChanged();
     }
 }
 

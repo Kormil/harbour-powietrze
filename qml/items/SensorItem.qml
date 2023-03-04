@@ -16,12 +16,41 @@ BackgroundItem {
 
     function nothing() {}
 
+    function canExpand() {
+        return sensor.date.length !== 0
+    }
+
     function changeDetailsVisible() {
         dateRow.visible = !detailsVisible;
         unitRow.visible  = !detailsVisible;
 
         if (parseInt(sensor.norm) > -1) {
             normRow.visible = !detailsVisible;
+        }
+    }
+
+    function expandDetails() {
+        if (!dateRow.visible) {
+            properHeight = values.height + dateRow.height
+            if (parseInt(sensor.norm) > -1) {
+                properHeight = properHeight + normRow.height
+            }
+            properHeight = properHeight + unitRow.height
+        } else {
+            properHeight = values.height
+        }
+
+        detailsVisible = dateRow.visible
+        dateRow.visible = false
+        normRow.visible = false
+        unitRow.visible = false
+    }
+
+    Component.onCompleted: {
+        if (Settings.expandValues && canExpand()) {
+            expandDetails()
+            changeDetailsVisible()
+            height = properHeight
         }
     }
 
@@ -147,24 +176,11 @@ BackgroundItem {
             return
         }
 
-        if (sensor.date.length === 0) {
+        if (!canExpand()) {
             return
         }
 
-        if (!dateRow.visible) {
-            properHeight = values.height + dateRow.height
-            if (parseInt(sensor.norm) > -1) {
-                properHeight = properHeight + normRow.height
-            }
-            properHeight = properHeight + unitRow.height
-        } else {
-            properHeight = values.height
-        }
-
-        detailsVisible = dateRow.visible
-        dateRow.visible = false
-        normRow.visible = false
-        unitRow.visible = false
+        expandDetails()
 
         stopAnimation = changeDetailsVisible
         animation.running = true
