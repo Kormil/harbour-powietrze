@@ -51,8 +51,8 @@ Page {
                 }
                 onClicked: {
                     providerListProxyModel.onItemClicked(index)
-                    countryListModel.requestCountryList()
                     pageStack.push(Qt.resolvedUrl("SelectCountryPage.qml"))
+                    countryListModel.requestCountryList()
                 }
             }
             VerticalScrollDecorator {}

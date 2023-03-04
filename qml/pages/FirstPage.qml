@@ -77,11 +77,11 @@ Page {
                 onClicked: {
                     if (providerListProxyModel.rowCount() === 1) {
                         providerListProxyModel.onItemClicked(0)
-                        countryListModel.requestCountryList()
                         pageStack.push(Qt.resolvedUrl("SelectCountryPage.qml"))
                     } else {
                         pageStack.push(Qt.resolvedUrl("SelectProviderPage.qml"))
                     }
+                    countryListModel.requestCountryList()
                 }
             }
         }

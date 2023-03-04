@@ -113,12 +113,13 @@ void CountryListModel::requestCountryList()
 
     connection->getCountryList([this](CountryListPtr countryList) {
         if (!countryList) {
-            countryListLoaded();
+            emit countryListLoaded();
             return;
         }
 
         if (m_countryList) {
             m_countryList->appendList(countryList);
+            emit countryListLoaded();
         }
         else {
             setCountryList(countryList);

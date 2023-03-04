@@ -61,7 +61,7 @@ Page {
             running: true
             size: BusyIndicatorSize.Large
             anchors.verticalCenter: parent.verticalCenter
-            visible: true
+            visible: false
         }
 
         Connections {
@@ -70,10 +70,7 @@ Page {
                 loading.enabled = true
                 loading.visible = true
             }
-        }
 
-        Connections {
-            target: countryListModel
             onCountryListLoaded: {
                 loading.enabled = false
                 loading.visible = false

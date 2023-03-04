@@ -41,7 +41,7 @@ void CountryList::append(const CountryItemPtr &country)
 
 void CountryList::appendList(CountryListPtr &countryList)
 {
-    for (auto& country: countryList->m_countryItems)
+    for (const auto& country: countryList->m_countryItems)
     {
         append(country);
     }
