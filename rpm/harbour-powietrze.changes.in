@@ -12,6 +12,15 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Sat Mar 4 2023 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.5.0-1\
+- Attempting to fix a crash while selecting a station
+- Added ability to copy sensors value
+- Disabled the Powietrze for non poland users
+- Skiping selecting a provider when there is only one
+- Added a switch to expand sensors value details
+- Added the Sailjail
+- Updated translations
+
 * Fri Mar 26 2021 Bartłomiej Seliga <bartek.seliga@hotmail.com> 1.4.7-1\
 - Move to api v2 (openaq)
 - Add support with My Backup
