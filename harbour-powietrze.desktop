@@ -13,3 +13,7 @@ Name=Powietrze
 
 [X-HarbourBackup]
 BackupPathList=.config/harbour-powietrze
+
+
+[X-Sailjail]
+Permissions=Internet;Location
