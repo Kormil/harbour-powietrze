@@ -58,9 +58,10 @@ void Request::responseFinished(QNetworkReply::NetworkError error, QString errorS
 
     if (error != QNetworkReply::NoError)
     {
-        Notification notification;
-        notification.setPreviewBody(errorString);
-        notification.publish();
+        //Notification notification;
+        //notification.setPreviewBody(errorString);
+        //notification.publish();
+        qDebug() << errorString;
         m_handler(ERROR, QByteArray(), ResponseHeaders());
     } else {
         responseHeaders = networkReply->rawHeaderPairs();

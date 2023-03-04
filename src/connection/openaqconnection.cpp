@@ -114,6 +114,11 @@ void OpenAQConnection::provinceListRequest(StationListPtr stationList, std::func
     {
         StationPtr station = stationList->station(i);
         QString name = station->province();
+
+        if (name.isEmpty()) {
+            continue;
+        }
+
         names.insert(name);
     }
 
