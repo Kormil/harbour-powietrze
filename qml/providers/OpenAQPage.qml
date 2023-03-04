@@ -58,7 +58,7 @@ Page {
                 enabled: false
 
                 menu: ContextMenu {
-                    MenuItem { text: "European air quality index" }
+                    MenuItem { text: qsTr("European") }
                 }
             }
         }

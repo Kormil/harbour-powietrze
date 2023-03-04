@@ -13,6 +13,7 @@ struct PollutionUnit
 {
     QString pollutionCode;
     QString unit;
+    QString label;
 };
 
 struct PollutionValue

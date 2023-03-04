@@ -1,8 +1,8 @@
 #include "airlyconnection.h"
+
 #include <QStringBuilder>
 #include <utility>
 #include <iostream>
-#include "notification.h"
 #include "../modelsmanager.h"
 
 namespace {
@@ -219,9 +219,11 @@ void AirlyConnection::getSensorData(Pollution sensor, std::function<void (Pollut
 {
     sensor.id = DEFAULT_SENSOR_ID;
 
-    for (auto& pollution: m_parametersUnits) {
+    for (const auto& pollution: m_parametersUnits) {
+        qDebug() << pollution.pollutionCode << " : " << sensor.code;
         if (pollution.pollutionCode == sensor.code) {
             sensor.unit = pollution.unit;
+            sensor.name = pollution.label;
             break ;
         }
     }
@@ -376,7 +378,7 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
     QJsonArray results = currentObj["values"].toArray();
 
-    std::map<QString, Pollution> nameToSensorData;
+    std::map<QString, Pollution> codeToSensorData;
     QDateTime currentResultDate;
     for (const auto& result: results) {
         auto resultObj = result.toObject();
@@ -388,11 +390,12 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
 
         Pollution sensorData;
         sensorData.id = DEFAULT_SENSOR_ID;
+        sensorData.code = name;
         sensorData.name = name;
         sensorData.date = currentResultDate;
 
         sensorData.setValues(PollutionValue{value, currentResultDate});
-        nameToSensorData[sensorData.name] = sensorData;
+        codeToSensorData[sensorData.code] = sensorData;
     }
 
     const auto& history = object["history"];
@@ -407,7 +410,7 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
         results = historyObject["values"].toArray();
         for (const auto& result: results) {
             auto resultObj = result.toObject();
-            QString name = resultObj["name"].toString();
+            QString code = resultObj["name"].toString();
             float value = resultObj["value"].toDouble();
 
             QString dateString = currentObj["tillDateTime"].toString();
@@ -417,22 +420,20 @@ SensorListPtr AirlyConnection::readSensorsFromJson(const QJsonDocument &jsonDocu
                 continue;
             }
 
-            auto sensorDataIt = nameToSensorData.find(name);
-            if (sensorDataIt != nameToSensorData.end()) {
+            auto sensorDataIt = codeToSensorData.find(code);
+            if (sensorDataIt != codeToSensorData.end()) {
                 sensorDataIt->second.setValues({value, date});
             }
         }
     }
 
-    for (auto& sensorDataPair: nameToSensorData) {
+    for (auto& sensorDataPair: codeToSensorData) {
         auto sensorData = sensorDataPair.second;
-        sensorData.name = sensorData.name.toLower();
-        sensorData.code = sensorData.name;
 
-        if (sensorData.name == QStringLiteral("pm25"))
-            sensorData.name = QStringLiteral("pm2.5");
+        //if (sensorData.name == QStringLiteral("pm25"))
+        //    sensorData.name = QStringLiteral("pm2.5");
 
-        sensorData.name.replace(0, 1, sensorData.name[0].toUpper());
+        //sensorData.name.replace(0, 1, sensorData.name[0].toUpper());
 
         sensorData.setInitialized(false);
         sensorList->setData(sensorData);
@@ -518,10 +519,13 @@ PollutionUnitList AirlyConnection::readParametersUnitsFromJson(const QJsonDocume
     for (const auto& station: array)
     {
         auto stationObj = station.toObject();
-        QString name = stationObj["name"].toString().toLower();
+        QString name = stationObj["name"].toString();
         QString unit = stationObj["unit"].toString();
+        QString label = stationObj["label"].toString();
 
-        pollutionUnitList.push_back({name, unit});
+        qDebug() << name << ", " << unit << ", " << label;
+
+        pollutionUnitList.push_back({name, unit, label});
     }
 
     return pollutionUnitList;

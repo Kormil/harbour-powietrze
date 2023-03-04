@@ -77,7 +77,7 @@ Page {
             TextField {
                 id: apiKeyTextField
                 text: provider ? provider.apiKey : ""
-                label: "Api key"
+                label: qsTr("Api key")
                 placeholderText: label
                 width: parent.width
                 EnterKey.iconSource: "image://theme/icon-m-enter-next"
@@ -95,8 +95,8 @@ Page {
                 currentIndex: provider.airQualityIndex
 
                 menu: ContextMenu {
-                    MenuItem { text: "The Common Air Quality Index" }
-                    MenuItem { text: "European air quality index" }
+                    MenuItem { text: qsTr("From Airly") }
+                    MenuItem { text: qsTr("European") }
                 }
 
                 onCurrentIndexChanged: {

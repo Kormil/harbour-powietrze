@@ -74,8 +74,8 @@ Page {
                 currentIndex: provider.airQualityIndex
 
                 menu: ContextMenu {
-                    MenuItem { text: "Polski indeks jakości powietrza" }
-                    MenuItem { text: "European air quality index" }
+                    MenuItem { text: qsTr("Polish") }
+                    MenuItem { text: qsTr("European") }
                 }
 
                 onCurrentIndexChanged: {

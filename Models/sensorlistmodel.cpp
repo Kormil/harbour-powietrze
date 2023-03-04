@@ -136,7 +136,8 @@ void SensorListModel::connectModel()
 
         connect(m_station->sensorList().get(), &SensorList::valueChanged, this, [this](int index) {
             QModelIndex modelIndex = this->index(index);
-            dataChanged(modelIndex, modelIndex, {SensorsListRole::VALUE,
+            dataChanged(modelIndex, modelIndex, {SensorsListRole::NAME,
+                                                 SensorsListRole::VALUE,
                                                  SensorsListRole::DATE,
                                                  SensorsListRole::NORM,
                                                  SensorsListRole::UNIT});

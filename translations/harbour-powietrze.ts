@@ -55,6 +55,18 @@ https://developer.airly.eu</source>
         <source>Request remaining </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Api key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From Airly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>European</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>
@@ -150,6 +162,10 @@ https://developer.airly.eu</source>
         <source>Air quality index</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>European</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PowietrzeConnection</name>
@@ -182,6 +198,14 @@ https://developer.airly.eu</source>
     </message>
     <message>
         <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>European</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

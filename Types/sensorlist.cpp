@@ -34,11 +34,11 @@ bool SensorList::isAll()
 
 void SensorList::setData(Pollution sensorData)
 {
-    if (sensorData.id.isNull() || sensorData.name.isEmpty())
+    if (sensorData.id.isNull() || sensorData.code.isEmpty())
         return;
 
     auto sensorIt = std::find_if(m_sensors.begin(), m_sensors.end(), [&sensorData](const Pollution& b) {
-        if (sensorData.name == b.name)
+        if (sensorData.code == b.code)
             return true;
 
         return false;

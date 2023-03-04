@@ -56,6 +56,18 @@ https://developer.airly.eu</translation>
         <source>Request remaining </source>
         <translation>Pozostało zapytań </translation>
     </message>
+    <message>
+        <source>Api key</source>
+        <translation>Klucz api</translation>
+    </message>
+    <message>
+        <source>From Airly</source>
+        <translation>Z Airly</translation>
+    </message>
+    <message>
+        <source>European</source>
+        <translation>Europejski</translation>
+    </message>
 </context>
 <context>
     <name>FindNearestPage</name>
@@ -159,6 +171,10 @@ https://developer.airly.eu</translation>
         <source>Air quality index</source>
         <translation>Indeks jakości powietrza</translation>
     </message>
+    <message>
+        <source>European</source>
+        <translation>Europejski</translation>
+    </message>
 </context>
 <context>
     <name>PowietrzeConnection</name>
@@ -192,6 +208,14 @@ https://developer.airly.eu</translation>
     <message>
         <source>License</source>
         <translation>Licencja</translation>
+    </message>
+    <message>
+        <source>Polish</source>
+        <translation>Polski</translation>
+    </message>
+    <message>
+        <source>European</source>
+        <translation>Europejski</translation>
     </message>
 </context>
 <context>
@@ -262,7 +286,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Find nearest stations</source>
-        <translation type="unfinished">Znajdź najbliższą stację</translation>
+        <translation>Znajdź najbliższą stację</translation>
     </message>
 </context>
 <context>
@@ -318,7 +342,7 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Skopiuj</translation>
     </message>
 </context>
 <context>
@@ -396,11 +420,11 @@ https://developer.airly.eu</translation>
     </message>
     <message>
         <source>Add station name when copying</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj nazwę stacji podczas kopiowania</translation>
     </message>
     <message>
         <source>Expand value descriptions</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiń szczegóły wartości</translation>
     </message>
 </context>
 <context>
