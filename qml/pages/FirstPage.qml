@@ -78,10 +78,10 @@ Page {
                     if (providerListProxyModel.rowCount() === 1) {
                         providerListProxyModel.onItemClicked(0)
                         pageStack.push(Qt.resolvedUrl("SelectCountryPage.qml"))
+                        countryListModel.requestCountryList()
                     } else {
                         pageStack.push(Qt.resolvedUrl("SelectProviderPage.qml"))
                     }
-                    countryListModel.requestCountryList()
                 }
             }
         }
